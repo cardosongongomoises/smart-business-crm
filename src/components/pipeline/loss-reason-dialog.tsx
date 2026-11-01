@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState } from "react";
 import { LOSS_REASON_LABEL, type LossReason } from "@/lib/types";
@@ -32,14 +32,14 @@ export function LossReasonDialog({
     >
       <div
         role="dialog"
-        aria-label="Motivo de pérdida"
+        aria-label="Motivo de perda"
         className="w-full max-w-md rounded-lg border bg-popover p-5 shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <h3 className="mb-1 font-semibold">¿Por qué se perdió?</h3>
+        <h3 className="mb-1 font-semibold">Por que motivo se perdeu?</h3>
         <p className="mb-4 text-xs text-text-3">
-          {leadName} pasa a Perdido. El motivo es lo único que después explica
-          qué cambiar: sin él, la gráfica de pérdidas no dice nada.
+          {leadName} passa para Perdido. O motivo explica o que
+          melhorar: sem ele, o gráfico de perdas não traz informações úteis.
         </p>
 
         <div className="space-y-2">
@@ -70,7 +70,7 @@ export function LossReasonDialog({
             onChange={(e) => setNote(e.target.value)}
             rows={2}
             maxLength={500}
-            placeholder="Se fue con una agencia local por la mitad del precio"
+            placeholder="Optou por uma agência local por metade do preço"
           />
         </div>
 

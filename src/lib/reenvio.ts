@@ -34,15 +34,15 @@ export function nombreReenvio(m: { media: { kind: string } | null }): {
   switch (m.media?.kind) {
     case "image":
     case "sticker":
-      return { titulo: "Reenviar imagen", hecho: "Imagen reenviada" };
+      return { titulo: "Reencaminhar imagem", hecho: "Imagem reencaminhada" };
     case "video":
-      return { titulo: "Reenviar video", hecho: "Video reenviado" };
+      return { titulo: "Reencaminhar vídeo", hecho: "Vídeo reencaminhado" };
     case "audio":
-      return { titulo: "Reenviar audio", hecho: "Audio reenviado" };
+      return { titulo: "Reencaminhar áudio", hecho: "Áudio reencaminhado" };
     case "document":
-      return { titulo: "Reenviar documento", hecho: "Documento reenviado" };
+      return { titulo: "Reencaminhar documento", hecho: "Documento reencaminhado" };
     default:
-      return { titulo: "Reenviar mensaje", hecho: "Mensaje reenviado" };
+      return { titulo: "Reencaminhar mensagem", hecho: "Mensagem reencaminhada" };
   }
 }
 

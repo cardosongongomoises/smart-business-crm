@@ -353,14 +353,14 @@ export function InboxClient({
         }).catch(() => null);
         if (!res) {
           drop();
-          return "Sin conexión con el servidor";
+          return "Sem ligação ao servidor";
         }
         if (!res.ok) {
           const data = (await res.json().catch(() => null)) as {
             error?: { message?: string };
           } | null;
           drop();
-          return data?.error?.message ?? "No se pudo enviar el mensaje";
+          return data?.error?.message ?? "Não foi possível enviar a mensagem";
         }
         // Primero traer el mensaje real, después quitar el provisional: al
         // revés, la burbuja parpadearía.
@@ -394,18 +394,18 @@ export function InboxClient({
   const deleteConversation = useCallback(
     async (alsoContact: boolean): Promise<string | null> => {
       const id = selectedIdRef.current;
-      if (!id) return "Sin conversación seleccionada";
+      if (!id) return "Nenhuma conversa selecionada";
       const res = await fetch(
         `/api/conversations/${id}${alsoContact ? "?contacto=1" : ""}`,
         { method: "DELETE" }
       ).catch(() => null);
-      if (!res) return "Sin conexión con el servidor";
-      // 404 = otra persona la eliminó primero: para quien lo pidió, ya está.
+      if (!res) return "Sem ligação ao servidor";
+      // 404 = outra pessoa a eliminou primeiro: para quem o pediu, já está.
       if (!res.ok && res.status !== 404) {
         const data = (await res.json().catch(() => null)) as {
           error?: { message?: string };
         } | null;
-        return data?.error?.message ?? "No se pudo eliminar la conversación";
+        return data?.error?.message ?? "Não foi possível eliminar a conversa";
       }
       quitarConversacion(id);
       void refetchConversations();
@@ -447,7 +447,7 @@ export function InboxClient({
               {/* Volver a la lista: en móvil el hilo ocupa toda la pantalla. */}
               <button
                 onClick={() => setSelectedId(null)}
-                aria-label="Volver a las conversaciones"
+                aria-label="Voltar às conversas"
                 className="shrink-0 rounded-md p-1.5 text-text-2 hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring md:hidden"
               >
                 <ChevronLeft className="h-5 w-5" strokeWidth={1.8} />
@@ -474,24 +474,19 @@ export function InboxClient({
                     )}
                   >
                     {selected.windowOpen
-                      ? "ventana abierta"
+                      ? "janela aberta"
                       : selected.humanWindow?.open
-                        ? // 024: pasadas 24 h en Instagram o Messenger solo
-                          // contesta una persona. No se llama «atención
-                          // humana»: eso ya es el traspaso, con la IA en pausa.
-                          "ventana humana"
+                        ? "janela humana"
                         : selected.contact.phone
                         ? formatPhone(selected.contact.phone)
-                        : // Instagram no tiene teléfono: decir "Sin teléfono"
-                          // sería contestar una pregunta que nadie hizo.
-                          CHANNEL_LABEL[selected.channel]}
+                        : CHANNEL_LABEL[selected.channel]}
                   </p>
                 </div>
               </div>
               {!panelOpen && (
                 <button
                   onClick={() => togglePanel(true)}
-                  aria-label="Mostrar detalles"
+                  aria-label="Mostrar detalhes"
                   className="shrink-0 rounded-full border border-border-strong p-1.5 text-text-3 transition-colors hover:border-text-3 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <PanelRight className="h-4 w-4" strokeWidth={1.7} />
@@ -499,11 +494,6 @@ export function InboxClient({
               )}
             </header>
             <Composer
-              // 028: uno por conversación. Sin la llave, el borrador, el adjunto
-              // elegido y el panel abierto pasaban a la siguiente conversación.
-              // 043: el hilo va dentro (la zona donde se suelta una imagen es
-              // la conversación entera), así que la llave también lo reinicia
-              // a él: el aviso «Imagen reenviada a…» no pasa a otra.
               key={selected.id}
               conversation={selected}
               onSend={sendText}
@@ -523,7 +513,7 @@ export function InboxClient({
                 }).catch(() => null);
                 if (!res?.ok) {
                   const d = (await res?.json().catch(() => null)) as { error?: { message?: string } } | null;
-                  return d?.error?.message ?? "No se pudo guardar la nota. Revisa la conexión.";
+                  return d?.error?.message ?? "Não foi possível guardar a nota. Verifique a ligação.";
                 }
                 const { nota } = (await res.json()) as { nota: NotaDto };
                 if (selectedIdRef.current === id) {
@@ -537,15 +527,13 @@ export function InboxClient({
                 notas={notas}
                 eventos={eventos}
                 onBorrarNota={async (n) => {
-                  if (!window.confirm("¿Borrar esta nota interna?")) return;
+                  if (!window.confirm("Eliminar esta nota interna?")) return;
                   const res = await fetch(`/api/conversations/${n.conversationId}/notes/${n.id}`, {
                     method: "DELETE",
                   }).catch(() => null);
                   if (res?.ok) setNotas((prev) => prev.filter((x) => x.id !== n.id));
                 }}
                 contactName={selected.contact.name}
-                // 039: citar solo donde el canal lo permite y se puede escribir
-                // texto libre (con la ventana cerrada solo salen plantillas).
                 onReply={
                   selected.composer.quoteReply && selected.windowOpen
                     ? setReplyTo
@@ -562,9 +550,9 @@ export function InboxClient({
         ) : (
           <div className="thread-bg flex flex-1 flex-col items-center justify-center gap-2 bg-chat px-6 text-center lg:tarjeta">
             <p className="font-serif text-[24px] italic leading-tight text-text-2">
-              Elige una conversación para ver el hilo
+              Escolha uma conversa para ver o histórico
             </p>
-            <p className="kicker">Bandeja · tiempo real</p>
+            <p className="kicker">Caixa de entrada · tempo real</p>
           </div>
         )}
       </section>
@@ -572,7 +560,7 @@ export function InboxClient({
       {/* Velo del cajón de detalles (solo donde no caben tres columnas). */}
       {panelOpen && selected && (
         <button
-          aria-label="Cerrar los detalles"
+          aria-label="Fechar detalhes"
           tabIndex={-1}
           onClick={() => togglePanel(false)}
           className="fixed inset-0 z-30 bg-overlay xl:hidden"

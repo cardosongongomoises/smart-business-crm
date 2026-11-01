@@ -62,7 +62,7 @@ function InboxEmptyState({
     <EmptyState
       icon={Inbox}
       className="h-full"
-      title="Sin conversaciones todavía"
+      title="Sem conversas ainda"
       description={emptyInboxDescription(channels.map((ch) => CHANNEL_LABEL[ch]))}
       action={
         !failed && (
@@ -73,7 +73,7 @@ function InboxEmptyState({
             onClick={() => void seed()}
           >
             <Sparkles className="h-4 w-4" strokeWidth={1.7} />
-            {seeding ? "Cargando demo…" : "Cargar datos de demostración"}
+            {seeding ? "A carregar demonstração…" : "Carregar dados de demonstração"}
           </Button>
         )
       }
@@ -199,7 +199,7 @@ export function ConversationList({
   visibleRef.current = visible.map((c) => c.id);
   const pestanas: { id: typeof filter; label: string; count: number }[] = [
     { id: "all", label: "Todas", count: filtrado.length },
-    { id: "unread", label: "No leídas", count: unreadCount },
+    { id: "unread", label: "Não lidas", count: unreadCount },
   ];
   const nFiltros = (stage !== "all" ? 1 : 0) + (soloPorVencer ? 1 : 0) + (soloAnuncios ? 1 : 0);
   function limpiarFiltros() {
@@ -232,8 +232,8 @@ export function ConversationList({
           <Search className="h-4 w-4 shrink-0 text-text-3" strokeWidth={1.7} />
           <input
             ref={inputRef}
-            placeholder="Buscar por nombre o teléfono…"
-            aria-label="Buscar conversación"
+            placeholder="Pesquisar por nome ou telefone…"
+            aria-label="Pesquisar conversa"
             defaultValue=""
             onChange={(e) => setQuery(e.target.value)}
             className="w-full bg-transparent text-[13px] outline-none placeholder:text-text-3"
@@ -241,7 +241,7 @@ export function ConversationList({
           {query && (
             <button
               onClick={clearQuery}
-              aria-label="Limpiar búsqueda"
+              aria-label="Limpar pesquisa"
               className="shrink-0 rounded-full p-0.5 text-text-3 hover:bg-accent hover:text-foreground"
             >
               <X className="h-3.5 w-3.5" strokeWidth={2} />
@@ -252,7 +252,7 @@ export function ConversationList({
       <div className="flex min-h-0 flex-1 flex-col bg-background lg:tarjeta lg:overflow-hidden">
       <header className="border-b px-4 pb-3 pt-3.5">
         <div className="flex items-center gap-2">
-          <h2 className="text-[17px] font-bold tracking-tight">Bandeja</h2>
+          <h2 className="text-[17px] font-bold tracking-tight">Caixa de entrada</h2>
           <span className="font-mono text-[12px] text-text-3">{conversations.length}</span>
           {multiChannel && (
             <div className="ml-auto flex items-center gap-1">
@@ -265,8 +265,8 @@ export function ConversationList({
                     aria-pressed={on}
                     title={
                       on
-                        ? "Ver todas las bandejas"
-                        : `Ver solo ${CHANNEL_LABEL[ch]}`
+                        ? "Ver todas as caixas"
+                        : `Ver apenas ${CHANNEL_LABEL[ch]}`
                     }
                     className={cn(
                       "flex items-center gap-1 rounded-full border py-[3px] pl-[5px] pr-2 text-[11.5px] font-medium transition-colors",
@@ -295,7 +295,7 @@ export function ConversationList({
           se ve abajo como etiquetas que se quitan con ✕. */}
       <div className="border-b px-4">
         <div className="flex items-center gap-4">
-          <div role="tablist" aria-label="Qué conversaciones ver" className="flex items-center gap-4">
+          <div role="tablist" aria-label="Quais conversas ver" className="flex items-center gap-4">
             {pestanas.map((f) => (
               <button
                 key={f.id}
@@ -334,7 +334,7 @@ export function ConversationList({
             {menuFiltros && (
               <div
                 role="dialog"
-                aria-label="Filtros de la bandeja"
+                aria-label="Filtros da caixa"
                 className="absolute right-0 top-full z-30 mt-1 w-[min(280px,calc(100vw-2rem))] space-y-3 rounded-xl border border-border-strong bg-popover p-3 text-popover-foreground shadow-xl"
               >
                 {stages.length > 0 && (
@@ -343,13 +343,13 @@ export function ConversationList({
                     <select
                       value={stage}
                       onChange={(e) => setStage(e.target.value)}
-                      aria-label="Filtrar por etapa del embudo"
+                      aria-label="Filtrar por etapa do funil"
                       className={cn(
                         "w-full rounded-md border border-border-strong bg-background px-2 py-1.5 text-[13px]",
                         FOCO_SEPARADO
                       )}
                     >
-                      <option value="all">Toda etapa</option>
+                      <option value="all">Todas as etapas</option>
                       {stages.map((s) => (
                         <option key={s} value={s}>
                           {s}
@@ -367,7 +367,7 @@ export function ConversationList({
                       onChange={(e) => setSoloPorVencer(e.target.checked)}
                       className="h-4 w-4 accent-[var(--accent)]"
                     />
-                    <span className="flex-1">Por vencer</span>
+                    <span className="flex-1">A expirar</span>
                     <span className="font-mono text-[11px] text-text-3">{venciendo.length}</span>
                   </label>
                 )}
@@ -379,12 +379,12 @@ export function ConversationList({
                       onChange={(e) => setSoloAnuncios(e.target.checked)}
                       className="h-4 w-4 accent-[var(--accent)]"
                     />
-                    <span className="flex-1">De anuncios</span>
+                    <span className="flex-1">De anúncios</span>
                     <span className="font-mono text-[11px] text-text-3">{deAnuncios.length}</span>
                   </label>
                 )}
                 {stages.length === 0 && venciendo.length === 0 && deAnuncios.length === 0 && nFiltros === 0 && (
-                  <p className="text-[13px] text-text-3">Todavía no hay nada por qué filtrar.</p>
+                  <p className="text-[13px] text-text-3">Ainda não há nada para filtrar.</p>
                 )}
                 {nFiltros > 0 && (
                   <button
@@ -392,7 +392,7 @@ export function ConversationList({
                     onClick={limpiarFiltros}
                     className="block w-full text-right text-[12.5px] font-semibold text-brand-ink hover:underline"
                   >
-                    Limpiar filtros
+                    Limpar filtros
                   </button>
                 )}
               </div>
@@ -406,10 +406,10 @@ export function ConversationList({
               <FiltroPuesto texto={`Etapa: ${stage}`} onQuitar={() => setStage("all")} />
             )}
             {soloPorVencer && (
-              <FiltroPuesto texto="Por vencer" onQuitar={() => setSoloPorVencer(false)} />
+              <FiltroPuesto texto="A expirar" onQuitar={() => setSoloPorVencer(false)} />
             )}
             {soloAnuncios && (
-              <FiltroPuesto texto="De anuncios" onQuitar={() => setSoloAnuncios(false)} />
+              <FiltroPuesto texto="De anúncios" onQuitar={() => setSoloAnuncios(false)} />
             )}
           </div>
         )}
@@ -417,7 +417,7 @@ export function ConversationList({
 
       <div className="flex-1 overflow-y-auto">
         {loading ? (
-          <p className="p-6 text-center text-xs text-text-3">Cargando…</p>
+          <p className="p-6 text-center text-xs text-text-3">A carregar…</p>
         ) : conversations.length === 0 ? (
           <InboxEmptyState onSeeded={onSeeded} channels={channels} />
         ) : visible.length === 0 ? (
@@ -428,8 +428,8 @@ export function ConversationList({
             filter === "all" &&
             nFiltros === 0 &&
             !conversations.some((c) => c.channel === inbox)
-              ? `Nadie ha escrito por ${CHANNEL_LABEL[inbox]} todavía.`
-              : "Sin resultados para este filtro."}
+              ? `Ainda ninguém escreveu por ${CHANNEL_LABEL[inbox]}.`
+              : "Sem resultados para este filtro."}
           </p>
         ) : (
           <ul>
@@ -488,7 +488,7 @@ export function ConversationList({
                             const borrador = leerBorrador("responder", c.id);
                             return borrador ? (
                               <>
-                                <span className="font-semibold text-brand-ink">Borrador:</span>{" "}
+                                <span className="font-semibold text-brand-ink">Rascunho:</span>{" "}
                                 {borrador.replace(/\s+/g, " ")}
                               </>
                             ) : (
@@ -527,7 +527,7 @@ export function ConversationList({
                         {c.handoffAt && (
                           <span className="inline-flex items-center gap-1 rounded-full border border-warning-soft bg-warning-tint px-2 py-0.5 text-[11px] text-warning-text">
                             <UserRound className="h-3 w-3" strokeWidth={1.7} />
-                            Atención humana
+                            Atenção humana
                           </span>
                         )}
                         {c.anuncio && (
@@ -564,7 +564,7 @@ function FiltroPuesto({ texto, onQuitar }: { texto: string; onQuitar: () => void
       <button
         type="button"
         onClick={onQuitar}
-        aria-label={`Quitar filtro ${texto}`}
+        aria-label={`Remover filtro ${texto}`}
         className="rounded-full p-0.5 hover:bg-brand-soft"
       >
         <X className="h-3 w-3" strokeWidth={2.2} />

@@ -55,7 +55,7 @@ export function OnboardingClient({
         error?: { message?: string };
       } | null;
       setError(
-        data?.error?.message ?? "No pudimos encender el agente. Inténtalo de nuevo."
+        data?.error?.message ?? "Não foi possível activar o agente. Tente novamente."
       );
       setBusy(false);
       return;
@@ -69,23 +69,23 @@ export function OnboardingClient({
       <div className="mx-auto max-w-3xl space-y-6 p-4 sm:p-8">
         <header>
           <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            Guía de inicio
+            Guia de início
           </p>
           <h1 className="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">
-            Deja listo tu CRM en {total} pasos
+            Prepare o seu CRM em {total} passos
           </h1>
           <p className="mt-2 text-muted-foreground">
-            Hazlos en orden: cada botón te lleva a la pantalla que toca. Al
-            volver aquí verás tu avance.
+            Siga a ordem indicada: cada botão encaminha-o para a secção correspondente. Ao
+            regressar verá o seu progresso.
           </p>
         </header>
 
-        <div aria-label="Avance">
+        <div aria-label="Progresso">
           <div className="flex items-center justify-between text-sm">
             <span className="font-medium">
-              {done} de {total} listos
+              {done} de {total} concluídos
             </span>
-            {guide.complete && <span className="text-success-text">¡Completo!</span>}
+            {guide.complete && <span className="text-success-text">Concluído!</span>}
           </div>
           <div className="mt-2 h-2 overflow-hidden rounded-full bg-muted">
             <div
@@ -125,7 +125,7 @@ export function OnboardingClient({
                   <h2 className="flex flex-wrap items-center gap-x-2 gap-y-1 font-semibold">
                     {step.title}
                     {step.optional && <Badge variant="secondary">Opcional</Badge>}
-                    <span className="sr-only">{step.done ? " (listo)" : " (pendiente)"}</span>
+                    <span className="sr-only">{step.done ? " (concluído)" : " (pendente)"}</span>
                   </h2>
                   <p className="mt-1 text-sm text-muted-foreground">{step.description}</p>
                   {!step.done && step.hint && (
@@ -160,27 +160,27 @@ export function OnboardingClient({
             <>
               <h2 className="font-semibold">
                 {agentReady && agentName
-                  ? `${agentName} ya está contestando`
-                  : "Tu agente ya está contestando"}
+                  ? `${agentName} já está a responder`
+                  : "O seu agente já está a responder"}
               </h2>
               <p className="mt-1 text-sm text-muted-foreground">
-                El agente está encendido y atiende a tus clientes. Puedes
-                apagarlo cuando quieras desde Agente.
+                O agente está activo e atende os seus clientes. Pode
+                desactivá-lo quando quiser em Agente.
               </p>
               <Link href="/inbox" className={cn(buttonVariants({ size: "sm" }), "mt-3")}>
-                Ir a la Bandeja <ArrowRight className="h-4 w-4" />
+                Ir para a Caixa de entrada <ArrowRight className="h-4 w-4" />
               </Link>
             </>
           ) : guide.complete && guide.brainConnected ? (
             <>
-              <h2 className="font-semibold">¡Todo listo! Enciende a {agente}</h2>
+              <h2 className="font-semibold">Tudo pronto! Ligue o {agente}</h2>
               <p className="mt-1 text-sm text-muted-foreground">
-                Desde ese momento contestará a tus clientes. Puedes apagarlo
-                cuando quieras desde Agente.
+                A partir desse momento responderá aos seus clientes. Pode desligá-lo
+                quando quiser em Agente.
               </p>
               <Button className="mt-3" disabled={busy} onClick={() => void encender()}>
                 <Power className="h-4 w-4" />
-                {busy ? "Encendiendo…" : `Encender a ${agente}`}
+                {busy ? "A ligar…" : `Ligar ${agente}`}
               </Button>
               {error && (
                 <p role="alert" className="mt-2 text-sm text-destructive">
@@ -192,15 +192,15 @@ export function OnboardingClient({
             <>
               <h2 className="flex items-center gap-2 font-semibold">
                 <Inbox className="h-4 w-4 text-muted-foreground" />
-                Listo: Vocero funciona como bandeja manual
+                Pronto: O CRM funciona como caixa de entrada manual
               </h2>
               <p className="mt-1 text-sm text-muted-foreground">
-                Los mensajes llegan a la Bandeja y contestas tú. Para que un
-                agente conteste, conéctalo: después lo enciendes aquí.
+                As mensagens chegam à Caixa de entrada e responde você. Para que um
+                agente responda, ligue-o: depois pode activá-lo aqui.
               </p>
               <div className="mt-3 flex flex-wrap gap-2">
                 <Link href="/inbox" className={buttonVariants({ size: "sm" })}>
-                  Ir a la Bandeja <ArrowRight className="h-4 w-4" />
+                  Ir para a Caixa de entrada <ArrowRight className="h-4 w-4" />
                 </Link>
                 {guiaDelPar && (
                   <a
@@ -209,7 +209,7 @@ export function OnboardingClient({
                     rel="noreferrer"
                     className={buttonVariants({ size: "sm", variant: "outline" })}
                   >
-                    Cómo conectar tu agente <ArrowUpRight className="h-4 w-4" />
+                    Como ligar o seu agente <ArrowUpRight className="h-4 w-4" />
                   </a>
                 )}
               </div>
@@ -218,13 +218,13 @@ export function OnboardingClient({
             <>
               <h2 className="flex items-center gap-2 font-semibold">
                 <Power className="h-4 w-4 text-muted-foreground" />
-                Al final: encender a {agente}
+                No final: ligar o {agente}
               </h2>
               <p className="mt-1 text-sm text-muted-foreground">
-                Tu agente empieza apagado: mientras no lo enciendas no le
-                contesta a nadie y los mensajes que lleguen los atiendes tú desde
-                la Bandeja. Con los pasos listos y tu agente conectado, aquí
-                aparece el botón para encenderlo.
+                O seu agente começa desligado: enquanto não o ligar não responde
+                a ninguém e as mensagens que chegarem são atendidas por si na
+                Caixa de entrada. Com os passos concluídos e o agente ligado, aqui
+                aparece o botão para o activar.
               </p>
             </>
           )}
@@ -242,7 +242,7 @@ function StepLink({ step, isCurrent }: { step: GuideStep; isCurrent: boolean }) 
     ? "text-sm text-muted-foreground underline underline-offset-2"
     : buttonVariants({ size: "sm", variant: isCurrent ? "default" : "outline" });
   const children = step.done ? (
-    "Listo · revisar"
+    "Concluído · rever"
   ) : (
     <>
       {step.cta}

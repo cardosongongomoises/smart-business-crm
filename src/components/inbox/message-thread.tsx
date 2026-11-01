@@ -77,7 +77,7 @@ function MediaBlock({ media }: { media: MessageMediaDto }) {
       <span className="flex items-start gap-1.5">
         <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-brand" strokeWidth={1.7} />
         <span className="min-w-0">
-          <span className="block font-medium">{loc.name ?? "Ubicación"}</span>
+          <span className="block font-medium">{loc.name ?? "Localização"}</span>
           {loc.address && (
             <span className="block text-[12.5px] text-text-3">{loc.address}</span>
           )}
@@ -122,7 +122,7 @@ function MediaBlock({ media }: { media: MessageMediaDto }) {
             );
           })
         ) : (
-          <span className="text-text-3">Contacto compartido</span>
+          <span className="text-text-3">Contacto partilhado</span>
         )}
       </span>
     );
@@ -134,15 +134,15 @@ function MediaBlock({ media }: { media: MessageMediaDto }) {
         <Paperclip className="h-3.5 w-3.5" strokeWidth={1.7} />
         {mediaLabel(media.kind)}
         {media.fetchStatus === "failed"
-          ? " — contenido no disponible"
-          : " — descargando…"}
+          ? " — conteúdo não disponível"
+          : " — a descarregar…"}
       </span>
     );
   }
 
   if (media.kind === "image" || media.kind === "sticker") {
     return (
-      <a href={src} target="_blank" rel="noreferrer noopener" title="Ver completa">
+      <a href={src} target="_blank" rel="noreferrer noopener" title="Ver imagem completa">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={src}
@@ -191,9 +191,9 @@ function dayLabel(iso: string): string {
   const d = new Date(iso);
   const today = new Date();
   const yesterday = new Date(today.getTime() - 86400000);
-  if (d.toDateString() === today.toDateString()) return "Hoy";
-  if (d.toDateString() === yesterday.toDateString()) return "Ayer";
-  return d.toLocaleDateString("es-MX", { day: "numeric", month: "long" });
+  if (d.toDateString() === today.toDateString()) return "Hoje";
+  if (d.toDateString() === yesterday.toDateString()) return "Ontem";
+  return d.toLocaleDateString("pt-PT", { day: "numeric", month: "long" });
 }
 
 /**
@@ -211,14 +211,14 @@ function NotaInterna({ nota, onBorrar }: { nota: NotaDto; onBorrar?: (n: NotaDto
         <Lock className="h-3 w-3" strokeWidth={2} aria-hidden />
         <span>Nota interna</span>
         <span className="font-normal opacity-80">
-          · {nota.autor?.nombre ?? "Alguien del equipo"} · {bubbleTime(nota.createdAt)}
+          · {nota.autor?.nombre ?? "Alguém da equipa"} · {bubbleTime(nota.createdAt)}
         </span>
         {nota.puedeBorrar && onBorrar && (
           <button
             type="button"
             onClick={() => onBorrar(nota)}
-            aria-label="Borrar nota interna"
-            title="Borrar nota"
+            aria-label="Eliminar nota interna"
+            title="Eliminar nota"
             className="ml-auto rounded p-0.5 opacity-70 hover:bg-warning-soft hover:opacity-100"
           >
             <Trash2 className="h-3.5 w-3.5" strokeWidth={1.8} />
@@ -361,7 +361,7 @@ type Intercalado =
   | ({ clase: "evento" } & EventoHiloDto);
 
 function bubbleTime(iso: string): string {
-  return new Date(iso).toLocaleTimeString("es-MX", {
+  return new Date(iso).toLocaleTimeString("pt-PT", {
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
@@ -479,7 +479,7 @@ export function MessageThread({
                 }
               : undefined
           }
-          onCopied={(ok) => setNotice(ok ? "Texto copiado" : "No se pudo copiar el texto")}
+          onCopied={(ok) => setNotice(ok ? "Texto copiado" : "Não foi possível copiar o texto")}
         />
       )}
       {(() => {
@@ -581,7 +581,7 @@ export function MessageThread({
                   {m.aiGenerated && (
                     <span
                       className="inline-flex items-center gap-0.5 text-[10px] font-medium text-brand-ink"
-                      title="Respuesta generada por IA"
+                      title="Resposta gerada por IA"
                     >
                       <Sparkles className="h-3 w-3" strokeWidth={1.7} /> IA
                     </span>
@@ -589,9 +589,9 @@ export function MessageThread({
                   {m.origin === "manual" && (
                     <span
                       className="inline-flex items-center gap-0.5 text-[10px] font-medium text-text-3"
-                      title="Enviado a mano desde la app de WhatsApp Business"
+                      title="Enviado manualmente da app WhatsApp Business"
                     >
-                      <Smartphone className="h-3 w-3" strokeWidth={1.7} /> Celular
+                      <Smartphone className="h-3 w-3" strokeWidth={1.7} /> Telemóvel
                     </span>
                   )}
                   <span className="font-mono text-[10px] tracking-[0.04em] text-text-3">
@@ -608,8 +608,8 @@ export function MessageThread({
                       strokeWidth={1.8}
                     />
                     <span>
-                      <span className="font-semibold">No se entregó.</span>{" "}
-                      {m.error ?? "Meta no informó el motivo."}
+                      <span className="font-semibold">Não entregue.</span>{" "}
+                      {m.error ?? "A Meta não informou o motivo."}
                     </span>
                   </p>
                 )}
@@ -644,8 +644,8 @@ export function MessageThread({
                         setNotice(null);
                         setForwarding(m);
                       }}
-                      aria-label="Reenviar"
-                      title="Reenviar"
+                      aria-label="Reencaminhar"
+                      title="Reencaminhar"
                       className={ICONO_ACCION}
                     >
                       <Forward className="h-4 w-4" strokeWidth={1.7} />
@@ -731,12 +731,12 @@ function MenuMensaje({
     <div className="fixed inset-0 z-50 bg-overlay" onClick={onClose}>
       <div
         role="menu"
-        aria-label="Acciones del mensaje"
+        aria-label="Ações da mensagem"
         className="fixed inset-x-0 bottom-0 rounded-t-2xl border-t bg-card p-2 pb-[max(env(safe-area-inset-bottom),0.5rem)] text-card-foreground shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         {onReply && item("Responder", Reply, onReply)}
-        {onForward && item("Reenviar", Forward, onForward)}
+        {onForward && item("Reencaminhar", Forward, onForward)}
         {texto && item("Copiar texto", Copy, () => void copiar(texto))}
       </div>
     </div>

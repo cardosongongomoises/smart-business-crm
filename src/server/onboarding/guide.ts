@@ -64,42 +64,42 @@ export function guideFrom(status: OnboardingStatus): Guide {
   const steps: GuideStep[] = [
     {
       key: "agent",
-      title: "Configura tu agente",
+      title: "Configure o seu agente",
       description:
-        "Ponle nombre y cuéntale a qué se dedica tu negocio. Si quieres ver un ejemplo primero, carga la demo desde la Bandeja y cámbiala por tus datos.",
+        "Dê-lhe um nome e descreva a actividade da sua empresa. Se preferir ver um exemplo primeiro, carregue a demonstração a partir da Caixa de entrada e adapte com os seus dados.",
       done: ready(profile),
       href: "/agent",
-      cta: "Ir a Agente",
+      cta: "Ir para Agente",
       hint: ready(profile) ? null : (profile?.nextAction ?? null),
     },
     {
       key: "ai",
-      title: "Vincula tu proveedor de IA",
+      title: "Ligue o seu fornecedor de IA",
       description:
-        "Es la cuenta con la que tu agente piensa: OpenRouter o cualquier proveedor compatible con la API de OpenAI. La creas y la pagas tú; aquí solo pegas la llave y eliges el modelo.",
+        "É a conta através da qual o seu agente processa raciocínios: OpenRouter ou qualquer fornecedor compatível com a API da OpenAI. Apenas necessita de colar a chave de API e selecionar o modelo.",
       done: ready(ai),
       href: "/settings/ai",
-      cta: "Vincular proveedor",
+      cta: "Associar fornecedor",
       hint: ai?.problem ?? null,
     },
     {
       key: "whatsapp",
-      title: "Vincula tu número de WhatsApp",
+      title: "Ligue o seu número de WhatsApp",
       description:
-        "Conecta el número donde te escriben tus clientes. El CRM registra el webhook en Meta por ti al guardar.",
+        "Ligue o número de telefone onde os seus clientes entram em contacto.",
       done: ready(whatsapp),
       href: "/settings/whatsapp",
-      cta: "Conectar WhatsApp",
+      cta: "Ligar WhatsApp",
       hint: whatsapp?.problem ?? null,
     },
     {
       key: "brain",
-      title: "Conecta tu agente",
+      title: "Ligue o agente externo",
       description:
-        "Vocero no trae agente: contesta el que conectas al lado (Nea, o el tuyo). Sin agente, Vocero funciona como bandeja manual y contestas tú.",
+        "O CRM pode funcionar como caixa de entrada manual para respostas humanas, ou ligar a um agente autónomo externo.",
       done: ready(brain),
       href: GUIA_DEL_PAR,
-      cta: "Cómo conectarlo",
+      cta: "Como ligar",
       hint: ready(brain) ? null : (brain?.problem ?? brain?.nextAction ?? null),
       optional: true,
     },
@@ -109,9 +109,9 @@ export function guideFrom(status: OnboardingStatus): Guide {
   if (calendar && calendar.status !== "not_applicable") {
     steps.push({
       key: "calendar",
-      title: "Configura tu agenda",
+      title: "Configure a sua agenda",
       description:
-        "Define tus horarios y cómo se entrega la reunión para que tu agente pueda agendar por ti.",
+        "Defina os seus horários de atendimento para que o sistema possa gerir marcações.",
       done: ready(calendar),
       href: "/settings/calendar",
       cta: "Configurar agenda",

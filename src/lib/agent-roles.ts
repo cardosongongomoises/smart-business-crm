@@ -33,9 +33,9 @@ export type Herramienta = {
 export const HERRAMIENTAS: readonly Herramienta[] = [
   {
     clave: "ficha",
-    etiqueta: "Llenar la ficha",
+    etiqueta: "Preencher a ficha",
     descripcion:
-      "Anota lo que aprende del cliente en su ficha del CRM.",
+      "Regista o que descobre sobre o cliente na respetiva ficha do CRM.",
   },
   {
     // 038 — Solo hacia adelante y entre etapas abiertas: ganar o perder un
@@ -43,30 +43,30 @@ export const HERRAMIENTAS: readonly Herramienta[] = [
     clave: "etapa",
     etiqueta: "Mover de etapa",
     descripcion:
-      "Avanza al lead en el pipeline cuando la conversación lo amerita. Nunca lo da por ganado ni por perdido.",
+      "Avança o lead no funil quando a conversa o justifica. Nunca o dá como ganho nem como perdido.",
   },
   {
     clave: "agendar",
-    etiqueta: "Agendar citas",
-    descripcion: "Ofrece horarios reales de la agenda y reserva el que elija el cliente.",
+    etiqueta: "Agendar marcações",
+    descripcion: "Apresenta horários reais da agenda e reserva o que o cliente escolher.",
     agenda: true,
   },
   {
     clave: "reprogramar",
-    etiqueta: "Reprogramar citas",
-    descripcion: "Mueve una cita ya reservada a otro horario ofrecido.",
+    etiqueta: "Remarcar marcações",
+    descripcion: "Move uma marcação já agendada para outro horário disponível.",
     agenda: true,
   },
   {
     clave: "salida",
-    etiqueta: "Salida digna",
-    descripcion: "Despide con amabilidad a quien no califica, con recursos si los hay.",
+    etiqueta: "Finalização cortês",
+    descripcion: "Despede-se com simpatia de quem não qualifica, sugerindo recursos quando existirem.",
   },
   {
     clave: "escalar",
-    etiqueta: "Pasar a una persona",
+    etiqueta: "Transferir para uma pessoa",
     descripcion:
-      "Cuando el cliente lo pide, ante hostilidad o lo que no sabe. Siempre encendida.",
+      "Quando o cliente pede, perante hostilidade ou dúvidas que não sabe responder. Sempre ativa.",
     fija: true,
   },
 ];
@@ -109,18 +109,18 @@ export type Rol = {
 export const ROLES: Record<ClaveRol, Rol> = {
   calificador: {
     clave: "calificador",
-    etiqueta: "Calificador",
+    etiqueta: "Qualificador",
     descripcion:
-      "Atiende a quien escribe, entiende qué necesita, lo califica y agenda con el equipo cuando corresponde.",
+      "Atende quem contacta, compreende as necessidades, qualifica o lead e agenda com a equipa quando aplicável.",
     instrucciones: [
-      "Atiendes a las personas que le escriben al negocio. Tu trabajo:",
-      "1. Entender qué necesita cada persona, con una pregunta a la vez.",
-      "2. Responder con lo que dice el conocimiento del negocio; si algo no está ahí, no lo inventes: ofrece pasarle la duda al equipo.",
-      "3. Calificarla: anota en la ficha lo que vas sabiendo (qué busca, para cuándo, presupuesto si lo dice).",
-      "4. Si califica, ofrécele una cita con el equipo. Si no, despídela con amabilidad y, si hay recursos, compártelos.",
+      "Atende as pessoas que escrevem para o negócio. O seu trabalho:",
+      "1. Compreender o que cada pessoa necessita, fazendo uma pergunta de cada vez.",
+      "2. Responder com base no conhecimento do negócio; se algo não estiver indicado, não invente: ofereça transferir a dúvida para a equipa.",
+      "3. Qualificar o contacto: anote na ficha os dados recolhidos (o que procura, para quando, orçamento se indicar).",
+      "4. Se qualificar, ofereça uma marcação com a equipa. Se não, despeça-se com simpatia e partilhe recursos caso existam.",
     ].join("\n"),
     reglasDeEscalado:
-      "Pasa la conversación a una persona si el cliente lo pide, si se pone hostil, si es una queja o un problema con una compra, o si pregunta algo que el conocimiento no cubre y le importa.",
+      "Transfira a conversa para uma pessoa se o cliente o solicitar, se demonstrar hostilidade, em caso de reclamação sobre uma compra, ou se questionar algo relevante que a base de conhecimento não cubra.",
     herramientas: CLAVES_HERRAMIENTA,
     personas: [
       "comprador_decidido",

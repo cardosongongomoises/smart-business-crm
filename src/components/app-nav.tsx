@@ -232,9 +232,9 @@ export function AppNav({
         setSonido(v);
         guardarSonido(v);
       }}
-      aria-label={sonido ? "Sonido de mensajes: activado" : "Sonido de mensajes: silenciado"}
+      aria-label={sonido ? "Som de mensagens: ativado" : "Som de mensagens: silenciado"}
       aria-pressed={sonido}
-      title={sonido ? "Silenciar el sonido de mensajes nuevos" : "Activar el sonido de mensajes nuevos"}
+      title={sonido ? "Silenciar o som de novas mensagens" : "Ativar o som de novas mensagens"}
       className="rounded p-1 text-text-3 transition-colors hover:text-foreground"
     >
       {sonido ? (
@@ -295,7 +295,7 @@ export function AppNav({
             alcanzable con el pulgar. */}
         <button
           onClick={onClose}
-          aria-label="Cerrar el menú"
+          aria-label="Fechar o menu"
           className="-ml-1 mt-0.5 rounded-md p-1.5 text-text-3 hover:bg-accent hover:text-foreground lg:hidden"
         >
           <X className="h-[18px] w-[18px]" strokeWidth={1.8} />
@@ -309,7 +309,7 @@ export function AppNav({
       {/* Grupos con encabezado pequeño, sin letras ni colapsables: se leen
           de arriba abajo como una lista de lo que hay. Un grupo sin título
           (Resultados) es una entrada suelta separada por el espacio. */}
-      <nav className="flex flex-col gap-4" aria-label="Secciones">
+      <nav className="flex flex-col gap-4" aria-label="Secções">
         {groups.map((group, i) => (
           <div key={group.title ?? i} className="flex flex-col gap-0.5">
             {group.title && (
@@ -339,15 +339,15 @@ export function AppNav({
         <span className="min-w-0 flex-1">
           <span className="block truncate text-[13px] font-semibold">{userName}</span>
           <span className="block truncate text-[11px] text-text-3">
-            {role === "owner" ? "Propietario" : "Equipo"} · En línea
+            {role === "owner" ? "Proprietário" : "Equipa"} · Online
           </span>
         </span>
         <span className="flex shrink-0 items-center">
           {campana}
           <ThemeToggle initial={apariencia} />
           <button
-            aria-label="Cerrar sesión"
-            title="Cerrar sesión"
+            aria-label="Terminar sessão"
+            title="Terminar sessão"
             className="rounded p-1 text-text-3 hover:text-foreground"
             onClick={() => void salir()}
           >
@@ -457,7 +457,7 @@ function Riel({
 
   return (
     <nav
-      aria-label="Secciones"
+      aria-label="Secções"
       className="tarjeta hidden w-[76px] shrink-0 flex-col items-center py-4 lg:flex"
     >
       <Link href="/inbox" aria-label={branding.name} title={branding.name} className="rounded-[14px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
@@ -478,7 +478,7 @@ function Riel({
           <button
             type="button"
             onClick={() => setCuenta((v) => !v)}
-            aria-label="Tu cuenta"
+            aria-label="A sua conta"
             aria-expanded={cuenta}
             aria-haspopup="dialog"
             title={userName}
@@ -489,13 +489,13 @@ function Riel({
           {cuenta && (
             <div
               role="dialog"
-              aria-label="Tu cuenta"
+              aria-label="A sua conta"
               className="absolute bottom-0 left-full z-50 ml-3 w-64 space-y-1 rounded-2xl border bg-popover p-2 text-popover-foreground shadow-pop"
             >
               <div className="px-2.5 pb-1.5 pt-1">
                 <p className="truncate text-[14px] font-semibold">{userName}</p>
                 <p className="text-[12px] text-text-3">
-                  {role === "owner" ? "Propietario" : "Equipo"} · En línea
+                  {role === "owner" ? "Proprietário" : "Equipa"} · Online
                 </p>
               </div>
               <div className="flex items-center justify-between rounded-lg px-2.5 py-1.5 text-[13.5px] text-text-2">
@@ -510,7 +510,7 @@ function Riel({
                 className={cn(navItemClass(false), "w-full")}
               >
                 <LogOut className="h-5 w-5 shrink-0 text-text-3" strokeWidth={1.8} aria-hidden />
-                Cerrar sesión
+                Terminar sessão
               </button>
               <p className="px-2.5 pb-1 pt-1.5 font-mono text-[10.5px] tracking-[0.06em] text-text-2" title={versionTitulo}>
                 {version}

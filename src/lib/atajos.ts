@@ -13,14 +13,14 @@ type Tecla = {
 };
 
 /** Para la ayuda (D2): qué hace cada atajo y dónde sirve. */
-export const ATAJOS: { teclas: string[]; que: string; donde: "Cualquier pantalla" | "Bandeja" }[] = [
-  { teclas: ["Ctrl", "K"], que: "Buscar una pantalla o una conversación", donde: "Cualquier pantalla" },
-  { teclas: ["?"], que: "Ver estos atajos", donde: "Cualquier pantalla" },
-  { teclas: ["Alt", "J"], que: "Siguiente conversación de la lista", donde: "Bandeja" },
-  { teclas: ["Alt", "K"], que: "Conversación anterior", donde: "Bandeja" },
-  { teclas: ["/"], que: "Ir al buscador de la Bandeja", donde: "Bandeja" },
-  { teclas: ["Alt", "R"], que: "Escribir una respuesta", donde: "Bandeja" },
-  { teclas: ["Alt", "N"], que: "Escribir una nota interna", donde: "Bandeja" },
+export const ATAJOS: { teclas: string[]; que: string; donde: "Qualquer ecrã" | "Caixa de entrada" }[] = [
+  { teclas: ["Ctrl", "K"], que: "Pesquisar um ecrã ou conversa", donde: "Qualquer ecrã" },
+  { teclas: ["?"], que: "Ver estes atalhos", donde: "Qualquer ecrã" },
+  { teclas: ["Alt", "J"], que: "Conversa seguinte da lista", donde: "Caixa de entrada" },
+  { teclas: ["Alt", "K"], que: "Conversa anterior", donde: "Caixa de entrada" },
+  { teclas: ["/"], que: "Ir para a pesquisa da Caixa de entrada", donde: "Caixa de entrada" },
+  { teclas: ["Alt", "R"], que: "Escrever uma resposta", donde: "Caixa de entrada" },
+  { teclas: ["Alt", "N"], que: "Escrever uma nota interna", donde: "Caixa de entrada" },
 ];
 
 /** D4 — Un campo donde se escribe: ahí «?» y «/» son letras, no atajos. */

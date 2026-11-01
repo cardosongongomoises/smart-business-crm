@@ -61,7 +61,7 @@ export function TeamClient() {
       const data = (await res?.json().catch(() => null)) as {
         error?: { message?: string };
       } | null;
-      setError(data?.error?.message ?? "No se pudo crear la cuenta");
+      setError(data?.error?.message ?? "Não foi possível criar a conta");
       return;
     }
     setCreated({ email, password: tempPassword });
@@ -75,16 +75,16 @@ export function TeamClient() {
     <div className="max-w-2xl space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle>Crear cuenta de equipo</CardTitle>
+          <CardTitle>Criar conta de equipa</CardTitle>
           <CardDescription>
-            Sin correos ni invitaciones: comparte tú mismo la contraseña
-            temporal con tu compañero (se muestra UNA sola vez).
+            Sem e-mails nem convites: partilhe você mesmo a palavra-passe
+            temporária com o seu colega (é mostrada UMA única vez).
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid gap-4 md:grid-cols-2">
             <div className="space-y-1.5">
-              <Label htmlFor="team-name">Nombre</Label>
+              <Label htmlFor="team-name">Nome</Label>
               <Input
                 id="team-name"
                 value={name}
@@ -92,7 +92,7 @@ export function TeamClient() {
               />
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="team-email">Correo</Label>
+              <Label htmlFor="team-email">E-mail</Label>
               <Input
                 id="team-email"
                 type="email"
@@ -102,7 +102,7 @@ export function TeamClient() {
             </div>
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="team-password">Contraseña temporal</Label>
+            <Label htmlFor="team-password">Palavra-passe temporária</Label>
             <div className="flex gap-2">
               <Input
                 id="team-password"
@@ -111,18 +111,18 @@ export function TeamClient() {
                 placeholder="mínimo 8 caracteres"
               />
               <Button variant="outline" onClick={generatePassword}>
-                Generar
+                Gerar
               </Button>
             </div>
           </div>
           {error && <p className="text-sm text-destructive">{error}</p>}
           {created && (
             <div className="rounded-md border border-success-soft bg-success-tint p-3 text-sm">
-              <p className="font-medium text-success-text">Cuenta creada ✓</p>
+              <p className="font-medium text-success-text">Conta criada ✓</p>
               <p className="mt-1 text-success-text opacity-90">
-                Comparte estos datos ahora (no se volverán a mostrar):
+                Partilhe estes dados agora (não voltarão a ser mostrados):
                 <br />
-                <code>{created.email}</code> · contraseña{" "}
+                <code>{created.email}</code> · palavra-passe{" "}
                 <code>{created.password}</code>
               </p>
             </div>
@@ -134,14 +134,14 @@ export function TeamClient() {
             onClick={() => void create()}
           >
             <UserPlus className="h-4 w-4" />
-            {saving ? "Creando…" : "Crear cuenta"}
+            {saving ? "A criar…" : "Criar conta"}
           </Button>
         </CardContent>
       </Card>
 
       <div className="space-y-2">
         <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-          Miembros
+          Membros
         </p>
         {members.map((m) => (
           <div
@@ -154,7 +154,7 @@ export function TeamClient() {
               <p className="text-xs text-muted-foreground">{m.email}</p>
             </div>
             <Badge variant={m.role === "owner" ? "default" : "secondary"}>
-              {m.role === "owner" ? "Propietario" : "Miembro"}
+              {m.role === "owner" ? "Proprietário" : "Membro"}
             </Badge>
           </div>
         ))}

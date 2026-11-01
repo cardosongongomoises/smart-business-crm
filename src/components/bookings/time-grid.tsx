@@ -120,7 +120,7 @@ export function TimeGrid({
               type="button"
               onClick={() => onOpenDay(day)}
               disabled={!multi}
-              aria-label={`Ver el ${h.weekday} ${h.day} en la vista de día`}
+              aria-label={`Ver ${h.weekday} ${h.day} na vista de dia`}
               className="sticky top-0 z-30 flex flex-col items-center gap-0.5 border-b border-l bg-card py-2 transition-colors enabled:hover:bg-row-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand-soft"
             >
               <span className={cn("kicker", isToday && "text-brand-text")}>{h.weekday}</span>
@@ -283,13 +283,13 @@ function EventBlock({
     >
       <span className="flex min-w-0 max-w-full items-center gap-1 font-semibold">
         {b.source === "ai" && b.kind === "session" && (
-          <Sparkles aria-label="Agendó la IA" className="h-3 w-3 shrink-0" strokeWidth={2} />
+          <Sparkles aria-label="Marcado pela IA" className="h-3 w-3 shrink-0" strokeWidth={2} />
         )}
         {hasDeliveryIssue(b) && (
-          <AlertTriangle aria-label="Sin enlace de la reunión" className="h-3 w-3 shrink-0" strokeWidth={2} />
+          <AlertTriangle aria-label="Sem ligação de reunião" className="h-3 w-3 shrink-0" strokeWidth={2} />
         )}
         <span className="truncate">
-          {b.isTest && "Prueba · "}
+          {b.isTest && "Teste · "}
           {title}
         </span>
       </span>

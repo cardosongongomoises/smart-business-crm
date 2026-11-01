@@ -70,7 +70,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const producto = productName([...enabledChannels()]);
   return {
     title: `${branding.name} — ${producto}`,
-    description: `${producto} con agente de IA y Laboratorio de auto-evaluación`,
+    description: `${producto} com agente de IA e Laboratório de auto-avaliação`,
     // El `?v=` cambia con la marca: los navegadores guardan el favicon con una
     // insistencia notable y, sin eso, el logo nuevo tarda días en aparecer.
     icons: {
@@ -98,7 +98,7 @@ export default async function RootLayout({
   }));
   return (
     <html
-      lang="es"
+      lang="pt"
       className={`${urbanist.variable} ${archivo.variable} ${inter.variable} ${plexSans.variable} ${instrumentSerif.variable} ${plexMono.variable}`}
       // La preferencia siempre es explícita: viaja resuelta en el HTML del
       // servidor, así que no hay divergencia con el cliente ni parpadeo.

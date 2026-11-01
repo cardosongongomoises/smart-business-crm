@@ -46,36 +46,29 @@ export function BrainStatusCard({
   return (
     <Card data-brain-card data-warning={status.warning ?? "ninguno"}>
       <CardHeader className="pb-4">
-        <CardTitle>Quién responde a tus clientes</CardTitle>
+        <CardTitle>Quem responde aos seus clientes</CardTitle>
         <CardDescription>
-          Vocero no trae agente: contesta el que conectas al lado (Nea, o el
-          tuyo), y solo con el interruptor de arriba encendido. Sin agente,
-          contestas tú desde la bandeja.
+          O sistema não inclui um agente autónomo nativo: responde o agente que ligar externamente (Nea ou outro), e apenas quando o interruptor acima estiver ligado. Sem agente, responde você a partir da caixa de entrada.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">
         {status.warning === "sin_cerebro" && (
-          <Callout tone="info" icon={Info} title="Sin agente conectado">
-            Vocero funciona como bandeja manual: tus clientes reciben lo que
-            contestes tú. Para que un agente conteste, levántalo al lado del CRM
-            y pon <Env>BRAIN_DISPATCH_URL</Env> y <Env>BOT_API_KEY</Env> en el
-            entorno.{" "}
+          <Callout tone="info" icon={Info} title="Sem agente ligado">
+            O CRM funciona como caixa de entrada manual: os seus clientes recebem o que você responder. Para que um agente responda, inicie-o e configure <Env>BRAIN_DISPATCH_URL</Env> e <Env>BOT_API_KEY</Env> no ambiente.{" "}
             <a
               href={GUIA_DEL_PAR_URL}
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center gap-0.5 whitespace-nowrap font-medium text-brand-text underline underline-offset-2 hover:text-brand"
             >
-              Cómo conectarlo
+              Como ligar
               <ArrowUpRight aria-hidden className="h-3.5 w-3.5" strokeWidth={1.8} />
             </a>
           </Callout>
         )}
         {status.warning === "apagado" && (
-          <Callout tone="warning" icon={AlertTriangle} title="Tu agente está conectado pero apagado">
-            Enciéndelo con el interruptor de arriba para que conteste. Mientras
-            tanto nadie contesta en automático: los mensajes esperan en la
-            bandeja.
+          <Callout tone="warning" icon={AlertTriangle} title="O seu agente está ligado mas desactivado">
+            Ligue-o com o interruptor acima para começar a responder. Entretanto ninguém responde de forma automática: as mensagens aguardam na caixa de entrada.
           </Callout>
         )}
 
@@ -83,32 +76,31 @@ export function BrainStatusCard({
           <BrainRow
             id="external"
             icon={Cable}
-            label="Tu agente"
-            hint="El cerebro que contesta (Nea u otro), por la API del CRM."
+            label="O seu agente"
+            hint="O cérebro que responde via API do CRM."
             view={externalView(status, now)}
           />
           {(status.dispatch.host !== null || status.dispatch.problem !== null) && (
             <BrainRow
               id="dispatch"
               icon={Send}
-              label="Despacho al agente"
-              hint="El CRM le pasa cada turno; el webhook no sale de aquí."
+              label="Encaminhamento para o agente"
+              hint="O CRM passa cada turno ao agente."
               view={dispatchView(status.dispatch, now)}
             />
           )}
           <BrainRow
             id="switch"
             icon={Power}
-            label="Interruptor del agente"
-            hint="Encendido, el CRM le despacha los mensajes a tu agente."
+            label="Interruptor do agente"
+            hint="Ligado, o CRM encaminha as mensagens para o agente."
             view={switchView(status)}
           />
         </dl>
 
         {lastSeenAt && (
           <p className="text-[11px] text-text-3">
-            La última llamada de tu agente se cuenta desde el último arranque del
-            CRM.
+            A última chamada do seu agente é contabilizada desde o último arranque do CRM.
           </p>
         )}
       </CardContent>
@@ -117,52 +109,52 @@ export function BrainStatusCard({
 }
 
 function switchView(s: BrainStatusDto): RowView {
-  const headline = s.enabled ? "Encendido" : "Apagado";
+  const headline = s.enabled ? "Ligado" : "Desligado";
   if (!s.dispatch.active) {
     return {
       tone: "off",
       headline,
-      detail: "Sin agente conectado no hay a quién despacharle: se enciende cuando lo conectes.",
+      detail: "Sem agente ligado não há para quem encaminhar: activa-se quando o ligar.",
     };
   }
   if (!s.enabled) {
-    return { tone: "warn", headline, detail: "El CRM no le pasa nada a tu agente: nadie contesta en automático." };
+    return { tone: "warn", headline, detail: "O CRM não envia mensagens ao agente: ninguém responde de forma automática." };
   }
   if (externalDown(s)) {
-    return { tone: "warn", headline, detail: "Pero tu agente no está en línea: no contesta hasta que vuelva." };
+    return { tone: "warn", headline, detail: "O seu agente não está online: não responde até voltar a ficar disponível." };
   }
-  return { tone: "ok", headline, detail: "El CRM le pasa cada mensaje a tu agente." };
+  return { tone: "ok", headline, detail: "O CRM encaminha cada mensagem para o seu agente." };
 }
 
 function externalView(s: BrainStatusDto, now: number): RowView {
   const { keyConfigured, lastSeenAt, active, health } = s.external;
-  const llamada = lastSeenAt
-    ? `última llamada ${haceCuanto(lastSeenAt, now)}`
-    : "sin llamadas desde el último arranque";
+  const chamada = lastSeenAt
+    ? `última chamada ${haceCuanto(lastSeenAt, now)}`
+    : "sem chamadas desde o último arranque";
 
   if (health?.reachable) {
     const name = externalBrainName(s);
     const parts = [
       name,
-      "en línea",
+      "online",
       health.version && versionLabel(health.version),
       health.mode && `modo ${health.mode}`,
       health.relay && relayLabel(health.relay),
     ].filter(Boolean);
     return keyConfigured
-      ? { tone: "ok", headline: capitalize(parts.join(" · ")), detail: `${capitalize(llamada)}.` }
+      ? { tone: "ok", headline: capitalize(parts.join(" · ")), detail: `${capitalize(chamada)}.` }
       : {
           tone: "warn",
           headline: capitalize(parts.join(" · ")),
-          detail: "Al CRM le falta BOT_API_KEY: no puede contestar por la API.",
+          detail: "Falta BOT_API_KEY no CRM: não é possível responder pela API.",
         };
   }
   if (health?.problem === "config") {
     return {
       tone: "warn",
-      headline: "No se puede consultar su estado",
-      detail: `BRAIN_HEALTH_URL no es una URL http:// o https:// válida (p. ej. http://nea:8000/health): corrígela y vuelve a desplegar el CRM.${
-        keyConfigured ? ` ${capitalize(llamada)}.` : ""
+      headline: "Não é possível consultar o estado",
+      detail: `BRAIN_HEALTH_URL não é um URL http:// ou https:// válido: corrija-o e volte a publicar o CRM.${
+        keyConfigured ? ` ${capitalize(chamada)}.` : ""
       }`,
     };
   }
@@ -170,51 +162,51 @@ function externalView(s: BrainStatusDto, now: number): RowView {
     const name = externalBrainName(s);
     return {
       tone: "warn",
-      headline: capitalize(`${name ? `${name} · ` : ""}no está en línea`),
+      headline: capitalize(`${name ? `${name} · ` : ""}não está online`),
       detail: `${health.host} ${problemLabel(health)}.${
-        keyConfigured ? ` ${capitalize(llamada)}.` : ""
+        keyConfigured ? ` ${capitalize(chamada)}.` : ""
       }`,
     };
   }
   if (keyConfigured) {
-    return { tone: active ? "ok" : "off", headline: `Llave configurada · ${llamada}`, detail: null };
+    return { tone: active ? "ok" : "off", headline: `Chave configurada · ${chamada}`, detail: null };
   }
-  return { tone: "off", headline: "Sin agente conectado", detail: null };
+  return { tone: "off", headline: "Sem agente ligado", detail: null };
 }
 
 function dispatchView(d: BrainDispatchDto, now: number): RowView {
-  const mientras = "Mientras tanto nadie contesta en automático.";
+  const enquanto = "Entretanto ninguém responde de forma automática.";
   if (d.problem === "url") {
     return {
       tone: "warn",
-      headline: "No se puede despachar",
-      detail: `BRAIN_DISPATCH_URL no es una URL http:// o https:// válida, o lleva usuario y clave (p. ej. http://nea:8000/vocero/dispatch): corrígela y vuelve a desplegar el CRM. ${mientras}`,
+      headline: "Não é possível encaminhar",
+      detail: `BRAIN_DISPATCH_URL não é um URL http:// ou https:// válido: corrija-o e volte a publicar o CRM. ${enquanto}`,
     };
   }
   if (d.problem === "sin_llave") {
     return {
       tone: "warn",
-      headline: "No se puede despachar",
-      detail: `Falta BOT_API_KEY (mínimo 16 caracteres): con ella se firma cada turno y contesta el cerebro. ${mientras}`,
+      headline: "Não é possível encaminhar",
+      detail: `Falta a variável BOT_API_KEY (mínimo 16 caracteres): necessária para assinar cada turno. ${enquanto}`,
     };
   }
   const espera =
     d.pending > 0
-      ? ` ${d.pending === 1 ? "1 turno en espera" : `${d.pending} turnos en espera`}.`
+      ? ` ${d.pending === 1 ? "1 turno em espera" : `${d.pending} turnos em espera`}.`
       : "";
   if (d.lastFailure && despachoFallando(d)) {
     return {
       tone: "warn",
-      headline: `Activo · ${d.host} · el último turno no llegó`,
-      detail: `${capitalize(d.lastFailure.detail)} (${haceCuanto(d.lastFailure.at, now)}). Tras tres intentos fallidos, la conversación queda con una persona.${espera}`,
+      headline: `Activo · ${d.host} · o último turno não foi entregue`,
+      detail: `${capitalize(d.lastFailure.detail)} (${haceCuanto(d.lastFailure.at, now)}). Após três tentativas falhadas, a conversa é atribuída a uma pessoa.${espera}`,
     };
   }
   return {
     tone: "ok",
     headline: `Activo · ${d.host}`,
     detail: d.lastDeliveredAt
-      ? `Último turno entregado ${haceCuanto(d.lastDeliveredAt, now)}.${espera}`
-      : `Aún no se ha despachado ningún turno.${espera}`,
+      ? `Último turno entregue ${haceCuanto(d.lastDeliveredAt, now)}.${espera}`
+      : `Ainda não foi encaminhado nenhum turno.${espera}`,
   };
 }
 
@@ -224,9 +216,9 @@ function versionLabel(v: string): string {
 
 function relayLabel(r: BrainRelayDto): string | null {
   if (r.pendientes === null) return null;
-  const base = r.pendientes === 1 ? "1 mensaje por relevar" : `${r.pendientes} mensajes por relevar`;
+  const base = r.pendientes === 1 ? "1 mensagem por retransmitir" : `${r.pendientes} mensagens por retransmitir`;
   if (r.pendientes > 0 && r.masViejoSegundos !== null && r.masViejoSegundos >= 60) {
-    return `${base} (el más viejo, de hace ${Math.floor(r.masViejoSegundos / 60)} min)`;
+    return `${base} (a mais antiga, há ${Math.floor(r.masViejoSegundos / 60)} min)`;
   }
   return base;
 }
@@ -234,15 +226,15 @@ function relayLabel(r: BrainRelayDto): string | null {
 function problemLabel(h: BrainHealthDto): string {
   switch (h.problem) {
     case "timeout":
-      return "no contestó en 2 s";
+      return "não respondeu em 2 s";
     case "status":
-      return `respondió ${h.httpStatus ?? "con error"}`;
+      return `respondeu ${h.httpStatus ?? "com erro"}`;
     case "redirect":
-      return "respondió con una redirección (no se sigue)";
+      return "respondeu com um redirecionamento";
     case "invalid":
-      return "respondió, pero no con su estado";
+      return "respondeu, mas sem o estado esperado";
     default:
-      return "no acepta la conexión";
+      return "não aceita a ligação";
   }
 }
 

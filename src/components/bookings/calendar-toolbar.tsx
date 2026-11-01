@@ -14,17 +14,17 @@ import { cn } from "@/lib/utils";
  */
 
 const VIEW_LABEL: Record<CalendarView, string> = {
-  dia: "Día",
+  dia: "Dia",
   semana: "Semana",
-  mes: "Mes",
+  mes: "Mês",
   lista: "Lista",
 };
 
 const PERIOD: Record<CalendarView, string> = {
-  dia: "día",
+  dia: "dia",
   semana: "semana",
-  mes: "mes",
-  lista: "rango",
+  mes: "mês",
+  lista: "intervalo",
 };
 
 export function CalendarToolbar({
@@ -56,16 +56,16 @@ export function CalendarToolbar({
 
   return (
     <header className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b px-4 py-3 sm:px-6">
-      <h2 className="mr-1 text-[17px] font-bold tracking-tight">Citas</h2>
+      <h2 className="mr-1 text-[17px] font-bold tracking-tight">Marcações</h2>
 
       <div className="flex items-center gap-1">
         <Button variant="outline" size="sm" onClick={onToday}>
-          Hoy
+          Hoje
         </Button>
         <NavButton label={`${PERIOD[view]} anterior`} onClick={() => onShift(-1)}>
           <ChevronLeft className="h-4 w-4" />
         </NavButton>
-        <NavButton label={`${PERIOD[view]} siguiente`} onClick={() => onShift(1)}>
+        <NavButton label={`${PERIOD[view]} seguinte`} onClick={() => onShift(1)}>
           <ChevronRight className="h-4 w-4" />
         </NavButton>
       </div>
@@ -73,7 +73,7 @@ export function CalendarToolbar({
       {view === "lista" ? (
         <div className="flex flex-wrap items-center gap-1.5 text-sm">
           <label className="sr-only" htmlFor="lista-desde">
-            Desde
+            De
           </label>
           <input
             id="lista-desde"
@@ -82,9 +82,9 @@ export function CalendarToolbar({
             onChange={(e) => e.target.value && onListRange(e.target.value, listTo)}
             className="h-8 rounded-md border border-input bg-background px-2 text-sm focus-visible:border-brand focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-brand-soft"
           />
-          <span className="text-text-3">al</span>
+          <span className="text-text-3">a</span>
           <label className="sr-only" htmlFor="lista-hasta">
-            Hasta
+            Até
           </label>
           <input
             id="lista-hasta"
@@ -92,7 +92,7 @@ export function CalendarToolbar({
             value={listTo}
             min={anchor}
             onChange={(e) => e.target.value && onListRange(anchor, e.target.value)}
-            title={`Hasta ${MAX_RANGE_DAYS} días`}
+            title={`Até ${MAX_RANGE_DAYS} dias`}
             className="h-8 rounded-md border border-input bg-background px-2 text-sm focus-visible:border-brand focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-brand-soft"
           />
         </div>
@@ -110,7 +110,7 @@ export function CalendarToolbar({
               }
             }}
             className="flex items-center gap-1 rounded-md px-1.5 py-1 text-[17px] font-semibold tracking-tight hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-soft"
-            aria-label={`${label}. Elegir otra fecha`}
+            aria-label={`${label}. Escolher outra data`}
           >
             {label}
             <ChevronDown className="h-4 w-4 text-text-3" />
@@ -130,7 +130,7 @@ export function CalendarToolbar({
       )}
 
       {loading && (
-        <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-border-strong border-t-brand" aria-label="Cargando" />
+        <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-border-strong border-t-brand" aria-label="A carregar" />
       )}
 
       <div className="ml-auto flex items-center gap-2">
@@ -150,9 +150,9 @@ export function CalendarToolbar({
             </button>
           ))}
         </div>
-        <Button size="sm" onClick={onBlock} aria-label="Bloquear horario">
+        <Button size="sm" onClick={onBlock} aria-label="Bloquear horário">
           <Plus className="h-4 w-4" />
-          <span className="hidden sm:inline">Bloquear horario</span>
+          <span className="hidden sm:inline">Bloquear horário</span>
         </Button>
       </div>
     </header>

@@ -82,7 +82,7 @@ export function MonthGrid({
                   e.stopPropagation();
                   onOpenDay(day);
                 }}
-                aria-label={`Ver el día ${Number(day.slice(8))}`}
+                aria-label={`Ver o dia ${Number(day.slice(8))}`}
                 className={cn(
                   "mx-auto flex h-6 min-w-6 items-center justify-center rounded-full px-1 text-[12.5px] font-semibold tabular-nums hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-soft",
                   isToday && "bg-brand text-brand-fg hover:bg-brand-hover",
@@ -122,7 +122,7 @@ export function MonthGrid({
                   }}
                   className="w-full rounded-[5px] px-1 text-left text-[11px] font-semibold text-text-2 hover:bg-accent"
                 >
-                  +{extra} más
+                  +{extra} mais
                 </button>
               )}
             </div>

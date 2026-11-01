@@ -87,11 +87,10 @@ export function WhatsappWizard() {
           <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
           <div className="min-w-[12rem] flex-1">
             <p className="font-medium text-danger-text">
-              El token de WhatsApp expiró o fue revocado.
+              O token do WhatsApp expirou ou foi revogado.
             </p>
             <p className="text-danger-text opacity-80">
-              Los envíos están pausados. Pega un token nuevo abajo y prueba la
-              conexión para reconectar.
+              Os envios estão em pausa. Cole um token novo abaixo e teste a ligação para reconectar.
             </p>
           </div>
           <Desconectar
@@ -108,14 +107,14 @@ export function WhatsappWizard() {
           <CheckCircle2 className="h-5 w-5 text-success" />
           <div className="min-w-[12rem] flex-1 text-sm">
             <p className="font-medium text-success-text">
-              Número conectado: {connection.displayPhoneNumber ?? connection.phoneNumberId}
+              Número ligado: {connection.displayPhoneNumber ?? connection.phoneNumberId}
             </p>
             <p className="text-success-text opacity-80">
               {connection.verifiedName ? `${connection.verifiedName} · ` : ""}
               token …{connection.tokenLast4}
             </p>
           </div>
-          <Badge variant="success">Conectado</Badge>
+          <Badge variant="success">Ligado</Badge>
           <Desconectar
             onHecho={() => {
               setRegistration(null);
@@ -190,10 +189,10 @@ function Desconectar({ onHecho }: { onHecho: () => void }) {
         const data = (await res.json().catch(() => null)) as {
           error?: { message?: string };
         } | null;
-        setError(data?.error?.message ?? "No se pudo desconectar el número.");
+        setError(data?.error?.message ?? "Não foi possível desligar o número.");
       }
     } catch {
-      setError("Sin conexión con el servidor.");
+      setError("Sem ligação ao servidor.");
     } finally {
       setYendo(false);
     }
@@ -202,14 +201,14 @@ function Desconectar({ onHecho }: { onHecho: () => void }) {
   if (!confirmando) {
     return (
       <Button variant="outline" size="sm" onClick={() => setConfirmando(true)}>
-        Desconectar
+        Desligar
       </Button>
     );
   }
   return (
     <div className="flex flex-wrap items-center gap-2">
       <span className="text-xs text-muted-foreground">
-        Dejarás de recibir y enviar. Tus conversaciones se quedan.
+        Deixará de receber e enviar. As suas conversas são mantidas.
       </span>
       <Button
         variant="outline"
@@ -225,7 +224,7 @@ function Desconectar({ onHecho }: { onHecho: () => void }) {
         disabled={yendo}
         onClick={() => void desconectar()}
       >
-        {yendo ? "Desconectando…" : "Sí, desconectar"}
+        {yendo ? "A desligar…" : "Sim, desligar"}
       </Button>
       {error && (
         <span role="alert" className="text-xs text-destructive">
@@ -332,12 +331,12 @@ function ConnectForm({
     <Card>
       <CardHeader>
         <CardTitle>
-          {existing ? "Reconectar / actualizar el número" : "Conectar tu número de WhatsApp"}
+          {existing ? "Reconectar / actualizar o número" : "Ligar o seu número de WhatsApp"}
         </CardTitle>
         <CardDescription>
-          Pega las credenciales de WhatsApp Cloud API. El token se valida
-          contra Meta ANTES de guardarse y se almacena cifrado. Al guardar, el
-          webhook se registra en Meta por ti.
+          Cole as credenciais da WhatsApp Cloud API. O token é validado
+          na Meta ANTES de ser guardado e fica armazenado de forma encriptada. Ao guardar, o
+          webhook é registado na Meta automaticamente.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -441,13 +440,13 @@ function ConnectForm({
             disabled={!canTest || testing}
             onClick={() => void test()}
           >
-            {testing ? "Probando…" : "Probar conexión"}
+            {testing ? "A testar…" : "Testar ligação"}
           </Button>
           <Button
             disabled={!testResult?.ok || saving}
             onClick={() => void save()}
           >
-            {saving ? "Guardando…" : "Guardar conexión"}
+            {saving ? "A guardar…" : "Guardar ligação"}
           </Button>
         </div>
       </CardContent>
@@ -610,12 +609,11 @@ function WebhookCard({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Webhook de WhatsApp</CardTitle>
+        <CardTitle>Webhook do WhatsApp</CardTitle>
         <CardDescription>
-          Al guardar la conexión, esta dirección se registra en Meta por ti, en
-          el número (override). Estos valores son para el backend de tu agencia
-          o para pegarlos a mano en el panel de Meta solo si el registro
-          automático falla.
+          Ao guardar a ligação, este endereço é registado na Meta automaticamente, no
+          número (override). Estes valores são para o backend ou para configurar
+          manualmente no painel da Meta apenas se o registo automático falhar.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">
@@ -627,7 +625,7 @@ function WebhookCard({
               disabled={registering}
               onClick={() => void register(false)}
             >
-              {registering ? "Registrando…" : "Registrar en Meta"}
+              {registering ? "A registar…" : "Registar na Meta"}
             </Button>
             {registration && <RegistrationNotice registration={registration} />}
             {/* 035 — Quien venía con Nea 1.x delante del CRM: el webhook vive en
@@ -639,7 +637,7 @@ function WebhookCard({
                 disabled={registering}
                 onClick={() => void register(true)}
               >
-                Recuperar el webhook
+                Recuperar o webhook
               </Button>
             )}
           </div>
@@ -666,12 +664,11 @@ function WebhookCard({
               <Copy className="h-4 w-4" />
             </Button>
             {copied === "url" && (
-              <span className="text-xs text-primary">Copiada ✓</span>
+              <span className="text-xs text-primary">Copiado ✓</span>
             )}
           </div>
           <p className="text-xs text-muted-foreground">
-            La URL contiene el token secreto en la ruta: trátala como una
-            contraseña.
+            O URL contém o token secreto no caminho: trate-o como uma palavra-passe.
           </p>
         </div>
         <div className="space-y-1.5">

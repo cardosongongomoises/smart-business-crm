@@ -39,7 +39,7 @@ export type NavGroup = {
 /** La única entrada que va abajo, separada del resto. */
 export const SETTINGS_ITEM: NavItem = {
   href: "/settings",
-  label: "Ajustes",
+  label: "Configurações",
   icon: Settings,
 };
 
@@ -57,26 +57,26 @@ export function appNavGroups({
   role?: string | null;
 }): NavGroup[] {
   const trabajo: NavItem[] = [
-    { href: "/inbox", label: "Bandeja", icon: Inbox, badge: true },
+    { href: "/inbox", label: "Caixa de entrada", icon: Inbox, badge: true },
     { href: "/pipeline", label: "Pipeline", icon: Kanban },
     { href: "/contacts", label: "Contactos", icon: Users },
   ];
   // Citas va después de Contactos: es el paso siguiente de un trato, no una
   // sección aparte.
-  if (agenda) trabajo.push({ href: "/bookings", label: "Citas", icon: CalendarDays });
+  if (agenda) trabajo.push({ href: "/bookings", label: "Marcações", icon: CalendarDays });
 
   const agente: NavItem[] = [];
   // Un miembro del equipo no puede hacer ninguno de los pasos de la guía.
   if (canConfigure(role)) {
-    agente.push({ href: "/onboarding", label: "Guía de inicio", icon: ListChecks });
+    agente.push({ href: "/onboarding", label: "Guia de início", icon: ListChecks });
   }
   agente.push(
     { href: "/agent", label: "Agente", icon: Sparkles },
-    { href: "/lab", label: "Laboratorio", icon: FlaskConical }
+    { href: "/lab", label: "Laboratório", icon: FlaskConical }
   );
 
   return [
-    { title: "Trabajo", items: trabajo },
+    { title: "Trabalho", items: trabajo },
     { title: "Agente", items: agente },
     // 019 — Se mide al final: primero se atiende y se organiza.
     { items: [{ href: "/results", label: "Resultados", icon: ChartColumn }] },
@@ -134,18 +134,18 @@ export function settingsSections({
   const negocio: SettingsLink[] = [
     { href: "/settings/branding", label: "Marca" },
     // 062 — Tema, letra, tamaño y densidad (cada quien la suya).
-    { href: "/settings/appearance", label: "Apariencia" },
-    { href: "/settings/templates", label: "Plantillas" },
+    { href: "/settings/appearance", label: "Aparência" },
+    { href: "/settings/templates", label: "Modelos" },
     // 049 — lo que el equipo inserta con «/atajo» en la Bandeja.
-    { href: "/settings/quick-replies", label: "Respuestas rápidas" },
-    { href: "/settings/team", label: "Equipo" },
+    { href: "/settings/quick-replies", label: "Respostas rápidas" },
+    { href: "/settings/team", label: "Equipa" },
   ];
-  if (atribucion) negocio.push({ href: "/settings/ads", label: "Anuncios" });
+  if (atribucion) negocio.push({ href: "/settings/ads", label: "Anúncios" });
 
   return [
-    { title: "Canales", links: canales },
+    { title: "Canais", links: canales },
     { title: "Agente", links: agente },
-    { title: "Negocio", links: negocio },
+    { title: "Negócio", links: negocio },
   ];
 }
 
