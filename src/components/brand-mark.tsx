@@ -7,7 +7,7 @@ import {
   BRAND_MARK_TAIL,
   isVoceroName,
 } from "@/lib/brand";
-import { faviconHref, faviconInitial } from "@/lib/favicon";
+import { faviconHref } from "@/lib/favicon";
 import { cn } from "@/lib/utils";
 
 /**
