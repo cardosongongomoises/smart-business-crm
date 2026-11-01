@@ -74,10 +74,18 @@ export async function generateMetadata(): Promise<Metadata> {
     // El `?v=` cambia con la marca: los navegadores guardan el favicon con una
     // insistencia notable y, sin eso, el logo nuevo tarda días en aparecer.
     icons: {
-      icon: faviconHref(branding),
-      // 048 — El icono de «Agregar a inicio» del iPhone: PNG de 180, a sangre.
-      apple: appIconHref(branding, 180),
+      icon: [
+        { url: "/favicon.ico", sizes: "any" },
+        { url: "/favicon-32x32.png", type: "image/png", sizes: "32x32" },
+        { url: "/favicon-16x16.png", type: "image/png", sizes: "16x16" },
+        { url: faviconHref(branding) },
+      ],
+      apple: [
+        { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+        { url: appIconHref(branding, 180), sizes: "180x180" },
+      ],
     },
+    manifest: "/site.webmanifest",
     // 048 — Instalada desde Safari, abre sin la barra del navegador. Barra de
     // estado negra y no translúcida: la página no tiene margen para el notch.
     appleWebApp: { capable: true, title: shortAppName(branding.name), statusBarStyle: "black" },

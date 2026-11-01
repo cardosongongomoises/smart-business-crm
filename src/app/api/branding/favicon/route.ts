@@ -46,12 +46,20 @@ export async function GET(req: Request) {
       });
     } catch {
       // El archivo se perdió (volumen sin montar, restauración a medias). Se
-      // cae al generado en vez de dejar la pestaña sin icono: un 404 aquí se
-      // ve como si la instancia estuviera rota.
+      // cae al predeterminado en vez de dejar la pestaña sin icono.
     }
   }
 
-  return new Response(generatedFaviconSvg(branding), {
-    headers: cabeceras("image/svg+xml", cacheable),
-  });
+  try {
+    const fs = await import("fs/promises");
+    const path = await import("path");
+    const buf = await fs.readFile(path.join(process.cwd(), "public", "favicon-32x32.png"));
+    return new Response(new Uint8Array(buf), {
+      headers: cabeceras("image/png", cacheable),
+    });
+  } catch {
+    return new Response(generatedFaviconSvg(branding), {
+      headers: cabeceras("image/svg+xml", cacheable),
+    });
+  }
 }

@@ -81,7 +81,12 @@ export function BrandTile({
       ) : isVoceroName(branding.name) ? (
         <BrandMark className="h-[64%] w-[64%]" cyan={BRAND_CYAN_ON_TILE} />
       ) : (
-        <span className="font-bold leading-none">{faviconInitial(branding.name)}</span>
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src="/logo.png"
+          alt={branding.name}
+          className="h-full w-full object-contain p-0.5"
+        />
       )}
     </span>
   );

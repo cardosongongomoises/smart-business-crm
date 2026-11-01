@@ -45,13 +45,21 @@ async function logoSubido(
   organizationId: string | null,
   branding: Branding
 ): Promise<string | null> {
-  if (!organizationId || !branding.favicon) return null;
-  if (!DIBUJABLES.has(branding.favicon.mime)) return null;
+  if (organizationId && branding.favicon && DIBUJABLES.has(branding.favicon.mime)) {
+    try {
+      const buf = await readMediaFile(organizationId, FAVICON_ASSET);
+      return `data:${branding.favicon.mime};base64,${Buffer.from(buf).toString("base64")}`;
+    } catch {
+      // El archivo se perdió: cae al predeterminado.
+    }
+  }
+
   try {
-    const buf = await readMediaFile(organizationId, FAVICON_ASSET);
-    return `data:${branding.favicon.mime};base64,${Buffer.from(buf).toString("base64")}`;
+    const fs = await import("fs/promises");
+    const path = await import("path");
+    const buf = await fs.readFile(path.join(process.cwd(), "public", "android-chrome-512x512.png"));
+    return `data:image/png;base64,${Buffer.from(buf).toString("base64")}`;
   } catch {
-    // El archivo se perdió: se dibuja el generado, como hace el favicon.
     return null;
   }
 }
