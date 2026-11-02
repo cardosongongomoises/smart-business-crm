@@ -596,26 +596,8 @@ export function Composer({
     );
   }
 
-  if (!conversation.windowOpen && !human) {
-    return withDropZone(
-      <div className="px-[18px] py-3.5">
-        {pestanas}
-        <div className="mb-3 flex items-start gap-2 rounded-md border border-warning-soft bg-warning-tint p-3 text-sm text-warning-text">
-          <Clock3 className="mt-0.5 h-4 w-4 shrink-0" strokeWidth={1.7} />
-          <div>
-            <p className="font-medium">A janela de 24 horas está fechada.</p>
-            <p className="opacity-80">
-              O WhatsApp apenas permite texto livre dentro das 24 horas
-              seguintes à última mensagem do cliente. Para retomar a
-              conversa, envie um modelo aprovado.
-            </p>
-          </div>
-        </div>
-        <TemplateSender conversationId={conversation.id} onSent={onSent} />
-      </div>,
-      true
-    );
-  }
+  // Avisa API: sem restricao de janela de 24 horas — compositor sempre disponivel
+  // O bloco original de "janela fechada" foi desativado (nao se usa Meta Cloud API)
 
   // 049 — El menú de respuestas rápidas, si hay una `/` escribiéndose.
   const opcionesRapidas = token ? filtrarRespuestas(respuestas ?? [], token.consulta).slice(0, 50) : [];
