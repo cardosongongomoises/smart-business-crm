@@ -119,7 +119,7 @@ export function ContactPanel({
       setFicha(detail.contact?.ficha ?? {});
       setCurrentStageId(detail.stage?.id ?? null);
       setLeadId(detail.lead?.id ?? null);
-      // La imagen del creativo se copia después de que entra el mensaje: este
+      // A imagem del creativo se copia después de que entra el mensaje: este
       // refetch en vivo es lo que la hace aparecer sin recargar.
       setAnuncio(detail.anuncio ?? null);
     }
@@ -270,8 +270,8 @@ export function ContactPanel({
                   strokeWidth={1.7}
                 />
                 <p className="text-[11px] leading-relaxed text-warning-text">
-                  O seu agente não está online: ninguém responde em automático até
-                  que volte.
+                  O seu agente está indisponível: não haverá respostas automáticas até
+                  estar disponível novamente.
                   <Link
                     href="/agent"
                     className="ml-1 whitespace-nowrap font-medium text-brand-text underline underline-offset-2 hover:text-brand"

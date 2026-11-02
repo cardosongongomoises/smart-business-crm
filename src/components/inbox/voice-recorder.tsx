@@ -247,7 +247,7 @@ export function VoiceRecorder({
               {formatoTiempo(segundos)}
             </span>
             <span className="sr-only">
-              {fase === "pidiendo" ? "A solicitar microfone…" : "A gravar nota de voz"}
+              {fase === "pidiendo" ? "A solicitar o microfone…" : "A gravar a nota de voz"}
             </span>
             <div aria-hidden className="flex h-6 min-w-0 flex-1 items-center gap-px overflow-hidden">
               {niveles.map((n, i) => (

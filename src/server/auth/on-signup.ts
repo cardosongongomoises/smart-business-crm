@@ -12,18 +12,18 @@ const SEED_STAGES: { name: string; kind: "open" | "won" | "lost" }[] = [
 ];
 
 /**
- * Primer registro de la instancia: crea la organización, deja al usuario como
- * propietario y siembra pipeline + perfil del agente.
+ * Primeiro registo da instância: cria a organização, deixa o utilizador como
+ * proprietário e semeia o pipeline + perfil do agente.
  *
- * Solo actúa si NO existe ninguna organización (las cuentas de equipo las crea
- * el propietario y reciben su membresía explícita). Un advisory lock evita que
- * dos registros simultáneos en instancia vacía creen dos organizaciones.
+ * Só atua se NÃO existir nenhuma organização (as contas da equipa são criadas
+ * pelo proprietário e recebem a sua adesão explícita). Um advisory lock evita que
+ * dois registos simultâneos numa instância vazia criem duas organizações.
  */
 export async function onUserCreated(userId: string, userName: string) {
   const db = getDb();
   await db.transaction(async (tx) => {
     // Lock transaccional de "primer arranque" (clave arbitraria fija):
-    // dos registros simultáneos en instancia vacía → solo uno crea la org.
+    // dois registos simultâneos numa instância vazia → apenas um cria a organização.
     await tx.execute(sql`select pg_advisory_xact_lock(874201)`);
     const [orgs] = await tx
       .select({ n: count() })
@@ -58,7 +58,7 @@ export async function onUserCreated(userId: string, userName: string) {
   });
 }
 
-/** Organización activa de un usuario (su primera membresía). */
+/** Organização ativa de um utilizador (a sua primeira adesão). */
 export async function resolveActiveOrganizationId(
   userId: string
 ): Promise<string | null> {

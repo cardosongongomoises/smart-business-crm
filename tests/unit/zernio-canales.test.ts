@@ -226,7 +226,7 @@ describe("zernio · el webhook hacia esta instancia", () => {
       webhookHealth([w({ url: "https://otro.com/api/webhooks/ig/x" })], SEGMENTO, IG).level
     ).toBe("error");
     expect(webhookHealth([w({ isActive: false })], SEGMENTO, IG).message).toContain("desactivado");
-    expect(webhookHealth([w()], SEGMENTO, TT).message).toContain("no incluye esta cuenta");
+    expect(webhookHealth([w()], SEGMENTO, TT).message).toContain("não inclui esta conta");
     expect(
       webhookHealth([w({ events: ["post.published"] })], SEGMENTO, IG).message
     ).toContain("message.received");

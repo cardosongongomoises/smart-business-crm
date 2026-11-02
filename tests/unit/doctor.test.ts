@@ -90,13 +90,13 @@ describe("evaluateEnv", () => {
     expect(porLabel(results, "POSTGRES_PASSWORD")).toBeUndefined();
   });
 
-  it("una variable que falta y una ENCRYPTION_KEY mal generada: mensaje en español y el arreglo", () => {
+  it("uma variável em falta e uma ENCRYPTION_KEY inválida: mensagem em português e correção", () => {
     const source: Record<string, string> = { ...VALIDO, ENCRYPTION_KEY: "corta" };
     delete source.META_WEBHOOK_VERIFY_TOKEN;
     const { results } = evaluateEnv(source);
     const token = porLabel(results, "META_WEBHOOK_VERIFY_TOKEN");
     expect(token?.status).toBe("fail");
-    expect(token?.detail).toBe("falta");
+    expect(token?.detail).toBe("em falta");
     expect(token?.fix).toContain("openssl rand -hex 32");
     const key = porLabel(results, "ENCRYPTION_KEY");
     expect(key?.status).toBe("fail");
@@ -109,8 +109,8 @@ describe("evaluateEnv", () => {
       APP_BASE_URL: "crm.ejemplo.com",
       BETTER_AUTH_SECRET: "corto",
     });
-    expect(porLabel(results, "APP_BASE_URL")?.detail).toContain("no es una URL válida");
-    expect(porLabel(results, "BETTER_AUTH_SECRET")?.detail).toContain("mínimo 16");
+    expect(porLabel(results, "APP_BASE_URL")?.detail).toContain("não é um URL válido");
+    expect(porLabel(results, "BETTER_AUTH_SECRET")?.detail).toContain("pelo menos 16");
   });
 
   it("una opcional mal escrita también sale ✗: tumba el arranque igual", () => {
@@ -175,7 +175,7 @@ describe("checkDatabase", () => {
       throw Object.assign(new Error("connect ECONNREFUSED"), { code: "ECONNREFUSED" });
     });
     expect(r.status).toBe("fail");
-    expect(r.detail).toContain("nada escucha");
+    expect(r.detail).toContain("não há nada a escutar");
     expect(r.fix).toContain("docker compose");
   });
 
@@ -196,7 +196,7 @@ describe("checkDatabase", () => {
   it("28P01: contraseña rechazada, y dónde se corrige", () => {
     const r = describeDbError(Object.assign(new Error("password authentication failed"), { code: "28P01" }), url);
     expect(r.status).toBe("fail");
-    expect(r.detail).toContain("contraseña");
+    expect(r.detail).toContain("palavra-passe rejeitados");
     expect(r.fix).toContain("POSTGRES_PASSWORD");
     expect(formatResult(r)).not.toContain("pw-secreta-xyz");
   });
@@ -247,7 +247,7 @@ describe("checkWhatsApp", () => {
   it("sin conexión guardada: informativo, no ✗ (se conecta desde la app)", async () => {
     const [r] = await checkWhatsApp({ load: async () => [] });
     expect(r?.status).toBe("skip");
-    expect(r?.detail).toContain("Configuración → WhatsApp");
+    expect(r?.detail).toContain("Definições → WhatsApp");
   });
 
   it("token vigente: ✓ con los últimos 4 del token y nunca el token entero", async () => {
@@ -267,7 +267,7 @@ describe("checkWhatsApp", () => {
       test: async () => ({ ok: false, code: "invalid_token", message: "El token no es válido o expiró." }),
     });
     expect(r?.status).toBe("fail");
-    expect(r?.fix).toContain("Configuración → WhatsApp");
+    expect(r?.fix).toContain("Definições → WhatsApp");
     expect(formatResult(r!)).not.toContain("EAAG-vencido");
   });
 

@@ -21,7 +21,7 @@ const SEND_ERROR_STATUS: Record<SendError["code"], number> = {
 };
 
 /**
- * 008 — Envía un adjunto de archivo por la conversación (multipart):
+ * 008 — Envía un anexo de archivo por la conversación (multipart):
  * `file` (binario, requerido) + `caption` (opcional) + `replyToMessageId`
  * (039, opcional: el id local del mensaje al que responde citando) + `voice=1`
  * (044, opcional: grabado en el compositor, sale como nota de voz). La validación de tipo y
@@ -30,15 +30,15 @@ const SEND_ERROR_STATUS: Record<SendError["code"], number> = {
 export const POST = withAuth(async (session, req: Request, ctx: Params) => {
   const { id } = await ctx.params;
   const conv = await getConversation(session.organizationId, id);
-  if (!conv) return apiError(404, "not_found", "Conversación no encontrada");
+  if (!conv) return apiError(404, "not_found", "Conversa não encontrada");
 
   const form = await req.formData().catch(() => null);
   if (!form) {
-    return apiError(400, "invalid", "Se esperaba multipart/form-data");
+    return apiError(400, "invalid", "Era esperado multipart/form-data");
   }
   const file = form.get("file");
   if (!(file instanceof File)) {
-    return apiError(422, "invalid", "Falta el archivo (campo `file`)");
+    return apiError(422, "invalid", "Falta o ficheiro (campo `file`)");
   }
   const captionRaw = form.get("caption");
   const caption =

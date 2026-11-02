@@ -11,13 +11,13 @@ import { enabledChannels } from "@/server/channels/enabled";
 import { productName } from "@/lib/channels";
 import "./globals.css";
 
-// Las voces de la marca, dentro del repo (`./fonts`, subconjunto latino de
-// Google Fonts, licencia OFL en `fonts/licencias/`). Antes next/font las
-// bajaba de Google en cada BUILD y un hipo de esa red tumbaba el build; así
-// el build no sale a internet y el runtime tampoco (soberanía). 061 — La
-// interfaz va en Urbanist (geométrica y ligera, como la referencia del diseño
-// de tarjetas); Archivo, la de vocerocrm.com, queda cargada para elegirla
-// (062). `--font-sans` se arma en globals.css a partir de estas.
+// Tipos de letra da marca, dentro do repositório (`./fonts`, subconjunto latino
+// do Google Fonts, licença OFL em `fonts/licencias/`). Antes, o next/font
+// descarregava-os do Google em cada BUILD e uma falha dessa rede interrompia o
+// build; assim, nem o build nem o runtime acedem à internet (soberania). 061 —
+// A interface usa Urbanist (geométrica e leve, como na referência do design de
+// cartões); Archivo, a de vocerocrm.com, fica carregada para ser escolhida
+// (062). `--font-sans` é definido no globals.css a partir destas fontes.
 const urbanist = localFont({
   src: "./fonts/urbanist-latin-variable.woff2",
   weight: "100 900",
@@ -30,7 +30,7 @@ const archivo = localFont({
   variable: "--font-archivo",
   display: "swap",
 });
-// 062 — Las otras dos letras que se eligen en Ajustes → Apariencia.
+// 062 — Os outros dois tipos de letra escolhidos em Definições → Aparência.
 const inter = localFont({
   src: "./fonts/inter-latin-variable.woff2",
   weight: "100 900",
@@ -71,8 +71,8 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: `${branding.name} — ${producto}`,
     description: `${producto} com agente de IA e Laboratório de auto-avaliação`,
-    // El `?v=` cambia con la marca: los navegadores guardan el favicon con una
-    // insistencia notable y, sin eso, el logo nuevo tarda días en aparecer.
+    // O `?v=` muda com a marca: os navegadores guardam o favicon de forma
+    // persistente e, sem isso, o novo logótipo demora dias a aparecer.
     icons: {
       icon: [
         { url: "/favicon.ico", sizes: "any" },
@@ -86,21 +86,21 @@ export async function generateMetadata(): Promise<Metadata> {
       ],
     },
     manifest: "/site.webmanifest",
-    // 048 — Instalada desde Safari, abre sin la barra del navegador. Barra de
-    // estado negra y no translúcida: la página no tiene margen para el notch.
+    // 048 — Quando instalada a partir do Safari, abre sem a barra do navegador.
+    // Barra de estado preta e não translúcida: a página não tem margem para o notch.
     appleWebApp: { capable: true, title: shortAppName(branding.name), statusBarStyle: "black" },
   };
 }
 
-/** 048 — La barra de estado de la app instalada, del color de la barra lateral. */
+/** 048 — A barra de estado da aplicação instalada, com a cor da barra lateral. */
 export const viewport: Viewport = { themeColor: NAV_INK };
 
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const branding = await getBranding().catch(() => DEFAULT_BRANDING);
-  // 062 · D6 — La apariencia (tema, letra, tamaño y densidad) se resuelve en
-  // el servidor: el primer pintado ya la trae, sin parpadeo.
+  // 062 · D6 — A aparência (tema, tipo de letra, tamanho e densidade) é
+  // resolvida no servidor: o primeiro desenho já a inclui, sem cintilação.
   const { apariencia } = await aparienciaActual().catch(() => ({
     apariencia: { tema: "menta", letra: "urbanist", tamano: "normal", densidad: "normal" } as const,
   }));
@@ -108,16 +108,16 @@ export default async function RootLayout({
     <html
       lang="pt"
       className={`${urbanist.variable} ${archivo.variable} ${inter.variable} ${plexSans.variable} ${instrumentSerif.variable} ${plexMono.variable}`}
-      // La preferencia siempre es explícita: viaja resuelta en el HTML del
-      // servidor, así que no hay divergencia con el cliente ni parpadeo.
+      // A preferência é sempre explícita: segue resolvida no HTML do servidor,
+      // por isso não há divergência com o cliente nem cintilação.
       {...atributosHtml(apariencia)}
     >
       <head>
-        {/* Acento white-label inyectado en SSR: sin flash de tema */}
+        {/* Acento white-label injectado no SSR: sem cintilação do tema */}
         <style
           dangerouslySetInnerHTML={{ __html: accentCssVariables(branding.accent) }}
         />
-        {/* 062 — Los temas listos (todos, para cambiar en vivo) y el propio. */}
+        {/* 062 — Os temas disponíveis (todos, para mudar em tempo real) e o próprio. */}
         <style
           id="vocero-temas"
           dangerouslySetInnerHTML={{ __html: cssDeTemas() + cssDePropio(apariencia) }}

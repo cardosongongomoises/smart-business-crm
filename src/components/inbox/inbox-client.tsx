@@ -328,7 +328,7 @@ export function InboxClient({
   const sendText = useCallback(
     async (text: string, cita: MessageDto | null = null): Promise<string | null> => {
       const conversationId = selectedIdRef.current;
-      if (!conversationId) return "Sin conversación seleccionada";
+      if (!conversationId) return "Nenhuma conversa seleccionada";
 
       const tmpId = `tmp_${++tmpSeq.current}`;
       setPending((prev) => [

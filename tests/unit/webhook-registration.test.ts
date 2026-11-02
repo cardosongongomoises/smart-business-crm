@@ -138,13 +138,13 @@ describe("registro automático del webhook en Meta", () => {
     expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 
-  it("si Meta no puede verificar la URL (2200), devuelve su motivo", async () => {
+  it("se a Meta não conseguir verificar o URL (2200), mantém o código técnico", async () => {
     sinOverride();
     respond({ success: true });
     metaError(400, 2200, "(#2200) Callback verification failed");
     const res = await registerWebhookForNumber(opts);
     expect(res).toMatchObject({ ok: false, code: "meta_error" });
-    expect(!res.ok && res.message).toContain("Callback verification failed");
+    expect(!res.ok && res.message).toContain("código Meta 2200");
     expect(fetchMock).toHaveBeenCalledTimes(3);
   });
 

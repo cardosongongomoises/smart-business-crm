@@ -29,8 +29,8 @@ export function HygieneSection({
   return (
     <Section
       id="higiene"
-      title="Qué se está cayendo"
-      hint="No depende del periodo: es lo que está pasando ahora mismo."
+      title="O que está a falhar"
+      hint="Não depende do período: é o que está a acontecer agora mesmo."
       loading={loading}
       error={error}
       hasData={!!data}
@@ -56,7 +56,7 @@ export function HygieneSection({
                 </p>
               )}
               {data.silentCount === 0 ? (
-                <p className="text-sm text-text-3">Nadie lleva más de una semana callado.</p>
+                <p className="text-sm text-text-3">Ninguém está calado há mais de uma semana.</p>
               ) : (
                 <>
                   <ul className="space-y-1.5 text-sm">
@@ -69,7 +69,7 @@ export function HygieneSection({
                           {l.name}
                         </Link>
                         <span className="shrink-0 text-xs text-text-3 tabular-nums">
-                          {l.days} días
+                          {l.days} dias
                           {l.amountCents ? ` · ${money(l.amountCents)}` : ""}
                         </span>
                       </li>
@@ -77,7 +77,7 @@ export function HygieneSection({
                   </ul>
                   {data.silentCount > enLista && (
                     <p className="mt-2 text-xs text-text-3">
-                      y {data.silentCount - enLista} más.
+                      e mais {data.silentCount - enLista}.
                     </p>
                   )}
                 </>
@@ -85,9 +85,9 @@ export function HygieneSection({
             </div>
 
             <div className="min-w-0">
-              <Subhead>Mensajes que no llegaron (30 días)</Subhead>
+              <Subhead>Mensagens que não chegaram (30 dias)</Subhead>
               {data.failedMessages.length === 0 ? (
-                <p className="text-sm text-text-3">Ningún envío fallido.</p>
+                <p className="text-sm text-text-3">Nenhum envio falhado.</p>
               ) : (
                 <ul className="space-y-1.5 text-sm">
                   {data.failedMessages.map((m) => (
@@ -105,9 +105,9 @@ export function HygieneSection({
             </div>
 
             <div className="min-w-0">
-              <Subhead>Ventanas de 24 h por cerrarse</Subhead>
+              <Subhead>Janelas de 24 h prestes a fechar</Subhead>
               {data.closingWindows.length === 0 ? (
-                <p className="text-sm text-text-3">Ninguna conversación esperando respuesta.</p>
+                <p className="text-sm text-text-3">Nenhuma conversa aguarda resposta.</p>
               ) : (
                 <ul className="space-y-1.5 text-sm">
                   {data.closingWindows.map((c) => (
@@ -122,7 +122,7 @@ export function HygieneSection({
                         {c.name}
                       </Link>
                       <span className="shrink-0 text-xs text-warning-text tabular-nums">
-                        quedan {c.hoursLeft} h
+                        faltam {c.hoursLeft} h
                       </span>
                     </li>
                   ))}

@@ -114,7 +114,7 @@ describe("036 — «Conecta tu agente»", () => {
     getBrainHealth.mockResolvedValue({ reachable: false, host: "nea:8000", checkedAt: "", problem: "network" });
     const s = await paso("brain");
     expect(s?.status).toBe("pending");
-    expect(s?.problem).toMatch(/no responde/);
+    expect(s?.problem).toMatch(/não responde/);
   });
 });
 
@@ -131,7 +131,7 @@ describe("paso 1: el agente", () => {
   it("el nombre de fábrica no basta: sin instrucciones ni conocimiento sigue pendiente y dice qué falta", async () => {
     const step = await paso("profile");
     expect(step?.status).toBe("pending");
-    expect(step?.nextAction).toMatch(/nombre/);
+    expect(step?.nextAction).toMatch(/nome/);
   });
 
   it("`enabled` sale del mismo perfil", async () => {
@@ -145,14 +145,14 @@ describe("paso 2: el proveedor de IA (la fila manda, el entorno es respaldo)", (
     estadoIaDe.mockResolvedValue({ activa: true, origen: "org", last4: "abcd" });
     const step = await paso("ai");
     expect(step).toMatchObject({ status: "ready", problem: null });
-    expect(step?.nextAction).toMatch(/Ajustes/);
+    expect(step?.nextAction).toMatch(/Definições/);
   });
 
   it("sin fila, OPENROUTER_* del entorno también cuenta", async () => {
     estadoIaDe.mockResolvedValue({ activa: true, origen: "env", last4: "abcd" });
     const step = await paso("ai");
     expect(step?.status).toBe("ready");
-    expect(step?.nextAction).toMatch(/entorno/);
+    expect(step?.nextAction).toMatch(/ambiente/);
   });
 
   it("una llave pausada NO está lista y el problema se dice (rechazada o sin saldo)", async () => {
@@ -164,7 +164,7 @@ describe("paso 2: el proveedor de IA (la fila manda, el entorno es respaldo)", (
     });
     const rechazada = await paso("ai");
     expect(rechazada?.status).toBe("pending");
-    expect(rechazada?.problem).toMatch(/rechazó/);
+    expect(rechazada?.problem).toMatch(/rejeitou/);
 
     estadoIaDe.mockResolvedValue({
       activa: false,
@@ -215,7 +215,7 @@ describe("paso 4: la agenda, solo con AGENDA=on", () => {
     rows.set(schema.calendarSettings, [{ connector: "zoom", weeklyHours: HORAS }]);
     const zoom = await paso("calendar");
     expect(zoom?.status).toBe("pending");
-    expect(zoom?.problem).toMatch(/Zoom.*no está conectado/);
+    expect(zoom?.problem).toMatch(/Zoom.*não está ligado/);
 
     rows.set(schema.calendarSettings, [{ connector: "google", weeklyHours: HORAS }]);
     expect((await paso("calendar"))?.problem).toMatch(/Google/);
@@ -229,7 +229,7 @@ describe("paso 4: la agenda, solo con AGENDA=on", () => {
     rows.set(schema.zoomCredentials, [{ status: "error" }]);
     const roto = await paso("calendar");
     expect(roto?.status).toBe("pending");
-    expect(roto?.problem).toMatch(/rechazó/);
+    expect(roto?.problem).toMatch(/rejeitou/);
 
     rows.set(schema.calendarSettings, [{ connector: "google", weeklyHours: HORAS }]);
     rows.set(schema.googleCredentials, [{ status: "connected" }]);

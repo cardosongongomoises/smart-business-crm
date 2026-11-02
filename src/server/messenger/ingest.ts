@@ -226,7 +226,7 @@ async function ingestAll(
     if (!creds) {
       console.warn(
         `[messenger] evento para una cuenta desconocida (${evt.routeKey}): ` +
-          "guarda la conexión en Configuración → Messenger para recibir mensajes"
+          "guarde a ligação em Definições → Messenger para receber mensagens"
       );
       continue;
     }

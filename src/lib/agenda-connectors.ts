@@ -1,5 +1,5 @@
 /**
- * 015 — El catálogo de conectores de agenda, sin dependencias de servidor.
+ * 015 — El catálogo de conectores de agenda, sem dependências de servidor.
  *
  * Vive en `lib/` por la misma razón que `lib/channels.ts`: la interfaz también
  * necesita saber qué conectores existen, cómo se llaman y qué prometen, para
@@ -42,7 +42,7 @@ export const CONNECTOR_META: Record<ConnectorId, ConnectorMeta> = {
   "enlace-fijo": {
     label: "Enlace fijo",
     description:
-      "Tu sala de siempre: pegas la URL una vez y cada cita la reparte. Sin conectar nada.",
+      "A sua sala habitual: cole o URL uma vez e cada marcação partilha-o. Sem ligar nada.",
     perBookingLink: false,
     updatesMeeting: false,
     writesCalendarEvent: false,
@@ -51,7 +51,7 @@ export const CONNECTOR_META: Record<ConnectorId, ConnectorMeta> = {
   zoom: {
     label: "Zoom",
     description:
-      "Cada cita crea su reunión de Zoom. Reprogramar la mueve; cancelar la borra.",
+      "Cada marcação cria a sua reunião no Zoom. Remarcá-la move-a; cancelá-la elimina-a.",
     perBookingLink: true,
     updatesMeeting: true,
     // Zoom sincroniza con el calendario del dueño por su cuenta, si él lo
@@ -62,7 +62,7 @@ export const CONNECTOR_META: Record<ConnectorId, ConnectorMeta> = {
   google: {
     label: "Google Calendar + Meet",
     description:
-      "Cada cita crea un evento en tu calendario con su enlace de Meet.",
+      "Cada marcação cria um evento no seu calendário com a respectiva ligação do Meet.",
     perBookingLink: true,
     updatesMeeting: true,
     writesCalendarEvent: true,

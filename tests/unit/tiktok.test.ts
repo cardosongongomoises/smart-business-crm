@@ -106,7 +106,7 @@ describe("022 · lo que TikTok impone, declarado en las capacidades", () => {
     expect(windowMsFor("tiktok")).toBe(48 * HORA);
     // Al operador se le dice qué pasa Y qué lo arregla.
     expect(windowClosedMessage("tiktok")).toContain("TikTok");
-    expect(windowClosedMessage("tiktok")).toContain("vuelva a escribir");
+    expect(windowClosedMessage("tiktok")).toContain("volte a escrever");
   });
 
   it("los demás canales conservan su ventana de 24 h y no ganan topes", () => {
@@ -117,12 +117,12 @@ describe("022 · lo que TikTok impone, declarado en las capacidades", () => {
     // Instagram y Messenger miden en bytes; WhatsApp, en caracteres.
     expect(capabilitiesFor("instagram").maxTextChars).toBeNull();
     expect(capabilitiesFor("messenger").maxTextChars).toBeNull();
-    // Sus textos de siempre no cambian.
+    // As mensagens continuam a explicar como resolver a janela fechada.
     expect(windowClosedMessage("whatsapp")).toBe(
-      "La ventana de 24 horas está cerrada; usa una plantilla aprobada"
+      "A janela de 24 horas está fechada; use um modelo aprovado."
     );
     // 024: la extensión humana tiene tope (7 días) y su propio mensaje.
-    expect(windowClosedMessage("messenger")).toContain("7 días");
+    expect(windowClosedMessage("messenger")).toContain("7 dias");
   });
 
   it("el texto se mide en CARACTERES: 6,000, y un emoji cuenta uno", () => {
@@ -133,12 +133,12 @@ describe("022 · lo que TikTok impone, declarado en las capacidades", () => {
     // 6,000 emojis son 12,000 unidades UTF-16: contando `.length`, también.
     expect(textFits("tiktok", "🙂".repeat(6000))).toBe(true);
     expect(textFits("tiktok", "🙂".repeat(6001))).toBe(false);
-    expect(textLimitMessage("tiktok")).toContain("6,000 caracteres");
+    expect(textLimitMessage("tiktok")).toMatch(/6[\s\u00a0\u202f]000 caracteres/);
     // WhatsApp conserva su límite de siempre (4,096), ahora declarado en el
     // canal en vez de en el esquema de la API; y la API acepta hasta el mayor.
     expect(textFits("whatsapp", "a".repeat(4096))).toBe(true);
     expect(textFits("whatsapp", "a".repeat(4097))).toBe(false);
-    expect(textLimitMessage("whatsapp")).toContain("4,096 caracteres");
+    expect(textLimitMessage("whatsapp")).toMatch(/4[\s\u00a0\u202f]096 caracteres/);
     expect(MAX_TEXT_CHARS_ANY_CHANNEL).toBe(6000);
     // Messenger sigue midiendo en bytes.
     expect(textFits("messenger", "é".repeat(1200))).toBe(false);
@@ -153,8 +153,8 @@ describe("022 · lo que TikTok impone, declarado en las capacidades", () => {
     expect(cabeOtroMensaje("tiktok", 11)).toBe(false);
     // Un canal sin tope siempre deja pasar.
     expect(cabeOtroMensaje("whatsapp", 500)).toBe(true);
-    expect(outboundLimitMessage("tiktok")).toContain("10 mensajes");
-    expect(outboundLimitMessage("tiktok")).toContain("vuelva a escribir");
+    expect(outboundLimitMessage("tiktok")).toContain("10 mensagens");
+    expect(outboundLimitMessage("tiktok")).toContain("volte a escrever");
   });
 });
 

@@ -47,7 +47,7 @@ export const AI_PROVIDER_PRESETS: Record<AiProviderId, AiProviderPreset> = {
 };
 
 export const AI_STATUS_LABEL: Record<AiStatus, string> = {
-  active: "Activo",
+  active: "Ativo",
   paused_invalid_token: "Em pausa: chave rejeitada",
   paused_no_credit: "Em pausa: sem saldo",
 };

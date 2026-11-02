@@ -231,7 +231,7 @@ function AyudaAtajos({ onClose }: { onClose: () => void }) {
         className="max-h-[80dvh] w-full max-w-md overflow-y-auto rounded-xl border border-border-strong bg-popover p-5 text-popover-foreground shadow-2xl"
       >
         <h2 className="mb-1 font-semibold">Atalhos de teclado</h2>
-        <p className="mb-4 text-xs text-text-3">Em Mac, Ctrl é ⌘ e Alt é Option.</p>
+        <p className="mb-4 text-xs text-text-3">Em Mac, Ctrl é ⌘ e Alt é Opção.</p>
         {grupos.map((g) => (
           <section key={g} className="mb-4 last:mb-0">
             <h3 className="kicker mb-2 text-text-3">{g}</h3>

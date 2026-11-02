@@ -67,7 +67,7 @@ export function BrainStatusCard({
           </Callout>
         )}
         {status.warning === "apagado" && (
-          <Callout tone="warning" icon={AlertTriangle} title="O seu agente está ligado mas desactivado">
+          <Callout tone="warning" icon={AlertTriangle} title="O seu agente está ligado, mas a resposta automática está desligada">
             Ligue-o com o interruptor acima para começar a responder. Entretanto ninguém responde de forma automática: as mensagens aguardam na caixa de entrada.
           </Callout>
         )}
@@ -114,14 +114,14 @@ function switchView(s: BrainStatusDto): RowView {
     return {
       tone: "off",
       headline,
-      detail: "Sem agente ligado não há para quem encaminhar: activa-se quando o ligar.",
+      detail: "Sem agente ligado, o CRM não tem para quem encaminhar.",
     };
   }
   if (!s.enabled) {
     return { tone: "warn", headline, detail: "O CRM não envia mensagens ao agente: ninguém responde de forma automática." };
   }
   if (externalDown(s)) {
-    return { tone: "warn", headline, detail: "O seu agente não está online: não responde até voltar a ficar disponível." };
+    return { tone: "warn", headline, detail: "O seu agente não está acessível: não responde até voltar a ficar disponível." };
   }
   return { tone: "ok", headline, detail: "O CRM encaminha cada mensagem para o seu agente." };
 }
@@ -136,9 +136,9 @@ function externalView(s: BrainStatusDto, now: number): RowView {
     const name = externalBrainName(s);
     const parts = [
       name,
-      "online",
+      "ligado",
       health.version && versionLabel(health.version),
-      health.mode && `modo ${health.mode}`,
+      health.mode && `modo ${modeLabel(health.mode)}`,
       health.relay && relayLabel(health.relay),
     ].filter(Boolean);
     return keyConfigured
@@ -162,7 +162,7 @@ function externalView(s: BrainStatusDto, now: number): RowView {
     const name = externalBrainName(s);
     return {
       tone: "warn",
-      headline: capitalize(`${name ? `${name} · ` : ""}não está online`),
+      headline: capitalize(`${name ? `${name} · ` : ""}não está acessível`),
       detail: `${health.host} ${problemLabel(health)}.${
         keyConfigured ? ` ${capitalize(chamada)}.` : ""
       }`,
@@ -197,13 +197,13 @@ function dispatchView(d: BrainDispatchDto, now: number): RowView {
   if (d.lastFailure && despachoFallando(d)) {
     return {
       tone: "warn",
-      headline: `Activo · ${d.host} · o último turno não foi entregue`,
+      headline: `Ativo · ${d.host} · o último turno não foi entregue`,
       detail: `${capitalize(d.lastFailure.detail)} (${haceCuanto(d.lastFailure.at, now)}). Após três tentativas falhadas, a conversa é atribuída a uma pessoa.${espera}`,
     };
   }
   return {
     tone: "ok",
-    headline: `Activo · ${d.host}`,
+    headline: `Ativo · ${d.host}`,
     detail: d.lastDeliveredAt
       ? `Último turno entregue ${haceCuanto(d.lastDeliveredAt, now)}.${espera}`
       : `Ainda não foi encaminhado nenhum turno.${espera}`,
@@ -212,6 +212,17 @@ function dispatchView(d: BrainDispatchDto, now: number): RowView {
 
 function versionLabel(v: string): string {
   return /^v/i.test(v) ? v : `v${v}`;
+}
+
+function modeLabel(mode: NonNullable<BrainHealthDto["mode"]>): string {
+  switch (mode) {
+    case "estándar":
+      return "padrão";
+    case "cloud":
+      return "na nuvem";
+    case "multiorg":
+      return "multi-organização";
+  }
 }
 
 function relayLabel(r: BrainRelayDto): string | null {

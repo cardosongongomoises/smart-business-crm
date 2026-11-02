@@ -18,7 +18,7 @@ const bodySchema = z.object({
  */
 export const POST = withAuth(async (session, req: Request) => {
   if (!canConfigure(session.role)) {
-    return apiError(403, "forbidden", "Solo quien administra puede cargar un rol");
+    return apiError(403, "forbidden", "Apenas quem administra pode carregar um papel");
   }
   const body = await parseBody(req, bodySchema);
   if (!body.ok) return body.response;
@@ -35,6 +35,6 @@ export const POST = withAuth(async (session, req: Request) => {
     })
     .where(scoped(schema.agentProfile.organizationId, session.organizationId))
     .returning();
-  if (!updated[0]) return apiError(404, "not_found", "Perfil no encontrado");
+  if (!updated[0]) return apiError(404, "not_found", "Perfil não encontrado");
   return Response.json({ ok: true, role: rol.clave });
 });

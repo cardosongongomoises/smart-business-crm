@@ -291,7 +291,7 @@ export function ConversationList({
       </header>
 
       {/* 052 (enmienda) — «Todas | No leídas» y un solo botón «Filtrar»: la
-          etapa, «Por vencer» y «De anuncios» viven en su menú, y lo elegido
+          etapa, «Por vencer» y «De anúncios» viven en su menú, y lo elegido
           se ve abajo como etiquetas que se quitan con ✕. */}
       <div className="border-b px-4">
         <div className="flex items-center gap-4">

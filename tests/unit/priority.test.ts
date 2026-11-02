@@ -19,6 +19,7 @@ describe("prioridad del lead", () => {
   it("el catálogo es cerrado y todo valor tiene etiqueta", () => {
     expect([...PRIORITY_VALUES]).toEqual(["alta", "media", "baja"]);
     for (const p of PRIORITY_VALUES) expect(PRIORITY_LABELS[p]).toBeTruthy();
+    expect(PRIORITY_LABELS).toEqual({ alta: "Alta", media: "Média", baja: "Baixa" });
   });
 
   it("valida entradas basura", () => {

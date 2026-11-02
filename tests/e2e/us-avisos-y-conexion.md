@@ -21,7 +21,7 @@ tiempo real, la bandeja se quedaba quieta sin decir nada.
 
 ## Camino verificado
 
-1. **AC1.** Con el permiso sin decidir, el menú ofrece «Activar avisos»; al
+1. **AC1.** Con el permiso sin decidir, el menú ofrece «Ativar notificações»; al
    concederlo, desaparece. Con el permiso negado, no aparece.
 2. **AC2.** Con Vocero oculto, un mensaje del cliente avisa: el nombre del
    contacto, el texto, el `tag` de su conversación y la URL que la abre. Un

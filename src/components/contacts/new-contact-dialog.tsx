@@ -186,7 +186,7 @@ export function NewContactDialog({
               rows={3}
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              placeholder="Me lo pasó Juan; tiene taller de motos…"
+              placeholder="Foi o João que me passou; tem uma oficina de motas…"
             />
           </div>
         </div>

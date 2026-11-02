@@ -72,7 +72,7 @@ export function versionLabel(commit: string = BUILD_COMMIT): string {
 }
 
 /** Lo que acompaña, en la insignia, a un commit que no salió del build. */
-export const UNVERIFIED_COMMIT_NOTE = "commit sin verificar";
+export const UNVERIFIED_COMMIT_NOTE = "commit não verificado";
 
 /**
  * El tooltip de la insignia. El nombre llega de la marca y no de una
@@ -85,11 +85,11 @@ export const UNVERIFIED_COMMIT_NOTE = "commit sin verificar";
 export function versionTitle(name: string, resolved: ResolvedCommit): string {
   if (!resolved.commit) return `${name} ${APP_VERSION}`;
   if (resolved.verified) {
-    return `${name} ${APP_VERSION}, construido del commit ${resolved.commit}`;
+    return `${name} ${APP_VERSION}, compilado a partir do commit ${resolved.commit}`;
   }
   return (
-    `${name} ${APP_VERSION}. El commit ${resolved.commit} no viene del build: ` +
-    "lo anunció la plataforma al arrancar y puede no ser el del código que " +
-    "corre. Para verificarlo, pásalo como build arg SOURCE_COMMIT en cada despliegue."
+    `${name} ${APP_VERSION}. O commit ${resolved.commit} não vem da compilação: ` +
+    "foi anunciado pela plataforma ao arrancar e pode não ser o do código em execução. " +
+    "Para o verificar, indique-o como argumento de compilação SOURCE_COMMIT em cada implementação."
   );
 }

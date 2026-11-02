@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-/** FR-060/FR-081: registro cerrado tras la 1ª organización, salvo escape. */
+/** FR-060/FR-081: registo fechado depois da 1.ª organização, salvo escape. */
 
 let orgCount = 0;
 
@@ -17,26 +17,26 @@ import { isPublicSignupAllowed } from "@/server/auth/registration";
 
 afterEach(() => vi.unstubAllEnvs());
 
-describe("registro público cerrado", () => {
-  it("instancia vacía → registro permitido (primer usuario)", async () => {
+describe("registo público fechado", () => {
+  it("instância vazia → registo permitido (primeiro utilizador)", async () => {
     orgCount = 0;
     vi.stubEnv("ALLOW_SIGNUP", "");
     expect(await isPublicSignupAllowed()).toBe(true);
   });
 
-  it("ya existe una organización → cerrado", async () => {
+  it("já existe uma organização → fechado", async () => {
     orgCount = 1;
     vi.stubEnv("ALLOW_SIGNUP", "");
     expect(await isPublicSignupAllowed()).toBe(false);
   });
 
-  it("escape ALLOW_SIGNUP=true → permitido aunque exista organización", async () => {
+  it("escape ALLOW_SIGNUP=true → permitido mesmo com organização existente", async () => {
     orgCount = 1;
     vi.stubEnv("ALLOW_SIGNUP", "true");
     expect(await isPublicSignupAllowed()).toBe(true);
   });
 
-  it("otros valores del escape NO abren el registro", async () => {
+  it("outros valores do escape NÃO abrem o registo", async () => {
     orgCount = 1;
     vi.stubEnv("ALLOW_SIGNUP", "1");
     expect(await isPublicSignupAllowed()).toBe(false);

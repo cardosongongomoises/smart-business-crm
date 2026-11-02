@@ -30,7 +30,6 @@ export type ProbeResult =
     };
 
 const PROBE_TIMEOUT_MS = 20_000;
-const MAX_BODY = 2000;
 
 /** Una llamada mínima: un turno de pocos tokens con el modelo elegido. */
 export async function probeProvider(input: {
@@ -53,7 +52,7 @@ export async function probeProvider(input: {
       ok: false,
       code: "bad_url",
       httpStatus: null,
-      message: "La base URL no es una dirección http(s) válida",
+      message: "A URL base não é um endereço http(s) válido",
     };
   }
 
@@ -73,7 +72,7 @@ export async function probeProvider(input: {
       },
       body: JSON.stringify({
         model: input.model,
-        messages: [{ role: "user", content: "Responde solo: ok" }],
+        messages: [{ role: "user", content: "Responda apenas: ok" }],
         max_tokens: 5,
       }),
       signal: controller.signal,
@@ -88,7 +87,7 @@ export async function probeProvider(input: {
           code: "provider_error",
           httpStatus: res.status,
           message:
-            "El proveedor contestó, pero no con el formato de la API de OpenAI (sin `choices`)",
+            "O fornecedor respondeu, mas não no formato da API da OpenAI (sem `choices`)",
         };
       }
       return { ok: true, latencyMs: Date.now() - inicio };
@@ -101,14 +100,14 @@ export async function probeProvider(input: {
           ok: false,
           code: "timeout",
           httpStatus: null,
-          message: "El proveedor no contestó a tiempo",
+          message: "O fornecedor não respondeu a tempo",
         }
       : {
           ok: false,
           code: "unreachable",
           httpStatus: null,
           message:
-            "No se pudo conectar con el proveedor: revisa la base URL y la red del servidor",
+            "Não foi possível ligar ao fornecedor: reveja a URL base e a rede do servidor",
         };
   } finally {
     clearTimeout(timer);
@@ -120,13 +119,12 @@ export function clasificarFallo(
   status: number,
   body: string
 ): Extract<ProbeResult, { ok: false }> {
-  const detalle = resumenDelCuerpo(body);
   if (status === 401 || status === 403) {
     return {
       ok: false,
       code: "invalid_token",
       httpStatus: status,
-      message: `El proveedor rechazó la llave (${status})${detalle}`,
+      message: `O fornecedor rejeitou a chave (${status}).`,
     };
   }
   if (status === 402) {
@@ -134,7 +132,7 @@ export function clasificarFallo(
       ok: false,
       code: "no_credit",
       httpStatus: status,
-      message: `La cuenta no tiene saldo (402)${detalle}`,
+      message: "A conta não tem saldo (402).",
     };
   }
   if (status === 404 || (status === 400 && /model/i.test(body))) {
@@ -142,7 +140,7 @@ export function clasificarFallo(
       ok: false,
       code: "model_not_found",
       httpStatus: status,
-      message: `El proveedor no reconoce ese modelo (${status})${detalle}`,
+      message: `O fornecedor não reconhece esse modelo (${status}).`,
     };
   }
   if (status === 429) {
@@ -150,31 +148,15 @@ export function clasificarFallo(
       ok: false,
       code: "rate_limited",
       httpStatus: status,
-      message: `El proveedor pide esperar (429): la llave sirve, vuelve a probar en un momento${detalle}`,
+      message: "O fornecedor pede para aguardar (429): a chave funciona; tente novamente dentro de instantes.",
     };
   }
   return {
     ok: false,
     code: "provider_error",
     httpStatus: status,
-    message: `El proveedor respondió ${status}${detalle}`,
+    message: `O fornecedor respondeu ${status}. Reveja a configuração e tente novamente.`,
   };
-}
-
-/** El `error.message` del cuerpo si lo trae, truncado; si no, nada. */
-function resumenDelCuerpo(body: string): string {
-  if (!body) return "";
-  let texto = body;
-  try {
-    const json = JSON.parse(body) as { error?: { message?: unknown } | string };
-    if (typeof json?.error === "string") texto = json.error;
-    else if (typeof json?.error?.message === "string") texto = json.error.message;
-  } catch {
-    // no era JSON: se usa el texto tal cual
-  }
-  texto = texto.replace(/\s+/g, " ").trim();
-  if (!texto) return "";
-  return `: ${texto.length > MAX_BODY ? `${texto.slice(0, MAX_BODY)}…` : texto}`;
 }
 
 export type ModelsResult =
@@ -213,7 +195,7 @@ export async function listModels(input: {
       ok: false,
       code: "bad_url",
       httpStatus: null,
-      message: "La base URL no es una dirección http(s) válida",
+      message: "A URL base não é um endereço http(s) válido",
     };
   }
 
@@ -236,7 +218,7 @@ export async function listModels(input: {
         ok: false,
         code: "invalid_token",
         httpStatus: res.status,
-        message: `El proveedor rechazó la llave (${res.status})`,
+        message: `O fornecedor rejeitou a chave (${res.status})`,
       };
     }
     if (res.status === 404 || res.status === 405 || res.status === 501) {
@@ -247,7 +229,7 @@ export async function listModels(input: {
         ok: false,
         code: "provider_error",
         httpStatus: res.status,
-        message: `El proveedor respondió ${res.status} al pedir la lista de modelos`,
+        message: `O fornecedor respondeu ${res.status} ao pedir a lista de modelos`,
       };
     }
     const json = (await res.json().catch(() => null)) as {
@@ -274,14 +256,14 @@ export async function listModels(input: {
           ok: false,
           code: "timeout",
           httpStatus: null,
-          message: "El proveedor no contestó a tiempo",
+          message: "O fornecedor não respondeu a tempo",
         }
       : {
           ok: false,
           code: "unreachable",
           httpStatus: null,
           message:
-            "No se pudo conectar con el proveedor: revisa la base URL y la red del servidor",
+            "Não foi possível ligar ao fornecedor: reveja a URL base e a rede do servidor",
         };
   } finally {
     clearTimeout(timer);
@@ -294,6 +276,6 @@ function noSoportado(status: number): Extract<ModelsResult, { ok: false }> {
     code: "unsupported",
     httpStatus: status,
     message:
-      "Este proveedor no publica su lista de modelos: escribe el nombre del modelo a mano",
+      "Este fornecedor não publica a lista de modelos: escreva o nome do modelo manualmente",
   };
 }

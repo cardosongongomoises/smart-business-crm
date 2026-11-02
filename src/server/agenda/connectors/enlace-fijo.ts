@@ -26,6 +26,6 @@ export const enlaceFijoConnector: AgendaConnector<EnlaceFijoCreds> = {
   async deleteMeeting() {},
 
   async testConnection() {
-    return { ok: true, detail: "El enlace fijo no requiere conexión" };
+    return { ok: true, detail: "O link fixo não requer ligação" };
   },
 };

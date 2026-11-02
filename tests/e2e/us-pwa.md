@@ -43,7 +43,7 @@ porque en incógnito Chromium nunca da una app por instalable.
    ✅ El service worker queda activo con alcance `/`.
    ✅ `Page.getAppManifest` no da errores.
    ✅ `Page.getInstallabilityErrors` sale vacío.
-5. **Botón (AC6).** Sin `beforeinstallprompt`, no hay «Instalar app». Con el
+5. **Botón (AC6).** Sin `beforeinstallprompt`, no hay «Instalar aplicação». Con el
    aviso (simulado) aparece encima de Ajustes.
    ✅ Al usarlo se llama a `prompt()` una vez y la fila desaparece.
 6. **Sin conexión (AC5).** Con la red cortada, navegar a `/pipeline` da

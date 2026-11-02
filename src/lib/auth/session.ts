@@ -16,18 +16,18 @@ export class UnauthorizedError extends Error {
 }
 
 /**
- * Sesión + organización activa para route handlers y server components.
- * Lanza UnauthorizedError si no hay sesión u organización.
+ * Sessão + organização ativa para route handlers e server components.
+ * Lança UnauthorizedError se não existir sessão ou organização.
  */
 export async function requireSession(): Promise<SessionContext> {
   const auth = getAuth();
   const session = await auth.api.getSession({ headers: await headers() });
   if (!session) throw new UnauthorizedError();
-  // La sesión puede crearse antes de que la membresía exista (registro
-  // inicial) — la membresía en BD es la fuente de verdad de org + rol.
+  // A sessão pode ser criada antes de existir a adesão (registo inicial) — a
+  // adesão na BD é a fonte de verdade da organização + papel.
   const membership = await resolveMembership(session.user.id);
   if (!membership) {
-    throw new UnauthorizedError("Sesión sin organización activa");
+    throw new UnauthorizedError("Sessão sem organização ativa");
   }
   return {
     userId: session.user.id,

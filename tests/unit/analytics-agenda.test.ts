@@ -94,14 +94,14 @@ describe("la sección del agente y la bandera AGENDA", () => {
 
   it("apagada no habla de citas, aunque llegaran datos", () => {
     const html = pintar(false, datos);
-    expect(html).not.toMatch(/cita/i);
-    expect(html).not.toContain("Asistencia");
-    expect(html).toContain("Contestó el agente");
+    expect(html).not.toContain("Marcações");
+    expect(html).not.toContain("Presença");
+    expect(html).toContain("O agente respondeu");
   });
 
   it("encendida enseña las citas del periodo", () => {
     const html = pintar(true, datos);
-    expect(html).toContain("Citas del periodo");
-    expect(html).toContain("Asistencia");
+    expect(html).toContain("Marcações do período");
+    expect(html).toContain("Presença");
   });
 });

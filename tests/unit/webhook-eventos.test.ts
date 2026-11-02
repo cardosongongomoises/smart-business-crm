@@ -72,7 +72,7 @@ describe("el error que se guarda", () => {
   it("es el mensaje recortado a 300 caracteres, nunca otra cosa", () => {
     expect(resumenDeError(new Error("x".repeat(500)))).toHaveLength(300);
     expect(resumenDeError("texto")).toBe("texto");
-    expect(resumenDeError(new Error(""))).toBe("error desconocido");
+    expect(resumenDeError(new Error(""))).toBe("erro desconhecido");
   });
 });
 

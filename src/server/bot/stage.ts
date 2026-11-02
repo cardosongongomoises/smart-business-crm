@@ -71,8 +71,8 @@ export type ResultadoEtapa =
 
 function listaParaElModelo(stages: readonly { name: string }[]): string {
   return stages.length
-    ? `Puedes moverlo a: ${stages.map((s) => s.name).join(", ")}.`
-    : "No hay etapas a las que puedas moverlo.";
+    ? `Pode movê-lo para: ${stages.map((s) => s.name).join(", ")}.`
+    : "Não há etapas para as quais o possa mover.";
 }
 
 export async function moverEtapaPorElCerebro(input: {
@@ -101,7 +101,7 @@ export async function moverEtapaPorElCerebro(input: {
     .limit(1);
   const conv = convRows[0];
   if (!conv) {
-    return { ok: false, status: 404, code: "not_found", message: "Conversación no encontrada" };
+    return { ok: false, status: 404, code: "not_found", message: "Conversa não encontrada" };
   }
   // Misma regla que `/api/bot/messages`: con una persona al frente, el
   // cerebro no toca la conversación.
@@ -110,7 +110,7 @@ export async function moverEtapaPorElCerebro(input: {
       ok: false,
       status: 409,
       code: "ai_paused",
-      message: "La IA está en pausa en esta conversación",
+      message: "A IA está em pausa nesta conversa",
     };
   }
 
@@ -125,7 +125,7 @@ export async function moverEtapaPorElCerebro(input: {
       ok: false,
       status: 409,
       code: "herramienta_apagada",
-      message: "La herramienta «Mover de etapa» está apagada en el perfil del agente",
+      message: "A ferramenta «Mover de etapa» está desligada no perfil do agente",
     };
   }
 
@@ -150,7 +150,7 @@ export async function moverEtapaPorElCerebro(input: {
   ]);
   const lead = leadRows[0];
   if (!lead) {
-    return { ok: false, status: 404, code: "sin_lead", message: "El contacto no tiene lead en el pipeline" };
+    return { ok: false, status: 404, code: "sin_lead", message: "O contacto não tem negócio no pipeline" };
   }
 
   const siguientes = etapasSiguientes(stages, lead.stageId);
@@ -160,7 +160,7 @@ export async function moverEtapaPorElCerebro(input: {
       ok: false,
       status: 422,
       code: "etapa_desconocida",
-      message: `No existe la etapa «${input.stage.trim()}». ${listaParaElModelo(siguientes)}`,
+      message: `A etapa «${input.stage.trim()}» não existe. ${listaParaElModelo(siguientes)}`,
     };
   }
 
@@ -171,7 +171,7 @@ export async function moverEtapaPorElCerebro(input: {
       ok: false,
       status: 409,
       code: "etapa_no_permitida",
-      message: `No puedes mover al lead a «${destino.name}»: solo hacia adelante y a etapas abiertas. ${listaParaElModelo(siguientes)}`,
+      message: `Não pode mover o negócio para «${destino.name}»: só é possível avançar para etapas abertas. ${listaParaElModelo(siguientes)}`,
     };
   }
 
@@ -185,7 +185,7 @@ export async function moverEtapaPorElCerebro(input: {
   if (!res.ok) {
     // Solo si el lead o la etapa desaparecieron entre la lectura y el
     // movimiento (el dueño borró algo en ese instante).
-    return { ok: false, status: 404, code: "sin_lead", message: "El lead o la etapa ya no existen" };
+    return { ok: false, status: 404, code: "sin_lead", message: "O negócio ou a etapa já não existem" };
   }
 
   return {

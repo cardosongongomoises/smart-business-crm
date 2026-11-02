@@ -10,37 +10,37 @@
 
 const DESCRIPTIONS: Record<number, string> = {
   130472:
-    "Meta tiene el número del destinatario en un experimento y le está bloqueando los mensajes de MARKETING. No es un fallo de tu configuración: prueba con una plantilla de categoría UTILITY o con otro número.",
+    "A Meta incluiu o número do destinatário numa experiência e está a bloquear mensagens de MARKETING. Não é um problema da sua configuração: experimente um modelo da categoria UTILITY ou outro número.",
   131049:
-    "Meta limitó los mensajes de marketing hacia este usuario para cuidar la calidad del ecosistema. Espera o usa una plantilla de categoría UTILITY.",
+    "A Meta limitou as mensagens de marketing para este utilizador, para proteger a qualidade do ecossistema. Aguarde ou use um modelo da categoria UTILITY.",
   131047:
-    "Pasaron más de 24 h desde el último mensaje del cliente: solo se puede reabrir con una plantilla aprobada.",
+    "Passaram mais de 24 h desde a última mensagem do cliente: só é possível reabrir com um modelo aprovado.",
   131048:
-    "Meta frenó el envío por límite de spam en tu número. Baja el ritmo de envíos y revisa la calidad del número.",
+    "A Meta interrompeu o envio devido ao limite de spam do seu número. Reduza o ritmo de envios e reveja a qualidade do número.",
   131026:
-    "El destinatario no puede recibir mensajes de WhatsApp (número inexistente, sin cuenta o que no acepta mensajes de empresas).",
+    "O destinatário não pode receber mensagens do WhatsApp (número inexistente, sem conta ou que não aceita mensagens de empresas).",
   131031:
-    "Tu cuenta de WhatsApp Business está bloqueada o restringida por Meta. Revísalo en el Administrador de WhatsApp.",
+    "A sua conta do WhatsApp Business está bloqueada ou restringida pela Meta. Reveja no Gestor do WhatsApp.",
   131030:
-    "El número del destinatario no está en la lista de permitidos de tu app en modo de prueba.",
+    "O número do destinatário não está na lista de permitidos da sua aplicação em modo de teste.",
   130429:
-    "Superaste el límite de mensajes por segundo de Meta. Reintenta en unos momentos.",
+    "Ultrapassou o limite de mensagens por segundo da Meta. Tente novamente dentro de alguns instantes.",
   132000:
-    "La plantilla y los parámetros enviados no coinciden (faltan o sobran variables).",
+    "O modelo e os parâmetros enviados não coincidem (faltam ou sobram variáveis).",
   132001:
-    "Meta no encuentra esa plantilla con ese idioma. Sincroniza las plantillas y confirma que sigue aprobada.",
+    "A Meta não encontra esse modelo nesse idioma. Sincronize os modelos e confirme que continua aprovado.",
   132005:
-    "El texto traducido de la plantilla supera el límite de caracteres de Meta.",
+    "O texto traduzido do modelo ultrapassa o limite de caracteres da Meta.",
   132007:
-    "El contenido de la plantilla viola las políticas de Meta.",
+    "O conteúdo do modelo viola as políticas da Meta.",
   132012:
-    "Los parámetros de la plantilla no respetan el formato que Meta espera.",
+    "Os parâmetros do modelo não respeitam o formato esperado pela Meta.",
   132015:
-    "La plantilla está pausada por baja calidad: Meta no la deja enviar hasta que se recupere.",
+    "O modelo está pausado devido à baixa qualidade: a Meta não permite o envio até recuperar.",
   132016:
-    "La plantilla fue deshabilitada por calidad y ya no se puede enviar.",
-  133010: "El número no está registrado en la Cloud API.",
-  368: "El número está temporalmente bloqueado por infringir las políticas de Meta.",
+    "O modelo foi desativado por motivos de qualidade e já não pode ser enviado.",
+  133010: "O número não está registado na Cloud API.",
+  368: "O número está temporariamente bloqueado por infringir as políticas da Meta.",
 };
 
 /**
@@ -49,11 +49,11 @@ const DESCRIPTIONS: Record<number, string> = {
  */
 export function describeSendError(
   code: number | null | undefined,
-  detail?: string | null
+  _detail?: string | null
 ): string {
   const known = code != null ? DESCRIPTIONS[code] : undefined;
   // `||` y no `??`: Meta a veces manda el texto vacío o en blanco, y un
   // mensaje de error vacío es tan inútil como el triángulo mudo.
-  const base = known || detail?.trim() || "Meta rechazó el envío";
+  const base = known || "A Meta rejeitou o envio";
   return code != null ? `${base} (Meta ${code})` : base;
 }

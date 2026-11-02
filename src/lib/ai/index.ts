@@ -69,7 +69,7 @@ export async function chatJson<T>(
     return {
       ok: false,
       error: "not_configured",
-      detail: "Sin modelo configurado (Ajustes → IA u OPENROUTER_MODEL)",
+      detail: "Nenhum modelo configurado (Definições → IA ou OPENROUTER_MODEL)",
     };
   }
 
@@ -148,11 +148,11 @@ export async function chatJson<T>(
 function detalleNoConfigurado(estado: Exclude<EstadoIa, { activa: true }>): string {
   switch (estado.motivo) {
     case "sin_configurar":
-      return "Sin proveedor de IA: configúralo en Ajustes → IA (u OPENROUTER_API_TOKEN en el entorno)";
+      return "Sem fornecedor de IA: configure-o em Definições → IA (ou OPENROUTER_API_TOKEN no ambiente)";
     case "token_invalido":
-      return `La llave de IA (…${estado.last4}) está pausada: el proveedor la rechazó`;
+      return `A chave de IA (…${estado.last4}) está em pausa: o fornecedor rejeitou-a`;
     case "sin_saldo":
-      return `La llave de IA (…${estado.last4}) está pausada: la cuenta no tiene saldo`;
+      return `A chave de IA (…${estado.last4}) está em pausa: a conta não tem saldo`;
   }
 }
 

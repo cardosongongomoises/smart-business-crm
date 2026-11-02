@@ -101,8 +101,8 @@ type MediaInput = {
 };
 
 /**
- * 008 — Extrae el adjunto de un mensaje del webhook (entrante o echo).
- * Tolerante: payload incompleto → null (el mensaje se conserva sin adjunto).
+ * 008 — Extrae el anexo de un mensaje del webhook (entrante o echo).
+ * Tolerante: payload incompleto → null (el mensaje se conserva sin anexo).
  */
 export function mediaInputFrom(msg: WebhookMessage): MediaInput | null {
   if (msg.type === "location" && msg.location) {
@@ -189,7 +189,7 @@ async function attachMediaAsset(
     }
     return asset;
   } catch (err) {
-    console.warn(`[media] no se pudo registrar el adjunto de ${messageId}:`, err);
+    console.warn(`[media] no se pudo registrar el anexo de ${messageId}:`, err);
     return null;
   }
 }
@@ -248,7 +248,7 @@ export async function getOrCreateConversation(
     )
     .limit(1);
   const existing = rows[0];
-  if (!existing) throw new Error("conversación no encontrada tras upsert");
+  if (!existing) throw new Error("conversa não encontrada após upsert");
   // 014: el hilo de la plataforma puede aparecer despues (o cambiar); se
   // guarda en cuanto se conoce para poder responder.
   if (opts?.threadRef && existing.channelThreadRef !== opts.threadRef) {
@@ -275,7 +275,7 @@ export async function processMessagesValue(value: WebhookValue): Promise<void> {
     // en el wizard — el evento llega pero no hay a qué organización enrutarlo.
     console.warn(
       `[webhook] evento para phone_number_id desconocido (${phoneNumberId}): ` +
-        "guarda la conexión en Configuración → WhatsApp para recibir mensajes"
+        "guarde a ligação em Definições → WhatsApp para receber mensagens"
     );
     return;
   }
@@ -565,7 +565,7 @@ function toDate(timestamp: string): Date {
 }
 
 /**
- * 044 — Publica el estado final del adjunto (disponible o fallido) para que la
+ * 044 — Publica el estado final del anexo (disponible o fallido) para que la
  * burbuja deje de decir «descargando…» sin recargar.
  */
 async function avisarAdjuntoListo(

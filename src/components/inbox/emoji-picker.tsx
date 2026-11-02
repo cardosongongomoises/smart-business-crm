@@ -62,7 +62,7 @@ export function EmojiPicker({
         type="button"
         disabled={disabled}
         aria-label="Emojis"
-        title="Insertar emoji"
+        title="Inserir emoji"
         aria-expanded={visible}
         aria-controls={visible ? id : undefined}
         aria-haspopup="dialog"
@@ -85,14 +85,14 @@ export function EmojiPicker({
         <div
           id={id}
           role="dialog"
-          aria-label="Selector de emojis"
+          aria-label="Seletor de emojis"
           className="absolute bottom-full left-2 right-2 z-30 mb-2 flex h-[min(360px,55dvh)] max-w-[360px] flex-col rounded-xl border border-border-strong bg-popover p-3 text-popover-foreground shadow-xl"
         >
           <div className="mb-2 flex items-center justify-between">
             <p className="text-sm font-semibold">Emojis</p>
             <button
               type="button"
-              aria-label="Cerrar emojis"
+              aria-label="Fechar emojis"
               className="rounded p-1 text-text-3 hover:bg-secondary hover:text-foreground"
               onClick={() => {
                 setOpen(false);
@@ -107,8 +107,8 @@ export function EmojiPicker({
             <input
               ref={searchBox}
               type="search"
-              aria-label="Buscar emojis"
-              placeholder="Buscar emoji…"
+              aria-label="Pesquisar emojis"
+              placeholder="Pesquisar emoji…"
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);
@@ -119,7 +119,7 @@ export function EmojiPicker({
           </div>
           <div
             role="group"
-            aria-label="Categorías de emojis"
+            aria-label="Categorias de emojis"
             className="mb-2 flex shrink-0 gap-0.5 overflow-x-auto border-b pb-2"
           >
             {[{ id: "all" as const, label: "Todos", icon: "🔎" }, ...EMOJI_CATEGORIES].map((item) => (
@@ -157,7 +157,7 @@ export function EmojiPicker({
                     key={emoji.value}
                     type="button"
                     title={emoji.label}
-                    aria-label={`Insertar emoji: ${emoji.label}`}
+                    aria-label={`Inserir emoji: ${emoji.label}`}
                     onClick={() => onSelect(emoji.value)}
                     className="flex h-9 min-w-0 items-center justify-center rounded-md text-2xl hover:bg-brand-tint focus-visible:bg-brand-tint focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand"
                   >
@@ -167,7 +167,7 @@ export function EmojiPicker({
               </div>
             ) : (
               <p role="status" className="py-6 text-center text-sm text-text-3">
-                No hay emojis que coincidan.
+                Não foram encontrados emojis correspondentes.
               </p>
             )}
           </div>

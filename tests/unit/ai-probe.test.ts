@@ -50,9 +50,10 @@ describe("probeProvider", () => {
     expect(clasificarFallo(500, "").code).toBe("provider_error");
   });
 
-  it("incluye el error.message del proveedor en el mensaje", () => {
+  it("mantém o status HTTP sem expor o texto bruto do fornecedor", () => {
     const r = clasificarFallo(401, '{"error":{"message":"User not found."}}');
-    expect(r.message).toContain("User not found.");
+    expect(r.message).toContain("O fornecedor rejeitou a chave (401)");
+    expect(r.message).not.toContain("User not found.");
     expect(r.httpStatus).toBe(401);
   });
 

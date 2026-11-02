@@ -54,14 +54,14 @@ export const POST = withAuth(async (session, req: Request) => {
     // Sin cuerpo: el registro de siempre.
   }
   if (recuperar && !canConfigure(session.role)) {
-    return apiError(403, "forbidden", "Solo quien administra puede recuperar el webhook");
+    return apiError(403, "forbidden", "Apenas quem administra pode recuperar o webhook");
   }
   const creds = await getCredentialsByOrg(session.organizationId);
   if (!creds) {
     return apiError(
       409,
       "sin_conexion",
-      "Primero guarda la conexión de WhatsApp."
+      "Primeiro guarde a ligação do WhatsApp."
     );
   }
 

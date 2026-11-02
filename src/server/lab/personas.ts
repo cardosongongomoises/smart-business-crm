@@ -44,10 +44,10 @@ export const PERSONAS: Persona[] = [
   },
   {
     key: "cliente_enojado",
-    label: "Cliente enojado",
+    label: "Cliente zangado",
     description: "Llega molesto por un problema con su compra.",
     phone: "5210000000003",
-    contactName: "[Prueba] Cliente enojado",
+    contactName: "[Prueba] Cliente zangado",
     script: [
       "Oigan, esto es el colmo",
       "Compré una lijadora la semana pasada y ya no prende, es una porquería",
@@ -57,8 +57,8 @@ export const PERSONAS: Persona[] = [
   },
   {
     key: "fuera_de_kb",
-    label: "Pregunta fuera del conocimiento",
-    description: "Pregunta algo que el knowledge base no cubre (fuera_de_kb).",
+    label: "Pergunta fora do conhecimento",
+    description: "Pergunta algo que a base de conhecimento não cobre (fuera_de_kb).",
     phone: "5210000000004",
     contactName: "[Prueba] Fuera del conocimiento",
     script: [
@@ -70,8 +70,8 @@ export const PERSONAS: Persona[] = [
   },
   {
     key: "pide_humano",
-    label: "Pide un humano",
-    description: "Quiere ser atendido por una persona (debe escalar).",
+    label: "Pede uma pessoa",
+    description: "Quer ser atendido por uma pessoa (deve transferir).",
     phone: "5210000000005",
     contactName: "[Prueba] Pide humano",
     script: [
@@ -83,10 +83,10 @@ export const PERSONAS: Persona[] = [
   },
   {
     key: "errores_modismos",
-    label: "Errores y modismos",
-    description: "Escribe con faltas de ortografía y modismos mexicanos.",
+    label: "Erros e expressões",
+    description: "Escreve com erros ortográficos e expressões mexicanas.",
     phone: "5210000000006",
-    contactName: "[Prueba] Errores y modismos",
+    contactName: "[Prueba] Erros e expressões",
     script: [
       "ke onda, si benden pintura?",
       "oiga y no le sabe si tienen tiner",
@@ -100,7 +100,7 @@ export const PERSONAS: Persona[] = [
   {
     key: "hostil",
     label: "Hostil",
-    description: "Insulta de forma sostenida; debe cerrar con dignidad y escalar.",
+    description: "Insulta de forma persistente; deve encerrar com dignidade e transferir.",
     phone: "5210000000007",
     contactName: "[Prueba] Hostil",
     script: [
@@ -112,8 +112,8 @@ export const PERSONAS: Persona[] = [
   },
   {
     key: "sin_rumbo",
-    label: "Sin rumbo",
-    description: "Solo manda relleno; debe despedirse y dejar de perseguir.",
+    label: "Sem rumo",
+    description: "Só envia mensagens sem conteúdo; deve despedir-se e deixar de insistir.",
     phone: "5210000000008",
     contactName: "[Prueba] Sin rumbo",
     script: ["Hola", "ok", "jaja", "👍", "ok gracias", "sale"],

@@ -34,7 +34,7 @@ describe("resolvePeriod", () => {
     expect(p.dto.days).toBe(30);
   });
 
-  it("'hoy' es el del negocio: las 20:00 del 5 en México siguen siendo el 5", () => {
+  it("'hoje' é o do negócio: as 20:00 do dia 5 no México continuam no dia 5", () => {
     // 2026-03-06T02:00Z ya es día 6 en UTC.
     const p = resolvePeriod({ timezone: MX, now: new Date("2026-03-06T02:00:00Z") });
     expect(p.dto.to).toBe("2026-03-05");
@@ -143,22 +143,22 @@ describe("bucketsDelPeriodo", () => {
 describe("atajos del rango", () => {
   it("se calculan sobre el hoy del negocio, en fechas de calendario", () => {
     const a = Object.fromEntries(shortcuts("2026-03-15").map((s) => [s.label, s.range]));
-    expect(a["7 días"]).toEqual({ from: "2026-03-09", to: "2026-03-15" });
-    expect(a["30 días"]).toEqual({ from: "2026-02-14", to: "2026-03-15" });
-    expect(a["Este mes"]).toEqual({ from: "2026-03-01", to: "2026-03-15" });
+    expect(a["7 dias"]).toEqual({ from: "2026-03-09", to: "2026-03-15" });
+    expect(a["30 dias"]).toEqual({ from: "2026-02-14", to: "2026-03-15" });
+    expect(a["Este mês"]).toEqual({ from: "2026-03-01", to: "2026-03-15" });
     // Marzo: el mes pasado es un febrero de 28 días.
-    expect(a["Mes pasado"]).toEqual({ from: "2026-02-01", to: "2026-02-28" });
+    expect(a["Mês passado"]).toEqual({ from: "2026-02-01", to: "2026-02-28" });
   });
 
   it("en enero, el mes pasado es diciembre del año anterior", () => {
     const a = Object.fromEntries(shortcuts("2026-01-05").map((s) => [s.label, s.range]));
-    expect(a["Mes pasado"]).toEqual({ from: "2025-12-01", to: "2025-12-31" });
+    expect(a["Mês passado"]).toEqual({ from: "2025-12-01", to: "2025-12-31" });
   });
 
   it("'30 días' coincide con el periodo por defecto del servidor", () => {
     const hoy = "2026-03-15";
     const servidor = resolvePeriod({ timezone: MX, now: new Date("2026-03-15T18:00:00Z") });
-    const cliente = shortcuts(hoy).find((s) => s.label === "30 días")!.range;
+    const cliente = shortcuts(hoy).find((s) => s.label === "30 dias")!.range;
     expect(cliente).toEqual({ from: servidor.dto.from, to: servidor.dto.to });
   });
 });

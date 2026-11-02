@@ -43,6 +43,15 @@ const REFERRAL_CTWA = {
   ctwa_clid: "ARAkLkA8rmlFeiCktEJQ-QTwRiyYHAFDLMNDBH0CD3qpjd0HR4irJ6LEkR7JwFF4XvnO",
 };
 
+describe("textos do anúncio", () => {
+  it("traduz a origem e os títulos predefinidos", () => {
+    expect(etiquetaDeOrigen("ad")).toBe("Anúncio");
+    expect(etiquetaDeOrigen("post")).toBe("Publicação");
+    expect(titularDeOrigen(null, "ad")).toBe("Anúncio sem título");
+    expect(titularDeOrigen(null, "post")).toBe("Publicação sem título");
+  });
+});
+
 describe("anuncioDeWhatsapp", () => {
   it("normaliza el referral completo de un anuncio Click-to-WhatsApp", () => {
     const a = anuncioDeWhatsapp(REFERRAL_CTWA);
@@ -396,9 +405,9 @@ describe("fuente y etiquetas", () => {
     expect(cuentaComoAnuncio({ sourceType: "ad" })).toBe(true);
     expect(cuentaComoAnuncio({ sourceType: null })).toBe(true);
     expect(cuentaComoAnuncio(null)).toBe(false);
-    expect(etiquetaDeOrigen("post")).toBe("Publicación");
-    expect(etiquetaDeOrigen("ad")).toBe("Anuncio");
-    expect(titularDeOrigen(null, "ad")).toBe("Anuncio sin título");
+    expect(etiquetaDeOrigen("post")).toBe("Publicação");
+    expect(etiquetaDeOrigen("ad")).toBe("Anúncio");
+    expect(titularDeOrigen(null, "ad")).toBe("Anúncio sem título");
     expect(titularDeOrigen("Promo", "post")).toBe("Promo");
   });
 });

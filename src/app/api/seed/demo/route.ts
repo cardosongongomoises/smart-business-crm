@@ -15,7 +15,7 @@ export const POST = withAuth(async (session) => {
     return apiError(
       409,
       "not_empty",
-      "Ya hay datos en la organización; la demo solo se carga con la base vacía"
+      "Já existem dados na organização; a demonstração só é carregada com a base de dados vazia"
     );
   }
   const result = await seedDemo(db, session.organizationId);

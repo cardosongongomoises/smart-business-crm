@@ -2,12 +2,12 @@ import { and, eq } from "drizzle-orm";
 import { getDb, schema } from "@/lib/db";
 import { scoped } from "@/lib/db/tenant";
 import { claseReenvio, llevaPie } from "@/lib/reenvio";
-import { ForwardImageError, leerParaReenviar } from "./forward-image";
+import { ForwardImageError, leerParaReencaminhar } from "./forward-image";
 import { SendError, sendMediaMessage, sendText } from "./send";
 
 /**
  * 059 — Reenvía cualquier mensaje del historial a otra conversación (D1, D2):
- * el texto sale como texto libre y un adjunto como un archivo nuevo, por
+ * el texto sale como texto libre y un anexo como un archivo nuevo, por
  * `sendText` o `sendMediaMessage`, con todas sus guardas (sandbox, ventana,
  * canal, credenciales). El cliente solo nombra el mensaje de origen.
  *
@@ -50,19 +50,19 @@ export async function forwardMessage(input: {
     )
     .limit(1);
   const source = rows[0];
-  if (!source) throw new ForwardImageError(404, "not_found", "Mensaje no encontrado");
+  if (!source) throw new ForwardImageError(404, "not_found", "Mensagem não encontrada");
   if (source.conversation.isTest) {
-    throw new SendError("sandbox_violation", "No se reenvían mensajes del Laboratorio");
+    throw new SendError("sandbox_violation", "As mensagens do Laboratório não podem ser reencaminhadas");
   }
   if (source.message.conversationId === input.conversationId) {
-    throw new ForwardImageError(422, "invalid", "Elige otra conversación para reenviar el mensaje");
+    throw new ForwardImageError(422, "invalid", "Escolha outra conversa para reencaminhar a mensagem");
   }
 
   const { message, asset } = source;
   const media = asset ? { kind: asset.kind } : null;
   const clase = claseReenvio({ type: message.type, text: message.text, media });
   if (!clase) {
-    throw new ForwardImageError(422, "invalid", "Este mensaje no se puede reenviar");
+    throw new ForwardImageError(422, "invalid", "Esta mensagem não pode ser reencaminhada");
   }
 
   if (clase === "texto") {
@@ -74,9 +74,9 @@ export async function forwardMessage(input: {
   }
 
   if (!asset!.mimeType) {
-    throw new ForwardImageError(422, "invalid", "Este adjunto no se puede reenviar");
+    throw new ForwardImageError(422, "invalid", "Este anexo não pode ser reencaminhado");
   }
-  const data = await leerParaReenviar(input.organizationId, asset!, "El adjunto");
+  const data = await leerParaReencaminhar(input.organizationId, asset!, "O anexo");
   return sendMediaMessage({
     organizationId: input.organizationId,
     conversationId: input.conversationId,

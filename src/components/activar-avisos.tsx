@@ -28,7 +28,7 @@ export function BotonActivarAvisos({ className }: { className?: string }) {
       title="Notificações do sistema quando chegar uma nova mensagem"
     >
       <BellRing className="h-5 w-5 shrink-0 text-text-3" strokeWidth={1.8} aria-hidden />
-      <span className="flex-1">Activar notificações</span>
+      <span className="flex-1">Ativar notificações</span>
     </button>
   );
 }

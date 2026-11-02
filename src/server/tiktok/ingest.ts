@@ -107,7 +107,7 @@ export async function processZernioTiktokEvent(payload: unknown): Promise<void> 
     if (!creds) {
       console.warn(
         `[tiktok] evento para una cuenta desconocida (${evt.accountRef}): ` +
-          "guarda la conexión en Configuración → TikTok para recibir mensajes"
+          "guarde a ligação em Definições → TikTok para receber mensagens"
       );
       continue;
     }

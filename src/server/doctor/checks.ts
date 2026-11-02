@@ -41,7 +41,7 @@ export type CheckResult = {
 /**
  * Las variables que el arranque exige: las del esquema sin default ni
  * `.optional()`. Derivadas del esquema, no copiadas: si env.ts gana una
- * obligatoria, el doctor la comprueba solo.
+ * obligatoria, el doctor la confirme solo.
  */
 export function requiredEnvKeys(): string[] {
   return Object.entries(envSchema.shape)
@@ -60,20 +60,20 @@ const SECRET_KEYS = new Set<string>([
 
 const FIX: Record<string, string> = {
   APP_BASE_URL:
-    "en .env: APP_BASE_URL=https://crm.tudominio.com (con docker compose en esta máquina: https://localhost)",
+    "no ficheiro .env: APP_BASE_URL=https://crm.tudominio.com (com docker compose nesta máquina: https://localhost)",
   DATABASE_URL:
-    "en .env: DATABASE_URL=postgresql://postgres:<POSTGRES_PASSWORD>@postgres:5432/vocero (docker compose) o ...@localhost:5432/vocero (docker-compose.dev.yml)",
+    "no ficheiro .env: DATABASE_URL=postgresql://postgres:<POSTGRES_PASSWORD>@postgres:5432/vocero (docker compose) ou ...@localhost:5432/vocero (docker-compose.dev.yml)",
   DOMAIN:
-    "en .env: DOMAIN=crm.tudominio.com (o localhost para probar aquí); solo lo usa docker compose para el HTTPS de Caddy",
+    "no ficheiro .env: DOMAIN=crm.tudominio.com (ou localhost para testar aqui); só é usado pelo docker compose para o HTTPS do Caddy",
 };
 
 export function fixFor(key: string): string {
   if (key in GENERATED_SECRETS) {
     const { openssl } = GENERATED_SECRETS[key as keyof typeof GENERATED_SECRETS];
-    const extra = key === "POSTGRES_PASSWORD" ? " (la misma dentro de DATABASE_URL)" : "";
-    return `genera uno nuevo con: ${openssl}  y pégalo en .env${extra}; sin .env todavía, pnpm init-env los genera todos`;
+    const extra = key === "POSTGRES_PASSWORD" ? " (a mesma também em DATABASE_URL)" : "";
+    return `gere um novo com: ${openssl} e coloque-o em .env${extra}; se ainda não existir .env, pnpm init-env gera todos`;
   }
-  return FIX[key] ?? "revisa la guía de esa variable en .env.example";
+  return FIX[key] ?? "consulte a descrição desta variável em .env.example";
 }
 
 /** `postgresql://usuario:***@host:puerto/base` — todo menos la contraseña. */
@@ -82,7 +82,7 @@ export function redactDatabaseUrl(url: string): string {
     const u = new URL(url);
     return `${u.protocol}//${u.username || "?"}:***@${u.host}${u.pathname}`;
   } catch {
-    return "(no se pudo interpretar como URL)";
+    return "(não foi possível interpretar como URL)";
   }
 }
 
@@ -94,22 +94,25 @@ export function describeValue(key: string, value: string): string {
 
 /**
  * El mensaje de zod en español y sin el valor (zod no lo incluye, pero por si
- * acaso). Zod 4 ya no dice qué recibió: si falta se sabe por `value`.
+ * acaso). Zod 4 ya no dice qué recibió: si em falta se sabe por `value`.
  */
 export function translateIssue(issue: ZodIssue, value?: string): string {
+  if (issue.path[0] === "ENCRYPTION_KEY") {
+    return "deve conter 32 bytes codificados em base64";
+  }
   switch (issue.code) {
     case "invalid_type":
       return value === undefined
-        ? "falta"
-        : `tipo inválido (se esperaba ${issue.expected})`;
+        ? "em falta"
+        : `tipo inválido (esperava-se ${issue.expected})`;
     case "invalid_format":
       return issue.format === "url"
-        ? "no es una URL válida (debe empezar por http:// o https://)"
-        : issue.message;
+        ? "não é um URL válido (deve começar por http:// ou https://)"
+        : "formato inválido";
     case "too_small":
-      return `demasiado corta: mínimo ${issue.minimum} caracteres`;
+      return `tem de ter pelo menos ${issue.minimum} caracteres`;
     default:
-      return issue.message;
+      return "valor inválido";
   }
 }
 
@@ -127,7 +130,7 @@ function checkVar(
     return {
       status: "fail",
       label: key,
-      detail: `sigue con el valor de ejemplo (${PLACEHOLDER_PREFIX}…)`,
+      detail: `continua com o valor de exemplo (${PLACEHOLDER_PREFIX}…)`,
       fix: fixFor(key),
     };
   }
@@ -137,8 +140,8 @@ function checkVar(
   const present = typeof value === "string" && value !== "";
   if (!present) {
     return required
-      ? { status: "fail", label: key, detail: "falta", fix: fixFor(key) }
-      : { status: "skip", label: key, detail: "no definida (opcional)" };
+      ? { status: "fail", label: key, detail: "em falta", fix: fixFor(key) }
+      : { status: "skip", label: key, detail: "não definida (opcional)" };
   }
   return { status: "ok", label: key, detail: describeValue(key, value) };
 }
@@ -195,7 +198,7 @@ export function evaluateComposeEnv(source: Record<string, string | undefined>): 
       results.push({
         status: "skip",
         label: key,
-        detail: "no definida: solo la usa docker compose (Ruta B)",
+        detail: "não definida: só é usada pelo docker compose (Rota B)",
         fix: fixFor(key),
       });
     }
@@ -213,8 +216,8 @@ export function evaluateComposeEnv(source: Record<string, string | undefined>): 
         results.push({
           status: "warn",
           label: "POSTGRES_PASSWORD",
-          detail: "no es la contraseña que lleva DATABASE_URL",
-          fix: "deja la misma en las dos: docker compose usa POSTGRES_PASSWORD para la base y para la app; DATABASE_URL de .env solo la leen pnpm dev y pnpm doctor",
+          detail: "não corresponde à palavra-passe definida em DATABASE_URL",
+          fix: "mantenha-a igual nas duas: o docker compose usa POSTGRES_PASSWORD para a base e a aplicação; DATABASE_URL de .env só é lida por pnpm dev e pnpm doctor",
         });
       }
     } catch {
@@ -248,7 +251,7 @@ export async function checkDatabase(
     return {
       status: "ok",
       label: "DATABASE_URL",
-      detail: `select 1 respondió en ${Date.now() - started} ms (${redactDatabaseUrl(url)})`,
+      detail: `select 1 respondeu em ${Date.now() - started} ms (${redactDatabaseUrl(url)})`,
     };
   } catch (err) {
     return describeDbError(err, url);
@@ -269,8 +272,8 @@ export function describeDbError(err: unknown, url: string): CheckResult {
     return {
       status: "skip",
       label,
-      detail: `el host "postgres" solo existe dentro de la red de docker compose: desde aquí no se puede probar (${where})`,
-      fix: "arranca con docker compose up -d y comprueba docker compose ps y docker compose logs app: la app valida la conexión al arrancar y /api/health responde ok cuando la base contesta",
+      detail: `o host "postgres" só existe dentro da rede do docker compose: não é possível testá-lo daqui (${where})`,
+      fix: "inicie com docker compose up -d e confirme com docker compose ps e docker compose logs app: a aplicação valida a ligação ao iniciar e /api/health responde ok quando a base responde",
     };
   }
   switch (code) {
@@ -278,45 +281,45 @@ export function describeDbError(err: unknown, url: string): CheckResult {
       return {
         status: "fail",
         label,
-        detail: `nada escucha en ${where}`,
-        fix: "arranca Postgres: docker compose -f docker-compose.dev.yml up -d (desarrollo local) o docker compose up -d postgres (Ruta B), o corrige host y puerto en DATABASE_URL",
+        detail: `não há nada a escutar em ${where}`,
+        fix: "inicie o PostgreSQL: docker compose -f docker-compose.dev.yml up -d (desenvolvimento local) ou docker compose up -d postgres (Rota B), ou corrija o anfitrião e a porta em DATABASE_URL",
       };
     case "ENOTFOUND":
     case "EAI_AGAIN":
       return {
         status: "fail",
         label,
-        detail: `el host no resuelve (${where})`,
-        fix: "corrige el host de DATABASE_URL: localhost con docker-compose.dev.yml, postgres dentro de docker compose",
+        detail: `o host não é resolvido (${where})`,
+        fix: "corrija o anfitrião de DATABASE_URL: localhost com docker-compose.dev.yml, postgres dentro do docker compose",
       };
     case "CONNECT_TIMEOUT":
       return {
         status: "fail",
         label,
-        detail: `no respondió en 5 s (${where})`,
-        fix: "revisa que Postgres esté arriba y que el puerto sea alcanzable desde esta máquina",
+        detail: `não respondeu em 5 s (${where})`,
+        fix: "verifique se o PostgreSQL está em execução e se a porta pode ser alcançada a partir desta máquina",
       };
     case "28P01":
     case "28000":
       return {
         status: "fail",
         label,
-        detail: `usuario o contraseña rechazados (${where})`,
-        fix: "la contraseña de DATABASE_URL debe ser la de Postgres (en docker compose, POSTGRES_PASSWORD); si cambiaste la contraseña después del primer arranque, Postgres conserva la vieja en su volumen",
+        detail: `utilizador ou palavra-passe rejeitados (${where})`,
+        fix: "a palavra-passe de DATABASE_URL deve ser a do PostgreSQL (em docker compose, POSTGRES_PASSWORD); se a alterou depois do primeiro arranque, o PostgreSQL mantém a antiga no volume",
       };
     case "3D000":
       return {
         status: "fail",
         label,
-        detail: `la base de datos no existe (${where})`,
-        fix: "créala (CREATE DATABASE vocero) o deja que docker compose la cree con POSTGRES_DB=vocero",
+        detail: `a base de dados não existe (${where})`,
+        fix: "crie-a (CREATE DATABASE vocero) ou deixe que o docker compose a crie com POSTGRES_DB=vocero",
       };
     default:
       return {
         status: "fail",
         label,
         detail: `${message} (${where})`,
-        fix: "revisa DATABASE_URL en .env y que Postgres esté arriba",
+        fix: "reveja DATABASE_URL no ficheiro .env e confirme se o PostgreSQL está em execução",
       };
   }
 }
@@ -331,13 +334,13 @@ export function describeDbError(err: unknown, url: string): CheckResult {
 export async function checkMediaDir(dir: string): Promise<CheckResult> {
   const media = await probeMediaDir(path.resolve(dir));
   if (media.writable) {
-    return { status: "ok", label: "MEDIA_DIR", detail: `${media.dir} es escribible` };
+    return { status: "ok", label: "MEDIA_DIR", detail: `${media.dir} permite escrita` };
   }
   return {
     status: "fail",
     label: "MEDIA_DIR",
-    detail: `${media.dir} no es escribible (${media.code}): adjuntos, logo e icono no se podrían guardar`,
-    fix: "fuera de Docker: apunta MEDIA_DIR a un directorio escribible (o quítala: el default es ./.dev-media). En Docker no la definas: la imagen usa /data/media y docker compose monta el volumen en /data",
+    detail: `${media.dir} não permite escrita (${media.code}): não seria possível guardar anexos, logótipo e ícone`,
+    fix: "fora do Docker: indique em MEDIA_DIR uma pasta com permissão de escrita (ou remova-a: o valor predefinido é ./.dev-media). No Docker, não a defina: a imagem usa /data/media e o docker compose monta o volume em /data",
   };
 }
 
@@ -424,8 +427,8 @@ export async function checkWhatsApp(deps: WhatsAppDeps = {}): Promise<CheckResul
         {
           status: "skip",
           label: "WhatsApp",
-          detail: "las tablas no existen todavía: las migraciones corren al arrancar la app",
-          fix: "docker compose up -d (o pnpm db:migrate en desarrollo) y vuelve a correr pnpm doctor",
+          detail: "as tabelas ainda não existem: as migrações são executadas ao iniciar a aplicação",
+          fix: "docker compose up -d (ou pnpm db:migrate em desenvolvimento) e execute novamente pnpm doctor",
         },
       ];
     }
@@ -433,8 +436,8 @@ export async function checkWhatsApp(deps: WhatsAppDeps = {}): Promise<CheckResul
       {
         status: "warn",
         label: "WhatsApp",
-        detail: `no se pudieron leer las conexiones guardadas: ${err instanceof Error ? err.message : String(err)}`,
-        fix: "revisa la conexión a la base de datos",
+        detail: `não foi possível ler as ligações guardadas: ${err instanceof Error ? err.message : String(err)}`,
+        fix: "reveja a ligação à base de dados",
       },
     ];
   }
@@ -444,7 +447,7 @@ export async function checkWhatsApp(deps: WhatsAppDeps = {}): Promise<CheckResul
       {
         status: "skip",
         label: "WhatsApp",
-        detail: "sin conexión guardada: se conecta desde la app (Configuración → WhatsApp), no es parte de la instalación",
+        detail: "sem ligação guardada: ligue-se a partir da aplicação (Definições → WhatsApp); não faz parte da instalação",
       },
     ];
   }
@@ -456,8 +459,8 @@ export async function checkWhatsApp(deps: WhatsAppDeps = {}): Promise<CheckResul
       results.push({
         status: "fail",
         label,
-        detail: "el token guardado no se pudo descifrar: la ENCRYPTION_KEY no es la misma con la que se guardó",
-        fix: "restaura la ENCRYPTION_KEY original o vuelve a pegar el token en Configuración → WhatsApp",
+        detail: "não foi possível desencriptar o token guardado: a ENCRYPTION_KEY não é a mesma com que foi guardado",
+        fix: "restaure a ENCRYPTION_KEY original ou cole novamente o token em Definições → WhatsApp",
       });
       continue;
     }
@@ -469,8 +472,8 @@ export async function checkWhatsApp(deps: WhatsAppDeps = {}): Promise<CheckResul
       results.push({
         status: "warn",
         label,
-        detail: `la prueba contra Meta falló: ${err instanceof Error ? err.message : String(err)}`,
-        fix: "reintenta en unos minutos",
+        detail: `o teste contra a Meta falhou: ${err instanceof Error ? err.message : String(err)}`,
+        fix: "tente novamente dentro de alguns minutos",
       });
       continue;
     }
@@ -479,23 +482,23 @@ export async function checkWhatsApp(deps: WhatsAppDeps = {}): Promise<CheckResul
       results.push({
         status: "ok",
         label,
-        detail: `Meta respondió ${check.displayPhoneNumber}${name} · token …${tokenLast4(token)}`,
+        detail: `A Meta respondeu ${check.displayPhoneNumber}${name} · token …${tokenLast4(token)}`,
       });
     } else if (check.code === "invalid_token") {
       results.push({
         status: "fail",
         label,
         detail: `${check.message} (token …${tokenLast4(token)})`,
-        fix: "Configuración → WhatsApp: pega un token vigente (modo directo: token de usuario del sistema, que no expira)",
+        fix: "Definições → WhatsApp: cole um token válido (modo directo: token de utilizador do sistema, que não expira)",
       });
     } else if (check.code === "meta_unavailable") {
-      results.push({ status: "warn", label, detail: check.message, fix: "reintenta en unos minutos" });
+      results.push({ status: "warn", label, detail: check.message, fix: "tente novamente dentro de alguns minutos" });
     } else {
       results.push({
         status: "fail",
         label,
         detail: check.message,
-        fix: "revisa el Phone Number ID y el token en Configuración → WhatsApp",
+        fix: "reveja o Phone Number ID e o token em Definições → WhatsApp",
       });
     }
   }
@@ -509,19 +512,19 @@ export function checkAi(env: Env): CheckResult {
     return {
       status: "skip",
       label: "OPENROUTER_API_TOKEN",
-      detail: "no definida: el CRM funciona completo salvo el agente y el Laboratorio",
-      fix: "para activarlos, OPENROUTER_API_TOKEN y OPENROUTER_MODEL en .env (guía en .env.example)",
+      detail: "não definida: o CRM funciona por completo, excepto o agente e o Laboratório",
+      fix: "para os activar, defina OPENROUTER_API_TOKEN e OPENROUTER_MODEL no .env (consulte .env.example)",
     };
   }
   if (!env.OPENROUTER_MODEL) {
     return {
       status: "warn",
       label: "OPENROUTER_API_TOKEN",
-      detail: "definida, pero sin OPENROUTER_MODEL el agente no sabe qué modelo pedir",
-      fix: "en .env: OPENROUTER_MODEL=anthropic/claude-sonnet-4.5 (u otro de openrouter.ai/models)",
+      detail: "definida, mas sem OPENROUTER_MODEL o agente não sabe que modelo solicitar",
+      fix: "no .env: OPENROUTER_MODEL=anthropic/claude-sonnet-4.5 (ou outro disponível em openrouter.ai/models)",
     };
   }
-  const judge = env.OPENROUTER_JUDGE_MODEL ? ` · juez ${env.OPENROUTER_JUDGE_MODEL}` : "";
+  const judge = env.OPENROUTER_JUDGE_MODEL ? ` · avaliador ${env.OPENROUTER_JUDGE_MODEL}` : "";
   return {
     status: "ok",
     label: "OPENROUTER_API_TOKEN",
@@ -546,29 +549,29 @@ export function checkDispatch(
     return {
       status: "ok",
       label,
-      detail: `el CRM le despacha cada turno a ${config.host}, firmado con BOT_API_KEY; el agente incluido queda en silencio`,
+      detail: `o CRM encaminha cada turno para ${config.host}, assinado com BOT_API_KEY; o agente incluído fica em silêncio`,
     };
   }
   if (config.problem === "url") {
     return {
       status: "warn",
       label,
-      detail: "no es una URL http:// o https:// válida (o lleva usuario:clave): el despacho queda INACTIVO",
-      fix: "en .env: BRAIN_DISPATCH_URL=http://nea:8000/vocero/dispatch (la dirección interna de tu cerebro)",
+      detail: "não é uma URL http:// ou https:// válida (ou contém utilizador:palavra-passe): o despacho fica INACTIVO",
+      fix: "no .env: BRAIN_DISPATCH_URL=http://nea:8000/vocero/dispatch (o endereço interno do seu serviço de IA)",
     };
   }
   if (config.problem === "sin_llave") {
     return {
       status: "warn",
       label,
-      detail: `apunta a ${config.host}, pero falta BOT_API_KEY (mínimo 16 caracteres): el despacho queda INACTIVO`,
-      fix: "en .env: BOT_API_KEY=$(openssl rand -base64 32), y la misma llave en tu cerebro",
+      detail: `aponta para ${config.host}, mas falta BOT_API_KEY (mínimo 16 caracteres): o envio fica INACTIVO`,
+      fix: "no .env: BOT_API_KEY=$(openssl rand -base64 32) e a mesma chave no seu serviço de IA",
     };
   }
   return {
     status: "skip",
     label,
-    detail: "no definida: contesta el agente incluido, o un cerebro que reciba el webhook por su cuenta",
+    detail: "não definida: responde o agente incluído ou um cérebro que receba o webhook por sua conta",
   };
 }
 
@@ -600,8 +603,8 @@ export async function checkMediaBucket(env: Record<string, string | undefined>):
     return {
       status: "fail",
       label,
-      detail: "MEDIA_STORE=bucket pero faltan variables del bucket: los adjuntos se guardan en disco",
-      fix: "define MEDIA_BUCKET_ENDPOINT, MEDIA_BUCKET_NAME, MEDIA_BUCKET_KEY_ID y MEDIA_BUCKET_SECRET (y MEDIA_BUCKET_REGION si no es `auto`), o quita MEDIA_STORE",
+      detail: "MEDIA_STORE=bucket, mas faltam variáveis do bucket: os anexos são guardados no disco",
+      fix: "defina MEDIA_BUCKET_ENDPOINT, MEDIA_BUCKET_NAME, MEDIA_BUCKET_KEY_ID e MEDIA_BUCKET_SECRET (e MEDIA_BUCKET_REGION se não for `auto`), ou remova MEDIA_STORE",
     };
   }
   let host: string;
@@ -610,7 +613,7 @@ export async function checkMediaBucket(env: Record<string, string | undefined>):
     if (url.protocol !== "http:" && url.protocol !== "https:") throw new Error("protocolo");
     host = url.host;
   } catch {
-    return { status: "fail", label, detail: "MEDIA_BUCKET_ENDPOINT no es una URL http(s)", fix: "p. ej. http://minio:9000 o https://<cuenta>.r2.cloudflarestorage.com" };
+    return { status: "fail", label, detail: "MEDIA_BUCKET_ENDPOINT não é um URL http(s) válido", fix: "por exemplo: http://minio:9000 ou https://<conta>.r2.cloudflarestorage.com" };
   }
   const r = await probeBucket({
     endpoint: endpoint.replace(/\/+$/, ""),
@@ -619,11 +622,11 @@ export async function checkMediaBucket(env: Record<string, string | undefined>):
     secretAccessKey: secret,
     region: env.MEDIA_BUCKET_REGION || "auto",
   });
-  if (r.writable) return { status: "ok", label, detail: `${host}/${bucket} acepta escrituras` };
+  if (r.writable) return { status: "ok", label, detail: `${host}/${bucket} aceita escrita` };
   return {
     status: "fail",
     label,
-    detail: `${host}/${bucket} no acepta escrituras (${r.code}): los adjuntos se guardan en disco mientras tanto`,
-    fix: "revisa que el bucket exista, la llave y su permiso de escritura, y la región (MinIO y R2: `auto` o `us-east-1`)",
+    detail: `${host}/${bucket} não aceita escrita (${r.code}): os anexos são guardados no disco enquanto isso`,
+    fix: "confirme que o bucket existe, que a chave tem permissão de escrita e que a região está correcta (MinIO e R2: `auto` ou `us-east-1`)",
   };
 }

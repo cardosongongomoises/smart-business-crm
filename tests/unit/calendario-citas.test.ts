@@ -104,17 +104,17 @@ describe("shiftRange — ‹ ›", () => {
 
 describe("etiquetas — lo que dice la barra", () => {
   it("semana en un mes, entre meses y entre años", () => {
-    expect(rangeLabel("semana", "2026-09-18")).toBe("14 – 20 de sep de 2026");
-    expect(rangeLabel("semana", "2026-09-30")).toBe("28 de sep – 4 de oct de 2026");
-    expect(rangeLabel("semana", "2026-12-30")).toBe("28 de dic de 2026 – 3 de ene de 2027");
+    expect(rangeLabel("semana", "2026-09-18")).toBe("14 – 20 de set de 2026");
+    expect(rangeLabel("semana", "2026-09-30")).toBe("28 de set – 4 de out de 2026");
+    expect(rangeLabel("semana", "2026-12-30")).toBe("28 de dez de 2026 – 3 de jan de 2027");
   });
 
   it("día, mes y lista", () => {
-    expect(rangeLabel("dia", "2026-09-18")).toBe("Viernes, 18 de septiembre de 2026");
-    expect(rangeLabel("mes", "2026-09-18")).toBe("Septiembre de 2026");
-    expect(rangeLabel("lista", "2026-09-18", "2026-10-17")).toBe("18 de sep – 17 de oct de 2026");
-    expect(spanLabel({ from: "2026-09-18", to: "2026-09-18" })).toBe("18 de sep de 2026");
-    expect(longDayLabel("2026-09-16")).toBe("miércoles, 16 de septiembre");
+    expect(rangeLabel("dia", "2026-09-18")).toBe("Sexta-feira, 18 de setembro de 2026");
+    expect(rangeLabel("mes", "2026-09-18")).toBe("Setembro de 2026");
+    expect(rangeLabel("lista", "2026-09-18", "2026-10-17")).toBe("18 de set – 17 de out de 2026");
+    expect(spanLabel({ from: "2026-09-18", to: "2026-09-18" })).toBe("18 de set de 2026");
+    expect(longDayLabel("2026-09-16")).toBe("quarta-feira, 16 de setembro");
   });
 });
 

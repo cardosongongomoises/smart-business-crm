@@ -86,14 +86,14 @@ async function getAccessToken(creds: GoogleCreds): Promise<string> {
       }).toString(),
     });
   } catch (err) {
-    throw new ConnectorError("google", `No se pudo contactar a Google: ${err}`);
+    throw new ConnectorError("google", `Não foi possível contactar o Google: ${err}`);
   }
 
   if (!res.ok) {
     const detail = await res.text().catch(() => "");
     throw new ConnectorError(
       "google",
-      `Google rechazó el refresh token: ${detail}. Si tu app OAuth sigue en modo prueba, Google lo revoca a los 7 días: publícala en producción y vuelve a conectar.`,
+      `O Google rejeitou o refresh token: ${detail}. Se a sua aplicação OAuth continuar em modo de teste, o Google revoga-o ao fim de 7 dias: publique-a em produção e volte a ligá-la.`,
       // `invalid_grant` llega como 400 y significa exactamente eso: hay que
       // reconectar.
       { status: res.status, isAuthError: res.status === 401 || res.status === 400 }
@@ -105,7 +105,7 @@ async function getAccessToken(creds: GoogleCreds): Promise<string> {
     expires_in?: number;
   } | null;
   if (!data?.access_token) {
-    throw new ConnectorError("google", "Google no devolvió un token de acceso");
+    throw new ConnectorError("google", "O Google não devolveu um token de acesso");
   }
   setCachedGoogleToken(key, data.access_token, data.expires_in ?? 3600);
   return data.access_token;
@@ -128,7 +128,7 @@ async function googleFetch(
       },
     });
   } catch (err) {
-    throw new ConnectorError("google", `No se pudo contactar a Google: ${err}`);
+    throw new ConnectorError("google", `Não foi possível contactar o Google: ${err}`);
   }
 
   if (res.status === 404 && init.allow404) return null;
@@ -137,7 +137,7 @@ async function googleFetch(
     const detail = await res.text().catch(() => "");
     throw new ConnectorError(
       "google",
-      `Google respondió ${res.status}: ${detail}`,
+      `O Google respondeu ${res.status}: ${detail}`,
       { status: res.status }
     );
   }
@@ -199,7 +199,7 @@ export const googleConnector: AgendaConnector<GoogleCreds> = {
 
     const eventId = created?.id ?? null;
     if (!eventId) {
-      throw new ConnectorError("google", "Google no devolvió el evento creado");
+      throw new ConnectorError("google", "O Google não devolveu o evento criado");
     }
 
     let link = meetLinkOf(created);
@@ -268,11 +268,10 @@ export const googleConnector: AgendaConnector<GoogleCreds> = {
       // `summary` del listado es el nombre del calendario: el mismo dato que
       // se enseñaba antes, por una vía que el scope permite.
       return { ok: true, detail: lista?.summary };
-    } catch (err) {
+    } catch {
       return {
         ok: false,
-        error:
-          err instanceof Error ? err.message : "No se pudo conectar con Google",
+        error: "Não foi possível validar a ligação ao Google. Reveja as credenciais e as permissões da agenda.",
       };
     }
   },

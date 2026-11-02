@@ -109,7 +109,7 @@ export async function checkHealth(): Promise<HealthResult> {
       status: 503,
       body: {
         ok: false,
-        error: { code: "db_unavailable", message: "Base de datos no disponible" },
+        error: { code: "db_unavailable", message: "Base de dados indisponível" },
       },
     };
   }

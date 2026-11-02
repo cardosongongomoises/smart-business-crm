@@ -80,13 +80,13 @@ export async function onboardingStatus(
     pasoPerfil(profile, Boolean(kb)),
     {
       key: "ai",
-      label: "Proveedor de IA",
+      label: "Fornecedor de IA",
       status: ia.activa ? "ready" : "pending",
       nextAction: ia.activa
-        ? ia.origen === "org"
-          ? "Llave guardada en Ajustes → IA"
-          : "Respaldo del entorno (OPENROUTER_*)"
-        : "Pega la llave de tu proveedor y elige el modelo en Ajustes → IA",
+          ? ia.origen === "org"
+          ? "Chave guardada em Definições → IA"
+          : "Alternativa do ambiente (OPENROUTER_*)"
+        : "Cole a chave do seu fornecedor e escolha o modelo em Definições → IA",
       href: "/settings/ai",
       // «Sin configurar» es lo obvio del paso; lo que sí hay que decir es por
       // qué una llave que el dueño YA pegó no sirve.
@@ -101,14 +101,14 @@ export async function onboardingStatus(
       status: channel?.status === "connected" ? "ready" : "pending",
       nextAction:
         channel?.status === "connected"
-          ? "Número conectado"
+          ? "Número ligado"
           : channel
-            ? "Vuelve a conectar el número con un token vigente"
-            : "Vincular tu número",
+            ? "Volte a ligar o número com um token válido"
+            : "Ligar o seu número",
       href: "/settings/whatsapp",
       problem:
         channel?.status === "reconnect_required"
-          ? "Meta dejó de aceptar el token de WhatsApp: vuelve a conectar el número."
+          ? "A Meta deixou de aceitar o token do WhatsApp: volte a ligar o número."
           : null,
     },
     await pasoCerebro(),
@@ -125,7 +125,7 @@ export async function onboardingStatus(
       label: "Agenda",
       status: "not_applicable",
       nextAction:
-        "La agenda no está encendida en esta instancia (variable AGENDA).",
+        "A agenda não está activada nesta instância (variável AGENDA).",
       href: null,
       problem: null,
     });
@@ -144,19 +144,19 @@ type Perfil = { name: string; instructions: string | null; enabled: boolean };
  * configurado y el `/health` del cerebro contesta.
  */
 async function pasoCerebro(): Promise<ReadinessStep> {
-  const base = { key: "brain" as const, label: "Tu agente", href: null };
+  const base = { key: "brain" as const, label: "O seu agente", href: null };
   const despacho = leerConfigDespacho();
   if (!despacho.active) {
     return {
       ...base,
       status: "pending",
       nextAction:
-        "Levanta tu agente (Nea) al lado del CRM y pon BRAIN_DISPATCH_URL y BOT_API_KEY en el entorno",
+        "Inicie o seu agente (Nea) junto ao CRM e defina BRAIN_DISPATCH_URL e BOT_API_KEY no ambiente",
       problem:
         despacho.problem === "url"
-          ? "BRAIN_DISPATCH_URL no es una dirección válida."
+          ? "BRAIN_DISPATCH_URL não é um endereço válido."
           : despacho.problem === "sin_llave"
-            ? "Falta BOT_API_KEY (16 caracteres o más): sin ella no se firma el despacho."
+            ? "Falta BOT_API_KEY (16 caracteres ou mais): sem ela não é possível assinar o despacho."
             : null,
     };
   }
@@ -165,16 +165,16 @@ async function pasoCerebro(): Promise<ReadinessStep> {
     return {
       ...base,
       status: "pending",
-      nextAction: `Tu agente (${despacho.host}) está configurado pero no contesta`,
-      problem: `El /health de ${salud.host || despacho.host} no responde: revisa que el servicio esté corriendo.`,
+      nextAction: `O seu agente (${despacho.host}) está configurado, mas não responde`,
+      problem: `O /health de ${salud.host || despacho.host} não responde: verifique se o serviço está em execução.`,
     };
   }
   return {
     ...base,
     status: "ready",
     nextAction: salud?.version
-      ? `Conectado: ${despacho.host} (versión ${salud.version})`
-      : `Conectado: ${despacho.host}`,
+      ? `Ligado: ${despacho.host} (versão ${salud.version})`
+      : `Ligado: ${despacho.host}`,
     problem: null,
   };
 }
@@ -190,11 +190,11 @@ function pasoPerfil(profile: Perfil | undefined, hayConocimiento: boolean): Read
     (Boolean(profile?.instructions?.trim()) || hayConocimiento);
   return {
     key: "profile",
-    label: "Configuración del agente",
+    label: "Configuração do agente",
     status: listo ? "ready" : "pending",
     nextAction: listo
-      ? "Nombre, instrucciones y conocimiento revisados"
-      : "Dale un nombre y escribe sus instrucciones o carga conocimiento del negocio",
+      ? "Nome, instruções e conhecimento revistos"
+      : "Dê-lhe um nome e escreva as instruções ou carregue conhecimento da empresa",
     href: "/agent",
     problem: null,
   };
@@ -227,13 +227,13 @@ async function pasoAgenda(organizationId: string, db: Db): Promise<ReadinessStep
 
   let problem: string | null = null;
   if (status === "unsupported") {
-    problem = `El conector «${settings?.connector}» no existe en esta instancia: elige otro en Ajustes → Agenda.`;
+    problem = `O conector «${settings?.connector}» não existe nesta instância: escolha outro em Definições → Agenda.`;
   } else if (status === "pending" && settings && settings.connector !== "enlace-fijo") {
     const nombre = settings.connector === "zoom" ? "Zoom" : "Google";
     const cred = settings.connector === "zoom" ? zoom : google;
     problem = cred
-      ? `${nombre} rechazó la credencial guardada: vuelve a conectarlo en Ajustes → Agenda.`
-      : `Elegiste ${nombre} pero no está conectado: pega sus credenciales en Ajustes → Agenda.`;
+      ? `O ${nombre} rejeitou a credencial guardada: volte a ligá-lo em Definições → Agenda.`
+      : `Escolheu ${nombre}, mas não está ligado: cole as credenciais em Definições → Agenda.`;
   }
 
   return {
@@ -242,8 +242,8 @@ async function pasoAgenda(organizationId: string, db: Db): Promise<ReadinessStep
     status,
     nextAction:
       status === "ready"
-        ? "Horarios y conector listos"
-        : "Guarda tus horarios y cómo se entrega la reunión en Ajustes → Agenda",
+        ? "Horários e conector prontos"
+        : "Guarde os seus horários e como a reunião será realizada em Definições → Agenda",
     href: "/settings/calendar",
     problem,
   };

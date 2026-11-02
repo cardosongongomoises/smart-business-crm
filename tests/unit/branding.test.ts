@@ -209,9 +209,9 @@ describe("tema oscuro: las superficies se distinguen", () => {
 });
 
 describe("white-label: normalización", () => {
-  it("nombre vacío o nulo → default 'Vocero'; se recorta a 30", () => {
-    expect(normalizeBranding(null).name).toBe("Vocero");
-    expect(normalizeBranding({ name: "   " }).name).toBe("Vocero");
+  it("nombre vacío o nulo → default 'AGENTES DIGITAL'; se recorta a 30", () => {
+    expect(normalizeBranding(null).name).toBe("AGENTES DIGITAL");
+    expect(normalizeBranding({ name: "   " }).name).toBe("AGENTES DIGITAL");
     expect(normalizeBranding({ name: "x".repeat(50) }).name).toHaveLength(30);
   });
 

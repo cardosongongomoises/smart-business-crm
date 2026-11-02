@@ -69,7 +69,7 @@ describe("sumable", () => {
 describe("formatMoneyCents", () => {
   it("formatea en la moneda pedida", () => {
     const out = formatMoneyCents(1_250_050, "MXN");
-    expect(out).toContain("12,500.50");
+    expect(out?.replace(/[\u00a0\u202f]/g, " ")).toContain("12 500,50");
   });
 
   it("null entra, null sale: no inventa un $0.00", () => {

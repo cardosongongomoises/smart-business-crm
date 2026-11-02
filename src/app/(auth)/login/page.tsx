@@ -30,8 +30,8 @@ export default function LoginPage() {
       );
       return;
     }
-    // A la raíz, no a la Bandeja: ahí se decide si toca la guía de inicio
-    // (#86) o la Bandeja de siempre.
+    // A raiz, não a Caixa de entrada: aí decide-se se deve abrir o guia de
+    // início (#86) ou a Caixa de entrada habitual.
     router.push("/");
     router.refresh();
   }

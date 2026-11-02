@@ -399,7 +399,7 @@ export function armarEmbudo(
 
   pasos.push({
     stageId: ganada?.id ?? null,
-    name: ganada?.name ?? "Ganado",
+    name: ganada?.name ?? "Ganho",
     kind: "won",
     reached: alcanzadas.filter((a) => a.won === 1).length,
     advanceRate: null,
@@ -492,7 +492,7 @@ export function motivosDePerdida(desenlaces: Desenlace[]): LossReasonRowDto[] {
     const reason = d.lossReason ?? "sin_registro";
     const row = acc.get(reason) ?? {
       reason,
-      label: d.lossReason ? LOSS_REASON_LABEL[d.lossReason] : "Sin motivo registrado",
+      label: d.lossReason ? LOSS_REASON_LABEL[d.lossReason] : "Sem motivo registado",
       count: 0,
     };
     row.count += 1;

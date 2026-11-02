@@ -134,7 +134,7 @@ describe("PUT /api/agent/profile {enabled}", () => {
     getBrainHealth.mockResolvedValue({ reachable: false, host: "nea:8000", checkedAt: "", problem: "network" });
     const res = await encender(true);
     expect(res.status).toBe(409);
-    expect((await res.json()).error.message).toMatch(/no contesta/);
+    expect((await res.json()).error.message).toMatch(/não responde/);
     expect(getBrainHealth).toHaveBeenCalledWith("http://nea:8000/health");
   });
 

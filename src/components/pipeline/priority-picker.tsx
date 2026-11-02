@@ -25,7 +25,7 @@ export function PriorityBadge({ value }: { value: PriorityValue }) {
 }
 
 /**
- * Elegir la prioridad de un lead. Incluye "Sin prioridad" a propósito: poder
+ * Elegir la prioridad de un lead. Incluye "Sem prioridade" a propósito: poder
  * QUITARLA importa tanto como ponerla — si no, el primer clic por error queda
  * para siempre y el dueño deja de confiar en la columna.
  */
@@ -61,7 +61,7 @@ export function PriorityPicker({
             : "text-text-3 hover:bg-accent"
         )}
       >
-        Sin prioridad
+        Sem prioridade
       </button>
     </div>
   );

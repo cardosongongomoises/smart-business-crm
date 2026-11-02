@@ -53,10 +53,10 @@ describe("guía de inicio", () => {
 
   it("036 — «Conecta tu agente» es opcional: sin él la guía se completa (bandeja manual)", () => {
     const steps = all({ brain: "pending" });
-    steps[3] = step("brain", "pending", { nextAction: "Levanta tu agente", problem: null });
+    steps[3] = step("brain", "pending", { nextAction: "Inicie o seu agente", problem: null });
     const guide = guideFrom({ steps, enabled: false });
     const brain = guide.steps.find((s) => s.key === "brain");
-    expect(brain).toMatchObject({ done: false, optional: true, hint: "Levanta tu agente" });
+    expect(brain).toMatchObject({ done: false, optional: true, hint: "Inicie o seu agente" });
     expect(guide).toMatchObject({ complete: true, brainConnected: false });
   });
 
@@ -83,17 +83,17 @@ describe("guía de inicio", () => {
 
   it("lo que está mal (llave rechazada, token vencido, conector sin credencial) sale como pista", () => {
     const steps = all();
-    steps[1] = step("ai", "pending", { problem: "El proveedor rechazó tu llave." });
-    steps[2] = step("whatsapp", "pending", { problem: "Meta dejó de aceptar el token." });
+    steps[1] = step("ai", "pending", { problem: "O fornecedor rejeitou a sua chave." });
+    steps[2] = step("whatsapp", "pending", { problem: "A Meta deixou de aceitar o token." });
     steps[3] = step("brain", "pending", { problem: "Falta BOT_API_KEY." });
-    steps[4] = step("calendar", "pending", { problem: "Elegiste Zoom pero no está conectado." });
+    steps[4] = step("calendar", "pending", { problem: "Escolheu Zoom, mas não está ligado." });
     const guide = guideFrom({ steps, enabled: false });
     expect(guide.steps.map((s) => s.hint)).toEqual([
       null,
-      "El proveedor rechazó tu llave.",
-      "Meta dejó de aceptar el token.",
+      "O fornecedor rejeitou a sua chave.",
+      "A Meta deixou de aceitar o token.",
       "Falta BOT_API_KEY.",
-      "Elegiste Zoom pero no está conectado.",
+      "Escolheu Zoom, mas não está ligado.",
     ]);
     // Un conector desconocido también bloquea: no es «listo» ni «no aplica».
     steps[4] = step("calendar", "unsupported", { problem: "El conector no existe." });

@@ -121,12 +121,12 @@ export async function upsertSettings(
   const timezone = input.timezone ?? current.timezone;
   // Una zona desconocida rompería el motor entero: se rechaza al guardar.
   if (!isValidTimeZone(timezone)) {
-    throw new CalendarSettingsError(`Zona horaria desconocida: ${timezone}`);
+    throw new CalendarSettingsError(`Fuso horário desconhecido: ${timezone}`);
   }
 
   const connector = input.connector ?? current.connector;
   if (!isConnectorId(connector)) {
-    throw new CalendarSettingsError(`Conector desconocido: ${connector}`);
+    throw new CalendarSettingsError(`Conector desconhecido: ${connector}`);
   }
 
   const next: CalendarSettings = {

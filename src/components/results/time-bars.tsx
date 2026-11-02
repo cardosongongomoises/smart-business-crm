@@ -26,7 +26,7 @@ export function TimeBars({
   points,
   format,
   unit,
-  emptyText = "Sin movimientos en el periodo.",
+  emptyText = "Sem movimentos no período.",
 }: {
   title: string;
   points: TimePoint[];
@@ -119,7 +119,7 @@ export function TimeBars({
             <caption>{title}</caption>
             <thead>
               <tr>
-                <th scope="col">Fecha</th>
+                <th scope="col">Data</th>
                 <th scope="col">{unit}</th>
               </tr>
             </thead>
@@ -191,7 +191,7 @@ export function escalaLimpia(max: number): number {
   return 10 * potencia;
 }
 
-const MESES = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
+const MESES = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
 
 /** `2026-08-13` → `13 ago` · `2026-08` → `ago 26`. */
 export function etiqueta(bucket: string): string {

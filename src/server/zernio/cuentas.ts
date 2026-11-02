@@ -102,7 +102,7 @@ export function pickZernioAccount(
       ok: false,
       code: "unknown_account",
       message:
-        "Esa llave de Zernio no tiene ninguna cuenta conectada de este canal. Vincúlala en Zernio y vuelve a intentar.",
+        "Essa chave do Zernio não tem nenhuma conta ligada deste canal. Ligue-a no Zernio e tente novamente.",
       candidates,
     };
   }
@@ -113,7 +113,7 @@ export function pickZernioAccount(
     return {
       ok: false,
       code: "choose_account",
-      message: `Esa llave tiene ${delCanal.length} cuentas de este canal. Elige cuál conectar.`,
+      message: `Esta chave tem ${delCanal.length} contas deste canal. Escolha a que pretende ligar.`,
       candidates,
     };
   }
@@ -124,7 +124,7 @@ export function pickZernioAccount(
     return {
       ok: false,
       code: "unknown_account",
-      message: `Ese id es de una cuenta de ${exacta.platform ?? "otra red"}, no de este canal. Sirven: ${cuales}`,
+      message: `Este ID pertence a uma conta de ${exacta.platform ?? "outra rede"}, não deste canal. Contas válidas: ${cuales}`,
       candidates,
     };
   }
@@ -136,7 +136,7 @@ export function pickZernioAccount(
   return {
     ok: false,
     code: "unknown_account",
-    message: `Ese id no es de ninguna cuenta de este canal en Zernio. Sirven: ${cuales}`,
+    message: `Esse id não pertence a nenhuma conta deste canal no Zernio. Válidas: ${cuales}`,
     candidates,
   };
 }
@@ -155,19 +155,19 @@ export function accountHealth(
   if (!account) {
     return {
       level: "error",
-      message: "La cuenta ya no aparece en Zernio con esa llave. Vuelve a conectarla.",
+      message: "A conta já não aparece no Zernio com essa chave. Ligue-a novamente.",
     };
   }
   if (account.needsReconnection) {
-    return { level: "error", message: "Zernio pide reconectar la cuenta." };
+    return { level: "error", message: "O Zernio pede para ligar novamente a conta." };
   }
   if (account.isActive === false || account.enabled === false) {
-    return { level: "error", message: "La cuenta está desactivada en Zernio." };
+    return { level: "error", message: "A conta está desactivada no Zernio." };
   }
   if (account.messagingRestriction) {
     return {
       level: "error",
-      message: "La plataforma restringió los mensajes de esta cuenta.",
+      message: "A plataforma restringiu as mensagens desta conta.",
     };
   }
   if (
@@ -178,7 +178,7 @@ export function accountHealth(
     return {
       level: "error",
       message:
-        "Es una cuenta personal: TikTok solo entrega mensajes de cuentas Business.",
+        "É uma conta pessoal: o TikTok só entrega mensagens de contas Business.",
     };
   }
   const estado = account.platformStatus?.toLowerCase();
@@ -186,17 +186,17 @@ export function accountHealth(
     const motivo = account.platformStatusReason?.trim();
     return {
       level: "warn",
-      message: `La plataforma la reporta como «${account.platformStatus}»${motivo ? `: ${motivo}` : ""}.`,
+      message: `A plataforma comunica-a como «${account.platformStatus}»${motivo ? `: ${motivo}` : ""}.`,
     };
   }
   const vence = account.tokenExpiresAt ? Date.parse(account.tokenExpiresAt) : NaN;
   if (Number.isFinite(vence) && vence < now.getTime()) {
     return {
       level: "warn",
-      message: "El acceso de Zernio a la cuenta venció. Si deja de recibir, reconéctala en Zernio.",
+      message: "O acesso do Zernio à conta expirou. Se deixar de receber mensagens, ligue-a novamente no Zernio.",
     };
   }
-  return { level: "ok", message: "Activa" };
+  return { level: "ok", message: "Ativa" };
 }
 
 /**

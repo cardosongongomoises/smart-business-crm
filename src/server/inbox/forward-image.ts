@@ -22,7 +22,7 @@ export class ForwardImageError extends Error {
  *
  * El cliente solo nombra el mensaje de origen: nunca una URL ni una ruta. El
  * binario se lee del almacén de la instancia (disco o bucket, 037) y sale como
- * un adjunto nuevo por `sendMediaMessage`, con todas sus guardas (sandbox,
+ * un anexo nuevo por `sendMediaMessage`, con todas sus guardas (sandbox,
  * ventana, canal, credenciales). El original no cambia: editar el pie solo
  * toca la copia.
  */
@@ -67,14 +67,14 @@ export async function forwardImage(input: {
     throw new SendError("sandbox_violation", "No se reenvían imágenes del Laboratorio");
   }
   if (source.message.conversationId === input.conversationId) {
-    throw new ForwardImageError(422, "invalid", "Elige otra conversación para reenviar la imagen");
+    throw new ForwardImageError(422, "invalid", "Escolha outra conversa para reencaminhar a imagem");
   }
 
   const asset = source.asset;
   if (asset.kind !== "image" || !asset.mimeType || !IMAGEN_ADJUNTA.mimes.test(asset.mimeType)) {
-    throw new ForwardImageError(422, "invalid", "Este mensaje no trae una imagen que se pueda reenviar");
+    throw new ForwardImageError(422, "invalid", "Esta mensagem não contém uma imagem que possa ser reencaminhada");
   }
-  const data = await leerParaReenviar(input.organizationId, asset, "La imagen");
+  const data = await leerParaReencaminhar(input.organizationId, asset, "A imagem");
 
   return sendMediaMessage({
     organizationId: input.organizationId,
@@ -86,11 +86,11 @@ export async function forwardImage(input: {
 }
 
 /**
- * 042 · 059 — El archivo de un adjunto que se va a reenviar. Uno entrante que
+ * 042 · 059 — O ficheiro de un anexo que se va a reenviar. Uno entrante que
  * todavía no se bajó de Meta se baja ahora, como lo pide la bandeja al
  * pintarlo; si se perdió del volumen, `leerAdjunto` lo vuelve a bajar.
  */
-export async function leerParaReenviar(
+export async function leerParaReencaminhar(
   organizationId: string,
   asset: typeof schema.mediaAsset.$inferSelect,
   queEs: string
@@ -103,7 +103,7 @@ export async function leerParaReenviar(
   }
   const leido = await leerAdjunto(organizationId, asset);
   if (!leido) {
-    throw new ForwardImageError(410, "gone", "El archivo ya no está disponible para reenviar");
+    throw new ForwardImageError(410, "gone", "O ficheiro já não está disponível para reencaminhar");
   }
   return leido.data;
 }

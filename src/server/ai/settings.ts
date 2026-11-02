@@ -27,7 +27,7 @@ const baseUrlSchema = z
   .trim()
   .url()
   .refine((u) => /^https?:\/\//i.test(u), {
-    message: "La base URL debe empezar por http:// o https://",
+    message: "A URL base deve começar por http:// ou https://",
   });
 
 /**
@@ -55,7 +55,7 @@ function exigeBaseUrl(
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
       path: ["baseUrl"],
-      message: "Con «Otro compatible con OpenAI» hay que indicar la base URL",
+      message: "Para «Outro compatível com OpenAI», é necessário indicar o URL base",
     });
   }
 }

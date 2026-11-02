@@ -508,9 +508,9 @@ export function MessageThread({
         const out = m.direction === "out";
         // 059 — Qué acciones tiene esta burbuja.
         const puedeCitar = Boolean(onReply && m.quotable);
-        const puedeReenviar = Boolean(onForwarded && claseReenvio(m));
+        const puedeReencaminhar = Boolean(onForwarded && claseReenvio(m));
         const textoCopiable = m.media ? m.media.caption : m.text;
-        const tieneMenu = puedeCitar || puedeReenviar || Boolean(textoCopiable);
+        const tieneMenu = puedeCitar || puedeReencaminhar || Boolean(textoCopiable);
 
         return (
           <div key={m.id}>
@@ -618,7 +618,7 @@ export function MessageThread({
               {/* 059 · D5 — Con ratón, dos iconos al pasar por la burbuja. En
                   una pantalla táctil no se pintan: ahí se desliza o se
                   mantiene presionado (D6). */}
-              {(puedeCitar || puedeReenviar) && (
+              {(puedeCitar || puedeReencaminhar) && (
                 <span
                   className={cn(
                     "hidden shrink-0 items-center [@media(hover:hover)]:flex",
@@ -636,7 +636,7 @@ export function MessageThread({
                       <Reply className="h-4 w-4" strokeWidth={1.7} />
                     </button>
                   )}
-                  {puedeReenviar && (
+                  {puedeReencaminhar && (
                     // Aunque la descarga haya fallado: el servidor la reintenta (042 · D4).
                     <button
                       type="button"

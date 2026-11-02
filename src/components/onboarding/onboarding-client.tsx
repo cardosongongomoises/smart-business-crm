@@ -40,7 +40,7 @@ export function OnboardingClient({
   // Antes del paso 1 el nombre es el de fábrica («Asistente») y se lee como
   // una palabra suelta, no como el nombre de alguien: se dice «tu agente».
   const agentReady = guide.steps.find((s) => s.key === "agent")?.done ?? false;
-  const agente = (agentReady && agentName) || "tu agente";
+  const agente = (agentReady && agentName) || "o seu agente";
 
   async function encender() {
     setBusy(true);
@@ -195,7 +195,7 @@ export function OnboardingClient({
                 Pronto: O CRM funciona como caixa de entrada manual
               </h2>
               <p className="mt-1 text-sm text-muted-foreground">
-                As mensagens chegam à Caixa de entrada e responde você. Para que um
+                As mensagens chegam à Caixa de entrada e são respondidas manualmente. Para que um
                 agente responda, ligue-o: depois pode activá-lo aqui.
               </p>
               <div className="mt-3 flex flex-wrap gap-2">

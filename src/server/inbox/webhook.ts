@@ -39,7 +39,7 @@ export function isValidSignature(
 
 /* ---------- Tipos del payload de Meta (subconjunto soportado) ---------- */
 
-/** Payload de un adjunto en un mensaje del webhook (008). */
+/** Payload de un anexo en un mensaje del webhook (008). */
 export type WebhookMediaPayload = {
   id?: string;
   mime_type?: string;

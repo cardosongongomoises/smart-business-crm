@@ -33,16 +33,16 @@ const SEND_ERROR_STATUS: Record<SendError["code"], number> = {
 
 /**
  * 059 — Reenvía a ESTA conversación cualquier mensaje del historial
- * (`{ sourceMessageId, caption? }`): el texto como texto y un adjunto como
+ * (`{ sourceMessageId, caption? }`): el texto como texto y un anexo como
  * archivo nuevo. Destino y origen se resuelven dentro de la organización de la
  * sesión; lo ajeno o inexistente es 404.
  */
 export const POST = withAuth(async (session, req: Request, ctx: Params) => {
   const { id } = await ctx.params;
   const target = await getConversation(session.organizationId, id);
-  if (!target) return apiError(404, "not_found", "Conversación no encontrada");
+  if (!target) return apiError(404, "not_found", "Conversa não encontrada");
   if (target.conversation.isTest) {
-    return apiError(403, "sandbox_violation", "No se reenvían mensajes al Laboratorio");
+    return apiError(403, "sandbox_violation", "As mensagens não podem ser reencaminhadas para o Laboratório");
   }
   const body = await parseBody(req, bodySchema);
   if (!body.ok) return body.response;

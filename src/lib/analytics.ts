@@ -271,10 +271,10 @@ export type HygieneBlockDto = {
 
 /** Mismas palabras que la ficha del contacto y el panel de la bandeja. */
 export const HANDOFF_LABEL: Record<string, string> = {
-  cliente: "El cliente pidió un humano",
-  modelo: "El agente decidió escalar",
-  error: "Error del proveedor de IA",
-  ventana: "Ventana de 24 h cerrada",
-  hostilidad: "El cliente se puso agresivo",
-  manual_reply: "Respondiste desde el teléfono",
+  cliente: "O cliente pediu um humano",
+  modelo: "O agente decidiu passar para um humano",
+  error: "Erro do fornecedor de IA",
+  ventana: "Janela de 24 h fechada",
+  hostilidad: "O cliente tornou-se agressivo",
+  manual_reply: "Respondeste a partir do telefone",
 };

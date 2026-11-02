@@ -57,7 +57,7 @@ export function QuoteBlock({
         type="button"
         data-quote-of={id}
         onClick={() => onJump(id)}
-        title="Ir al mensaje citado"
+        title="Ir para a mensagem citada"
         className={cn(base, "transition-colors hover:bg-quote-hover")}
       >
         {contenido}

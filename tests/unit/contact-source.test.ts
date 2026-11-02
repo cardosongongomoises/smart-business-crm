@@ -1,4 +1,4 @@
-﻿import { describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import {
   effectiveSource,
   isSourceValue,
@@ -42,6 +42,17 @@ describe("catálogo de fuentes", () => {
     for (const v of [...SOURCE_VALUES, "desconocida" as const]) {
       expect(SOURCE_LABELS[v]).toBeTruthy();
     }
+  });
+
+  it("usa rótulos em português sem alterar os valores internos", () => {
+    expect(SOURCE_LABELS).toEqual({
+      anuncio: "Anúncio",
+      organico: "Conteúdo orgânico",
+      referido: "Indicação",
+      conocido: "Conhecido",
+      otro: "Outro",
+      desconocida: "Não identificado",
+    });
   });
 
   it("valida entradas basura", () => {

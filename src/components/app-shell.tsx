@@ -81,7 +81,7 @@ export function AppShell({
     <div className="app-marco app-escala flex overflow-hidden lg:gap-[var(--hueco)] lg:p-[var(--hueco)]">
       {navOpen && (
         <button
-          aria-label="Cerrar el menú"
+          aria-label="Fechar o menu"
           tabIndex={-1}
           onClick={() => setNavOpen(false)}
           className="fixed inset-0 z-40 bg-overlay lg:hidden"
@@ -104,7 +104,7 @@ export function AppShell({
         <header className="flex h-12 shrink-0 items-center gap-1.5 border-b bg-background px-2 text-foreground lg:hidden">
           <button
             onClick={() => setNavOpen(true)}
-            aria-label="Abrir el menú"
+            aria-label="Abrir o menu"
             aria-expanded={navOpen}
             className="rounded-md p-2 text-text-2 hover:bg-accent hover:text-foreground"
           >

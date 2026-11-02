@@ -32,9 +32,9 @@ export const respuestaSchema = z.object({
     .string()
     .transform(normalizarAtajo)
     .refine((a) => ATAJO_RE.test(a), {
-      message: "el atajo lleva de 1 a 32 letras, números, - o _",
+      message: "o atalho deve ter entre 1 e 32 letras, números, - ou _",
     }),
-  texto: z.string().trim().min(1, "el texto no puede ir vacío").max(TEXTO_MAX),
+  texto: z.string().trim().min(1, "o texto não pode estar vazio").max(TEXTO_MAX),
 });
 
 function aDto(fila: typeof schema.quickReply.$inferSelect): RespuestaRapida {
@@ -48,7 +48,7 @@ function esDuplicado(err: unknown): boolean {
 }
 
 const duplicado = (atajo: string) =>
-  new QuickReplyError(409, "duplicado", `Ya hay una respuesta con el atajo /${atajo}`);
+  new QuickReplyError(409, "duplicado", `Já existe uma resposta com o atalho /${atajo}`);
 
 export async function listarRespuestas(organizationId: string): Promise<RespuestaRapida[]> {
   const filas = await getDb()
@@ -69,7 +69,7 @@ export async function crearRespuesta(
     .from(schema.quickReply)
     .where(scoped(schema.quickReply.organizationId, organizationId));
   if (Number(n) >= TOPE_RESPUESTAS) {
-    throw new QuickReplyError(409, "tope", `Caben hasta ${TOPE_RESPUESTAS} respuestas rápidas`);
+    throw new QuickReplyError(409, "tope", `É possível guardar até ${TOPE_RESPUESTAS} respostas rápidas`);
   }
   try {
     const [fila] = await db
@@ -94,7 +94,7 @@ export async function editarRespuesta(
       .set({ ...datos, updatedAt: new Date() })
       .where(scoped(schema.quickReply.organizationId, organizationId, eq(schema.quickReply.id, id)))
       .returning();
-    if (!fila) throw new QuickReplyError(404, "not_found", "Respuesta no encontrada");
+    if (!fila) throw new QuickReplyError(404, "not_found", "Resposta não encontrada");
     return aDto(fila);
   } catch (err) {
     if (esDuplicado(err)) throw duplicado(datos.atajo);
@@ -107,13 +107,13 @@ export async function borrarRespuesta(organizationId: string, id: string): Promi
     .delete(schema.quickReply)
     .where(scoped(schema.quickReply.organizationId, organizationId, eq(schema.quickReply.id, id)))
     .returning({ id: schema.quickReply.id });
-  if (!filas[0]) throw new QuickReplyError(404, "not_found", "Respuesta no encontrada");
+  if (!filas[0]) throw new QuickReplyError(404, "not_found", "Resposta não encontrada");
 }
 
 /** Las cuatro de la demo (D6). Idempotente: no pisa ni duplica. */
 export const RESPUESTAS_DEMO: { atajo: string; texto: string }[] = [
-  { atajo: "hola", texto: "¡Hola {nombre}! Gracias por escribir. ¿En qué te ayudo?" },
-  { atajo: "horario", texto: "Abrimos de lunes a sábado de 8:00 a 19:00, y domingo de 9:00 a 14:00." },
-  { atajo: "envio", texto: "Hacemos envíos en la ciudad el mismo día si pides antes de las 14:00. Fuera de la ciudad, de 2 a 4 días." },
-  { atajo: "pago", texto: "Aceptamos transferencia, tarjeta y efectivo en tienda. Te paso los datos de la cuenta si quieres pagar por transferencia." },
+  { atajo: "hola", texto: "Olá, {nombre}! Agradecemos a sua mensagem. Em que podemos ajudar?" },
+  { atajo: "horario", texto: "Estamos abertos de segunda a sábado, das 8:00 às 19:00, e aos domingos, das 9:00 às 14:00." },
+  { atajo: "envio", texto: "Fazemos entregas na cidade no mesmo dia se pedir antes das 14:00. Fora da cidade, em 2 a 4 dias." },
+  { atajo: "pago", texto: "Aceitamos transferência, cartão e pagamento em dinheiro na loja. Envio os dados da conta se quiser pagar por transferência." },
 ];

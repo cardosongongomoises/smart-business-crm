@@ -172,7 +172,7 @@ export function AgentClient() {
                 : "w-full text-right text-xs text-muted-foreground"
             }
           >
-            {switchError ?? "Liga-se quando conectar o seu agente."}
+            {switchError ?? "Liga-se quando ligar o seu agente."}
           </p>
         )}
       </header>
@@ -187,18 +187,18 @@ export function AgentClient() {
         <div className="mx-4 mt-4 rounded-lg border border-brand-soft bg-brand-tint p-5 text-center sm:mx-6 sm:mt-6 sm:p-6">
           <Sparkles className="mx-auto mb-2 h-8 w-8 text-primary" />
           <p className="font-medium">
-            {aiMensaje ? "O seu agente não pode pensar" : "O seu agente não tem com que pensar"}
+            {aiMensaje ? "O seu agente não consegue pensar" : "O seu agente não tem como pensar"}
           </p>
           <p className="mx-auto mt-1 max-w-md text-sm text-muted-foreground">
             {aiMensaje ??
-              "Pensa através do CRM com a chave de Configurações → IA: escolha o fornecedor, o modelo e cole a sua chave."}{" "}
+              "Pensa através do CRM com a chave de Definições → IA: escolha o fornecedor, o modelo e cole a sua chave."}{" "}
             (Se o seu agente usa chave própria, pode ignorar este aviso.)
           </p>
           <Link
             href="/settings/ai"
             className="mt-3 inline-block text-sm font-medium text-brand-text underline underline-offset-2"
           >
-            Ir para Configurações → IA →
+            Ir para Definições → IA →
           </Link>
         </div>
       )}
@@ -253,7 +253,7 @@ function RolSection({
             <CardDescription>{rol.descripcion}</CardDescription>
           </div>
           <Button variant="outline" size="sm" onClick={onPreset}>
-            Cargar el rol {rol.etiqueta}
+            Carregar o papel {rol.etiqueta}
           </Button>
         </div>
       </CardHeader>
@@ -329,7 +329,7 @@ function ProfileSection({
           />
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="agent-escalation">Reglas de escalamento</Label>
+          <Label htmlFor="agent-escalation">Regras de escalamento</Label>
           <Textarea
             id="agent-escalation"
             rows={3}

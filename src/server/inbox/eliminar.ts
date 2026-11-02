@@ -11,7 +11,7 @@ import { deleteMediaFile } from "@/server/whatsapp/media";
  *
  * Dos alcances, porque son dos intenciones distintas:
  *
- * - `hilo`: se van los mensajes, sus adjuntos y la ficha. El contacto, su
+ * - `hilo`: se van los mensajes, sus anexos y la ficha. El contacto, su
  *   lugar en el pipeline y sus citas pasadas se quedan. Si la persona vuelve a
  *   escribir, es una conversación nueva.
  * - `contacto`: se va la persona entera. Todo lo que cuelga de ella cae en
@@ -19,7 +19,7 @@ import { deleteMediaFile } from "@/server/whatsapp/media";
  *   cambian, y por eso es una casilla aparte y no el comportamiento normal.
  *
  * Casi todo el trabajo lo hacen las foráneas con ON DELETE CASCADE. Lo que
- * este módulo añade es lo que una cascada no puede hacer: los adjuntos (fila y
+ * este módulo añade es lo que una cascada no puede hacer: los anexos (fila y
  * archivo), la ficha y la cita por venir que detiene el borrado.
  */
 
@@ -130,7 +130,7 @@ export async function eliminarConversacion(
       .limit(1);
     if (cita) return { ok: false, motivo: "cita_pendiente", cuando: cita.cuando };
 
-    // Los adjuntos se anotan ANTES de borrar: después ya no hay mensaje que
+    // Los anexos se anotan ANTES de borrar: después ya no hay mensaje que
     // diga cuáles eran.
     const deMensajes = await tx
       .selectDistinct({ id: schema.message.mediaAssetId })
@@ -189,7 +189,7 @@ export async function eliminarConversacion(
     }
 
     if (candidatos.length > 0) {
-      // Solo los adjuntos que ya nadie usa: la imagen de un anuncio puede
+      // Solo los anexos que ya nadie usa: la imagen de un anuncio puede
       // estar en otra conversación.
       const borrados = await tx
         .delete(schema.mediaAsset)
@@ -229,7 +229,7 @@ export async function eliminarConversacion(
 
   // Los archivos, DESPUÉS del commit: si la transacción se revierte, las
   // filas vuelven y sus archivos tienen que seguir ahí. Al revés solo queda
-  // un archivo huérfano que nadie puede abrir, y no un mensaje sin adjunto.
+  // un archivo huérfano que nadie puede abrir, y no un mensaje sin anexo.
   if (resultado.ok && archivos.length > 0) {
     const intentos = await Promise.allSettled(
       archivos.map((id) => deleteMediaFile(organizationId, id))
@@ -237,7 +237,7 @@ export async function eliminarConversacion(
     const fallidos = intentos.filter((r) => r.status === "rejected").length;
     if (fallidos > 0) {
       console.warn(
-        `[bandeja] ${fallidos} de ${archivos.length} adjuntos no se pudieron borrar del volumen (${organizationId})`
+        `[bandeja] ${fallidos} de ${archivos.length} anexos no se pudieron borrar del volumen (${organizationId})`
       );
     }
   }

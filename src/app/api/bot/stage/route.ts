@@ -27,7 +27,7 @@ export async function POST(req: Request) {
 
   const organizationId = await resolveInstanceOrg();
   if (!organizationId) {
-    return apiError(409, "no_org", "La instancia aún no tiene organización");
+    return apiError(409, "no_org", "A instância ainda não tem uma organização");
   }
 
   const body = await parseBody(req, bodySchema);

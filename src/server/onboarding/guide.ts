@@ -76,7 +76,7 @@ export function guideFrom(status: OnboardingStatus): Guide {
       key: "ai",
       title: "Ligue o seu fornecedor de IA",
       description:
-        "É a conta através da qual o seu agente processa raciocínios: OpenRouter ou qualquer fornecedor compatível com a API da OpenAI. Apenas necessita de colar a chave de API e selecionar o modelo.",
+        "É a conta através da qual o seu agente processa raciocínios: OpenRouter ou qualquer fornecedor compatível com a API da OpenAI. Apenas necessita de colar a chave de API e seleccionar o modelo.",
       done: ready(ai),
       href: "/settings/ai",
       cta: "Associar fornecedor",

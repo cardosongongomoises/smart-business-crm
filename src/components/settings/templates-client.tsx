@@ -355,7 +355,7 @@ function CreateForm({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Misma validación que el servidor: avisa antes de gastar una llamada a Meta.
+  // A mesma validação do servidor: avisa antes de gastar uma chamada à Meta.
   const bodyError = body.trim() ? validateBodyVariables(body) : null;
   const variableCount = bodyError ? 0 : countVariables(body);
   const warnings = bodyError ? [] : templateWarnings(body);
@@ -372,7 +372,7 @@ function CreateForm({
     setError(null);
   }
 
-  /** Inserta la siguiente variable donde está el cursor. */
+  /** Insere a variável seguinte onde está o cursor. */
   function insertVariable() {
     const next = `{{${countVariables(body) + 1}}}`;
     const el = document.getElementById("tpl-body") as HTMLTextAreaElement | null;

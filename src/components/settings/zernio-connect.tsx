@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 /**
- * 023 — Conectar un canal por Zernio, igual en Instagram, Messenger y TikTok.
+ * 023 — Ligar un canal pelo Zernio, igual en Instagram, Messenger y TikTok.
  *
  * Se pega la llave y nada más: la cuenta la encuentra el CRM en Zernio. Antes
  * había que copiar un `accountId` del panel de Zernio, que enseña dos ids que
@@ -71,7 +71,7 @@ export function ZernioConnect({
         error?: { message?: string; details?: { accounts?: Candidate[] } };
       } | null;
       setCandidates(data?.error?.details?.accounts ?? []);
-      setError(data?.error?.message ?? "No se pudo conectar. Intenta de nuevo.");
+      setError(data?.error?.message ?? "Não foi possível ligar. Tente novamente.");
       return;
     }
     const data = (await res.json().catch(() => ({}))) as Saved;
@@ -128,7 +128,7 @@ export function ZernioConnect({
 
       {candidates.length > 0 && (
         <div className="space-y-2">
-          <p className="text-xs font-semibold text-text-2">Cuentas de este canal en esa llave:</p>
+          <p className="text-xs font-semibold text-text-2">Contas deste canal nessa chave:</p>
           <div className="flex flex-wrap gap-2">
             {candidates.map((c) => (
               <button
@@ -138,7 +138,7 @@ export function ZernioConnect({
                 onClick={() => void save(c.id)}
                 className="rounded-full border border-border-strong px-3.5 py-1.5 text-[12.5px] font-semibold transition-colors hover:bg-accent disabled:opacity-50"
               >
-                Conectar {c.name}
+                Ligar {c.name}
               </button>
             ))}
           </div>
@@ -147,7 +147,7 @@ export function ZernioConnect({
 
       <div className="flex flex-wrap items-center gap-3">
         <Button disabled={saving || !canSave} onClick={() => void save()}>
-          {saving ? "Probando…" : "Probar y conectar"}
+          {saving ? "A testar…" : "Testar e ligar"}
         </Button>
         {!manual && (
           <button
@@ -155,7 +155,7 @@ export function ZernioConnect({
             onClick={() => setManual(true)}
             className="text-xs font-semibold text-text-2 underline-offset-2 hover:underline"
           >
-            Pegar el accountId a mano
+            Colar o accountId manualmente
           </button>
         )}
       </div>
@@ -164,21 +164,21 @@ export function ZernioConnect({
         <div className="space-y-2 rounded-lg border border-success-soft bg-success-tint p-4 text-sm">
           <p className="flex items-center gap-2 font-medium text-success-text">
             <CheckCircle2 className="h-4 w-4 shrink-0" />
-            Conectado{saved.accountName ? `: ${saved.accountName}` : ""}
+            Ligado{saved.accountName ? `: ${saved.accountName}` : ""}
           </p>
           {saved.webhook?.ok && (
             <p className="text-success-text opacity-80">
               {saved.webhook.created
                 ? "Vocero dio de alta su webhook en tu Zernio, limitado a tus cuentas conectadas."
-                : "El webhook de tu Zernio quedó actualizado y limitado a tus cuentas conectadas."}
+                : "O webhook do seu Zernio foi actualizado e limitado às suas contas ligadas."}
             </p>
           )}
           {saved.health && saved.health.level !== "ok" && <Aviso>{saved.health.message}</Aviso>}
           {saved.webhook && !saved.webhook.ok && (
             <Aviso>
-              {saved.webhook.message ?? "No se pudo dar de alta el webhook en Zernio."}{" "}
+              {saved.webhook.message ?? "Não foi possível registar o webhook no Zernio."}{" "}
               <Link href="/settings/channels" className="font-semibold underline">
-                Ver el estado de los canales
+                Ver o estado dos canais
               </Link>
             </Aviso>
           )}

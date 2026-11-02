@@ -60,7 +60,7 @@ describe("forma del error", () => {
   it("el sobre va ANIDADO y `slots` es HERMANO de `error`", async () => {
     const slots = [{ startUtc: "2026-08-05T15:30:00.000Z", label: "mié 5 ago, 09:30" }];
     const res = bookingErrorResponse(
-      new BookingError("slot_taken", "Ese horario acaba de ocuparse", slots)
+      new BookingError("slot_taken", "Esse horário acabou de ser ocupado", slots)
     );
     expect(res.status).toBe(409);
 
@@ -71,7 +71,7 @@ describe("forma del error", () => {
     // Anidado: un mock con la forma plana `{code}` hizo que todo 409 se leyera
     // como conflicto genérico y el camino de re-oferta nunca se activara.
     expect(body.error.code).toBe("slot_taken");
-    expect(body.error.message).toContain("ocuparse");
+    expect(body.error.message).toContain("ocupado");
     // Hermano: es lo que el cliente usa para re-ofrecer sin otra ida y vuelta.
     expect(body.slots).toHaveLength(1);
     expect(body.slots[0]!.label).toBe("mié 5 ago, 09:30");

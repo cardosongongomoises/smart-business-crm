@@ -29,7 +29,7 @@ export async function testConnection(
         ok: false,
         code: "meta_error",
         message:
-          "Meta no devolvió el número: verifica que el Phone Number ID sea correcto",
+          "A Meta não devolveu o número: confirme se o Phone Number ID está correto",
       };
     }
     return {
@@ -44,17 +44,21 @@ export async function testConnection(
           ok: false,
           code: "invalid_token",
           message:
-            "El token no es válido o expiró. Verifica que corresponde a este número (modo directo: token de usuario del sistema; modo agencia: token entregado por tu backend).",
+            "O token não é válido ou expirou. Verifique se corresponde a este número (modo directo: token de utilizador do sistema; modo agência: token entregue pelo seu backend).",
         };
       }
       if (err.status === 0 || err.status >= 500) {
         return {
           ok: false,
           code: "meta_unavailable",
-          message: "Meta no está disponible en este momento; intenta de nuevo",
+          message: "A Meta não está disponível neste momento; tente novamente.",
         };
       }
-      return { ok: false, code: "meta_error", message: err.message };
+      return {
+        ok: false,
+        code: "meta_error",
+        message: `A Meta recusou a ligação (código ${err.code ?? err.status}). Confirme o ID do número e as permissões.`,
+      };
     }
     throw err;
   }
@@ -199,7 +203,7 @@ export async function registerWebhookForNumber(opts: {
       // ya partidas: lo que hace llegar los mensajes es la Cuenta de
       // mensajes. Se decide abajo, con su resultado a la vista.
       if (!esCuentaPartida(err)) {
-        return registrationError(err, "No se pudo suscribir la app a la cuenta de WhatsApp");
+        return registrationError(err, "Não foi possível subscrever a aplicação à conta do WhatsApp");
       }
       cuentaPartida = true;
     }
@@ -225,7 +229,7 @@ export async function registerWebhookForNumber(opts: {
         ok: false,
         code: "meta_error",
         message:
-          "Meta ya no acepta suscribir la app en la cuenta de WhatsApp (#100/2388339, el split de 2026): escribe el ID de la Cuenta de mensajes y vuelve a registrar el webhook.",
+          "A Meta já não aceita subscrever a aplicação à conta do WhatsApp (#100/2388339, a separação de 2026): introduza o ID da Conta de mensagens e registe novamente o webhook.",
       };
     }
     if (!messagingAccount.ok) return messagingAccount;
@@ -246,7 +250,7 @@ export async function registerWebhookForNumber(opts: {
       },
     });
   } catch (err) {
-    return registrationError(err, "Meta no aceptó la dirección del webhook");
+    return registrationError(err, "A Meta não aceitou o endereço do webhook");
   }
 
   try {
@@ -259,7 +263,7 @@ export async function registerWebhookForNumber(opts: {
         ok: false,
         code: "meta_error",
         message:
-          "Meta aceptó el webhook pero no lo confirma en el número. Vuelve a intentarlo en unos minutos.",
+          "A Meta aceitou o webhook, mas não o confirma no número. Tente novamente dentro de alguns minutos.",
       };
     }
     return {
@@ -268,7 +272,7 @@ export async function registerWebhookForNumber(opts: {
       ...(messagingAccount ? { messagingAccount } : {}),
     };
   } catch (err) {
-    return registrationError(err, "No se pudo confirmar el webhook en Meta");
+    return registrationError(err, "Não foi possível confirmar o webhook na Meta");
   }
 }
 
@@ -345,7 +349,7 @@ async function registerWebhookForMessagingAccount(opts: {
       body: { override_callback_uri: webhookUrl, verify_token: verifyToken },
     });
   } catch (err) {
-    return messagingAccountError(err, "No se pudo suscribir la app a la Cuenta de mensajes");
+    return messagingAccountError(err, "Não foi possível subscrever a aplicação à Conta de mensagens");
   }
 
   try {
@@ -358,12 +362,12 @@ async function registerWebhookForMessagingAccount(opts: {
         ok: false,
         code: "meta_error",
         message:
-          "Meta aceptó el webhook en la Cuenta de mensajes pero no lo confirma. Vuelve a intentarlo en unos minutos.",
+          "A Meta aceitou o webhook na Conta de mensagens, mas não o confirma. Tente novamente dentro de alguns minutos.",
       };
     }
     return { ok: true };
   } catch (err) {
-    return messagingAccountError(err, "No se pudo confirmar el webhook en la Cuenta de mensajes");
+    return messagingAccountError(err, "Não foi possível confirmar o webhook na Conta de mensagens");
   }
 }
 
@@ -472,14 +476,14 @@ function registrationError(err: unknown, context: string): WebhookRegistration {
     return {
       ok: false,
       code: "invalid_token",
-      message: `${context}: el token no es válido o expiró.`,
+      message: `${context}: o token não é válido ou expirou.`,
     };
   }
   if (err.status === 0 || err.status >= 500) {
     return {
       ok: false,
       code: "meta_unavailable",
-      message: `${context}: Meta no está disponible en este momento; intenta de nuevo.`,
+      message: `${context}: a Meta não está disponível neste momento; tente novamente.`,
     };
   }
   // 200 y 10 son los de permisos: el token puede enviar mensajes pero no
@@ -488,10 +492,14 @@ function registrationError(err: unknown, context: string): WebhookRegistration {
     return {
       ok: false,
       code: "missing_permission",
-      message: `${context}: el token no tiene el permiso whatsapp_business_management sobre esta cuenta.`,
+      message: `${context}: o token não tem a permissão whatsapp_business_management para esta conta.`,
     };
   }
-  return { ok: false, code: "meta_error", message: `${context}: ${err.message}` };
+  return {
+    ok: false,
+    code: "meta_error",
+    message: `${context} (código Meta ${err.code ?? err.status}).`,
+  };
 }
 
 /**
@@ -506,7 +514,7 @@ function messagingAccountError(
   if (res.ok || res.code !== "missing_permission") return res.ok ? { ok: true } : res;
   return {
     ...res,
-    message: `${context}: el usuario del sistema no tiene asignada la Cuenta de mensajes (Usuarios del sistema › Asignar activos › Messaging accounts). El mismo token sirve en cuanto se asigna.`,
+    message: `${context}: atribua a Conta de mensagens ao utilizador do sistema (Definições da empresa › Utilizadores do sistema › Atribuir ativos › Contas de mensagens / Messaging accounts). O mesmo token poderá ser usado depois.`,
   };
 }
 

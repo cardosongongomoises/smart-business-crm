@@ -44,7 +44,7 @@ export async function POST(req: Request) {
   });
   const res = await deliverToWebhook(payload);
   if (!res.ok) {
-    return apiError(502, "webhook_error", `El webhook respondió ${res.status}`);
+    return apiError(502, "webhook_error", `O webhook respondeu com o estado ${res.status}`);
   }
   return Response.json({ delivered: true });
 }

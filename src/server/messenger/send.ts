@@ -79,7 +79,7 @@ async function sendViaMeta(input: {
   const { pageId } = input.credentials;
   if (!pageId) {
     throw new MetaApiError(
-      "La conexión de Messenger no tiene ID de página para enviar",
+      "A ligação do Messenger não tem ID de página para enviar",
       { status: 400 }
     );
   }

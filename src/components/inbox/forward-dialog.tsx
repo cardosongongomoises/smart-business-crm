@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { mediaLabel } from "./helpers";
 
 /**
- * 042 · 059 — Reenviar un mensaje (texto o adjunto) a otra conversación.
+ * 042 · 059 — Reencaminhar un mensaje (texto o adjunto) a otra conversación.
  * Elegir un destino no envía: hace falta el botón que lleva su nombre.
  * Mientras sale, ni Escape ni un clic fuera cierran el diálogo, y un segundo
  * clic no duplica.

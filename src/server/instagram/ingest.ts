@@ -38,8 +38,8 @@ export async function processZernioEvent(payload: unknown): Promise<void> {
   const creds = await getInstagramCredentialsByAccountRef(accountRef);
   if (!creds) {
     console.warn(
-      `[ig] evento para accountId desconocido (${accountRef}): ` +
-        "guarda la conexion en Configuracion -> Instagram para recibir mensajes"
+      `[ig] evento para ID de conta desconhecido (${accountRef}): ` +
+        "guarde a ligação em Definições → Instagram para receber mensagens"
     );
     return;
   }
@@ -122,8 +122,8 @@ export async function processMetaInstagramPayload(
     const creds = await getInstagramCredentialsByIgUserId(igUserId);
     if (!creds) {
       console.warn(
-        `[ig] evento para IG_ID desconocido (${igUserId}): ` +
-          "guarda la conexion en Configuracion -> Instagram para recibir mensajes"
+        `[ig] evento para ID de conta do Instagram desconhecido (${igUserId}): ` +
+          "guarde a ligação em Definições → Instagram para receber mensagens"
       );
       continue;
     }

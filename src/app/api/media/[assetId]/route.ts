@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 type Params = { params: Promise<{ assetId: string }> };
 
 /**
- * 008 — Sirve el binario de un adjunto desde el volumen local. Solo con
+ * 008 — Sirve el binario de un anexo desde el volumen local. Solo con
  * sesión y dentro de la organización (un asset ajeno responde 404: jamás se
  * filtra existencia entre tenants). Si el archivo aún no se descargó,
  * intenta on-demand contra Graph; si Meta ya lo expiró → 410.
@@ -34,11 +34,11 @@ export const GET = withAuth(async (session, _req: Request, ctx: Params) => {
     )
     .limit(1);
   let asset = rows[0];
-  if (!asset) return apiError(404, "not_found", "Adjunto no encontrado");
+  if (!asset) return apiError(404, "not_found", "Anexo não encontrado");
 
   if (asset.kind === "location" || asset.kind === "contacts") {
     // Sin binario: el payload viaja en el DTO del mensaje.
-    return apiError(404, "no_binary", "Este adjunto no tiene archivo");
+    return apiError(404, "no_binary", "Este anexo não tem ficheiro");
   }
 
   if (asset.fetchStatus !== "available") {
@@ -49,7 +49,7 @@ export const GET = withAuth(async (session, _req: Request, ctx: Params) => {
     return apiError(
       410,
       "gone",
-      "El contenido ya no está disponible (expiró en WhatsApp antes de poder copiarse)"
+      "O conteúdo já não está disponível (expirou no WhatsApp antes de poder ser copiado)"
     );
   }
 
@@ -59,7 +59,7 @@ export const GET = withAuth(async (session, _req: Request, ctx: Params) => {
     return apiError(
       410,
       "gone",
-      "El archivo del adjunto ya no está en el volumen ni en WhatsApp"
+      "O ficheiro do anexo já não está no volume nem no WhatsApp"
     );
   }
   // #78: nosniff + CSP sandbox siempre; inline solo para lo previsualizable.

@@ -39,6 +39,6 @@ export async function avisoIaDe(organizationId: string): Promise<AvisoIa> {
     accion:
       estado.motivo === "sin_configurar"
         ? "Configurar la IA"
-        : "Revisar mi conexión",
+        : "Rever a minha ligação",
   };
 }

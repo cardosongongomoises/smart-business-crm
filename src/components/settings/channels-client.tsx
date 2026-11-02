@@ -22,7 +22,7 @@ import { cn } from "@/lib/utils";
  *
  * Una fila por canal encendido con las tres cosas que alguien pregunta cuando
  * «no me llegan los mensajes»: ¿está conectado?, ¿cuándo entró el último? y,
- * si llega por Zernio, ¿siguen bien la cuenta y el webhook? La salud se le
+ * si llega pelo Zernio, ¿siguen bien la cuenta y el webhook? La salud se le
  * pregunta a Zernio al abrir la pantalla; nada de esto se guarda.
  */
 
@@ -58,15 +58,15 @@ const DOT: Record<Level, string> = {
 /** «hace 5 min», «hace 3 h», «hace 2 días». */
 function hace(iso: string, now: number): string {
   const min = Math.max(0, Math.round((now - Date.parse(iso)) / 60_000));
-  if (min < 1) return "hace un momento";
-  if (min < 60) return `hace ${min} min`;
+  if (min < 1) return "há pouco";
+  if (min < 60) return `há ${min} min`;
   const h = Math.round(min / 60);
-  if (h < 48) return `hace ${h} h`;
-  return `hace ${Math.round(h / 24)} días`;
+  if (h < 48) return `há ${h} h`;
+  return `há ${Math.round(h / 24)} dias`;
 }
 
 function fecha(iso: string): string {
-  return new Date(iso).toLocaleString("es-MX", { dateStyle: "medium", timeStyle: "short" });
+  return new Date(iso).toLocaleString("pt-AO", { dateStyle: "medium", timeStyle: "short" });
 }
 
 export function ChannelsClient() {
@@ -131,16 +131,16 @@ export function ChannelsClient() {
     if (!res?.ok) {
       setNotice({
         ok: false,
-        text: data?.error?.message ?? "No se pudo dar de alta el webhook. Intenta de nuevo.",
+        text: data?.error?.message ?? "Não foi possível registar o webhook. Tente novamente.",
       });
       return;
     }
-    const cuentas = data?.accounts === 1 ? "tu cuenta conectada" : `tus ${data?.accounts} cuentas conectadas`;
+    const cuentas = data?.accounts === 1 ? "a sua conta ligada" : `as suas ${data?.accounts} contas ligadas`;
     setNotice({
       ok: true,
       text: data?.created
-        ? `Webhook dado de alta en Zernio, limitado a ${cuentas}.`
-        : `Webhook actualizado en Zernio y limitado a ${cuentas}.`,
+        ? `Webhook registado no Zernio, limitado a ${cuentas}.`
+        : `Webhook actualizado no Zernio e limitado a ${cuentas}.`,
     });
     void refetch();
   }
@@ -148,7 +148,7 @@ export function ChannelsClient() {
   if (!rows) {
     return (
       <p className="text-sm text-muted-foreground">
-        {failed ? "No se pudo cargar el estado de los canales." : "Cargando…"}
+        {failed ? "Não foi possível carregar o estado dos canais." : "A carregar…"}
       </p>
     );
   }
@@ -161,11 +161,11 @@ export function ChannelsClient() {
       <Card>
         <CardHeader className="flex-row items-start justify-between gap-4 space-y-0">
           <div className="space-y-1.5">
-            <CardTitle>Estado de los canales</CardTitle>
+            <CardTitle>Estado dos canais</CardTitle>
             <CardDescription>
-              Los canales encendidos en esta instancia: si están conectados,
-              cuándo entró el último mensaje de un cliente y, si llegan por
-              Zernio, cómo están la cuenta y el webhook.
+              Canais activos nesta instância: se estão ligados,
+              quando entrou a última mensagem de um cliente e, se chegam pelo
+              Zernio, como estão a conta e o webhook.
             </CardDescription>
           </div>
           <Button
@@ -190,7 +190,7 @@ export function ChannelsClient() {
                   href={SETTINGS_HREF[r.channel]}
                   className="ml-auto text-xs font-semibold text-brand-text underline-offset-2 hover:underline"
                 >
-                  {r.connected ? "Configurar" : "Conectar"}
+                  {r.connected ? "Configurar" : "Ligar"}
                 </Link>
               </div>
 
@@ -198,16 +198,16 @@ export function ChannelsClient() {
                 <dl className="grid gap-x-6 gap-y-1.5 text-sm sm:grid-cols-[9.5rem_1fr]">
                   <dt className="text-text-2">Cuenta</dt>
                   <dd>
-                    {r.account ?? "Sin nombre"}
+                    {r.account ?? "Sem nome"}
                     {r.channel !== "whatsapp" && (
                       <span className="text-text-2">
                         {" "}
-                        · {r.source === "zernio" ? "por Zernio" : "app propia de Meta"}
+                        · {r.source === "zernio" ? "pelo Zernio" : "aplicação própria da Meta"}
                       </span>
                     )}
                   </dd>
 
-                  <dt className="text-text-2">Último mensaje</dt>
+                  <dt className="text-text-2">Última mensagem</dt>
                   <dd>
                     {r.lastInboundAt ? (
                       <>
@@ -215,17 +215,17 @@ export function ChannelsClient() {
                         <span className="text-text-2"> · {fecha(r.lastInboundAt)}</span>
                       </>
                     ) : (
-                      <span className="text-text-2">Todavía no entra ninguno por este canal</span>
+                      <span className="text-text-2">Ainda não entrou nenhuma mensagem por este canal</span>
                     )}
                   </dd>
 
                   {r.health && (
                     <>
-                      <dt className="text-text-2">Cuenta en Zernio</dt>
+                      <dt className="text-text-2">Conta no Zernio</dt>
                       <dd>
                         <Salud health={r.health.account} />
                       </dd>
-                      <dt className="text-text-2">Webhook de Zernio</dt>
+                      <dt className="text-text-2">Webhook do Zernio</dt>
                       <dd>
                         <Salud health={r.health.webhook} />
                         {r.health.webhook.lastFiredAt && (
@@ -247,12 +247,12 @@ export function ChannelsClient() {
       {porZernio.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>Webhook de Zernio</CardTitle>
+            <CardTitle>Webhook do Zernio</CardTitle>
             <CardDescription>
-              Es el aviso con el que Zernio le entrega cada mensaje a esta
-              instancia. Vocero lo da de alta al conectar un canal, con el evento{" "}
-              <code>message.received</code> y limitado a tus cuentas conectadas.
-              Si se desactivó o quedó sin una cuenta, aquí se repara.
+              É o aviso através do qual o Zernio entrega cada mensagem a esta
+              instância. O Vocero regista-o ao ligar um canal, com o evento{" "}
+              <code>message.received</code> e limitado às suas contas ligadas.
+              Se for desactivado ou ficar sem uma conta, pode repará-lo aqui.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
@@ -263,14 +263,14 @@ export function ChannelsClient() {
                 onClick={() => void repair()}
               >
                 {repairing
-                  ? "Hablando con Zernio…"
+                  ? "A comunicar com o Zernio…"
                   : webhookMal
-                    ? "Reparar el webhook en Zernio"
-                    : "Volver a dar de alta el webhook"}
+                    ? "Reparar o webhook no Zernio"
+                    : "Registar novamente o webhook"}
               </Button>
             ) : (
               <p className="text-sm text-text-2">
-                Solo el propietario puede cambiar el webhook.
+                Apenas o proprietário pode alterar o webhook.
               </p>
             )}
             {notice && (
@@ -284,21 +284,21 @@ export function ChannelsClient() {
             {webhookUrl && (
               <details className="text-sm">
                 <summary className="cursor-pointer text-xs font-semibold text-text-2">
-                  Crearlo a mano en Zernio
+                  Criar manualmente no Zernio
                 </summary>
                 <div className="mt-3 space-y-2">
                   <p className="text-xs text-text-2">
-                    En Zernio → Webhooks, da de alta esta URL con el evento{" "}
-                    <code>message.received</code> y limítalo a tus cuentas. El
-                    secreto de firma lo lee Vocero de Zernio: no hay que
-                    copiarlo aquí.
+                    No Zernio → Webhooks, registe este URL com o evento{" "}
+                    <code>message.received</code> e limite-o às suas contas. O
+                    segredo de assinatura é lido pelo Vocero do Zernio: não é necessário
+                    copiá-lo aqui.
                   </p>
                   <div className="flex gap-2">
                     <Input readOnly value={webhookUrl} className="font-mono text-xs" />
                     <Button
                       variant="outline"
                       size="icon"
-                      aria-label="Copiar la URL"
+                      aria-label="Copiar o URL"
                       onClick={() => void copy(webhookUrl)}
                     >
                       {copied ? <CheckCircle2 className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
@@ -315,18 +315,18 @@ export function ChannelsClient() {
 }
 
 /**
- * El distintivo dice lo peor que le pasa al canal: «Conectado» en verde encima
+ * El distintivo dice lo peor que le pasa al canal: «Ligado» en verde encima
  * de una cuenta que Zernio pide reconectar sería la pantalla mintiendo.
  */
 function Estado({ row }: { row: Row }) {
-  if (!row.connected) return <Badge variant="secondary">Sin conectar</Badge>;
+  if (!row.connected) return <Badge variant="secondary">Não ligado</Badge>;
   if (row.status === "reconnect_required") {
-    return <Badge variant="destructive">Hay que reconectar</Badge>;
+    return <Badge variant="destructive">É necessário ligar novamente</Badge>;
   }
   const niveles = row.health ? [row.health.account.level, row.health.webhook.level] : [];
-  if (niveles.includes("error")) return <Badge variant="destructive">Con problemas</Badge>;
-  if (niveles.includes("warn")) return <Badge variant="warning">Revisar</Badge>;
-  return <Badge variant="success">Conectado</Badge>;
+  if (niveles.includes("error")) return <Badge variant="destructive">Com problemas</Badge>;
+  if (niveles.includes("warn")) return <Badge variant="warning">Rever</Badge>;
+  return <Badge variant="success">Ligado</Badge>;
 }
 
 function Salud({ health }: { health: Health }) {

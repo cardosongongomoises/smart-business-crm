@@ -53,8 +53,8 @@ type Case = {
 };
 
 const TIPO_LABELS: Record<Hallazgo["tipo"], string> = {
-  alucinacion: "Alucinación",
-  fuera_de_kb: "Fuera del conocimiento",
+  alucinacion: "Alucinação",
+  fuera_de_kb: "Fora da base de conhecimento",
   debio_escalar: "Debió escalar",
   tono: "Tono",
 };
@@ -125,7 +125,7 @@ export function LabClient() {
         setBrainConnected(false);
         return;
       }
-      setError(data?.error?.message ?? "No se pudo lanzar la corrida");
+      setError(data?.error?.message ?? "Não foi possível iniciar a corrida");
       return;
     }
     const data = (await res.json()) as { runId: string };
@@ -134,7 +134,7 @@ export function LabClient() {
     void refetchRuns();
   }
 
-  // 036 — Sin agente conectado, las corridas viejas se siguen pudiendo leer:
+  // 036 — Sem agente ligado, las corridas viejas se siguen pudiendo leer:
   // el aviso va arriba y solo se apaga el botón de correr.
   if (!aiConfigured && brainConnected) {
     return (
@@ -143,18 +143,18 @@ export function LabClient() {
         <div className="m-4 rounded-lg border border-brand-soft bg-brand-tint p-6 text-center sm:m-6 sm:p-8">
           <Sparkles className="mx-auto mb-2 h-8 w-8 text-primary" />
           <p className="font-medium">
-            Configura tu proveedor de IA para usar el Laboratorio
+            Configure o seu fornecedor de IA para usar o Laboratório
           </p>
           <p className="mx-auto mt-1 max-w-md text-sm text-muted-foreground">
-            Con esa llave piensan tu agente (a través del CRM) y el juez que
-            califica cada conversación: configúrala en{" "}
+            Com essa chave, o seu agente (através do CRM) e o juiz que
+            avalia cada conversa conseguem pensar: configure-a em{" "}
             <Link
               href="/settings/ai"
               className="font-medium text-brand-text underline underline-offset-2"
             >
-              Ajustes → IA
+              Definições → IA
             </Link>{" "}
-            y vuelve aquí.
+            e volte aqui.
           </p>
         </div>
       </div>
@@ -181,19 +181,19 @@ export function LabClient() {
         >
           <Cable aria-hidden className="mt-0.5 h-5 w-5 shrink-0 text-text-3" strokeWidth={1.7} />
           <div className="min-w-0 text-sm">
-            <p className="font-semibold">Sin agente conectado</p>
+            <p className="font-semibold">Sem agente ligado</p>
             <p className="mt-0.5 leading-relaxed text-text-2">
-              El Laboratorio prueba al agente que contesta a tus clientes:
-              clientes simulados conversan con él y un juez califica cada
-              conversación. Vocero no trae agente propio, y esta instancia aún
-              no tiene uno conectado.{" "}
+              O Laboratório testa o agente que responde aos seus clientes:
+              clientes simulados conversam com ele e um juiz avalia cada
+              conversa. O Vocero não inclui um agente próprio e esta instância ainda
+              não tem nenhum ligado.{" "}
               <a
                 href={GUIA_DEL_PAR_URL}
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex items-center gap-0.5 whitespace-nowrap font-medium text-brand-text underline underline-offset-2 hover:text-brand"
               >
-                Cómo conectarlo
+                Como o ligar
                 <ArrowUpRight aria-hidden className="h-3.5 w-3.5" strokeWidth={1.8} />
               </a>
             </p>
@@ -204,7 +204,7 @@ export function LabClient() {
       {running && progress && (
         <div className="mx-6 mt-4 rounded-lg border bg-card p-4">
           <div className="mb-2 flex items-center justify-between text-sm">
-            <span className="font-medium">Evaluando personas…</span>
+            <span className="font-medium">A avaliar personas…</span>
             <span className="text-muted-foreground">
               {progress.done} / {progress.total}
             </span>
@@ -230,13 +230,13 @@ export function LabClient() {
           <EmptyState
             icon={FlaskConical}
             className="rounded-lg border border-dashed p-10"
-            title={runs.length === 0 ? "Sin corridas todavía" : "Elige una corrida"}
+            title={runs.length === 0 ? "Ainda não há corridas" : "Escolha uma corrida"}
             description={
               runs.length === 0
                 ? brainConnected
-                  ? "Corre tu primera evaluación: 6 clientes simulados conversarán con tu agente y un juez calificará cada conversación."
-                  : "Cuando conectes tu agente, aquí aparecerán sus evaluaciones."
-                : "Abre una corrida del historial para ver su reporte."
+                  ? "Execute a sua primeira avaliação: 6 clientes simulados conversarão com o seu agente e um juiz avaliará cada conversa."
+                  : "Quando ligar o seu agente, as avaliações aparecerão aqui."
+                : "Abra uma corrida do histórico para ver o relatório."
             }
           />
         )}
@@ -263,12 +263,12 @@ function Header({
           <FlaskConical className="h-4 w-4 text-primary" /> Laboratorio
         </h2>
         <p className="text-xs text-muted-foreground">
-          Sandbox interno — no envía mensajes reales
+          Sandbox interno — não envia mensagens reais
         </p>
       </div>
       <Button onClick={onLaunch} disabled={disabled || running || launching}>
         <Play className="h-4 w-4" />
-        {running ? "Corrida en curso…" : "Correr evaluación"}
+        {running ? "Corrida em curso…" : "Executar avaliação"}
       </Button>
     </header>
   );
@@ -286,10 +286,10 @@ function HistoryList({
   return (
     <div className="space-y-2">
       <p className="kicker">
-        Historial
+        Histórico
       </p>
       {runs.length === 0 && (
-        <p className="text-xs text-muted-foreground">Sin corridas todavía.</p>
+        <p className="text-xs text-muted-foreground">Ainda não há corridas.</p>
       )}
       {runs.map((run) => (
         <button
@@ -318,7 +318,7 @@ function HistoryList({
             )}
           </div>
           <p className="mt-1 text-[11px] text-muted-foreground">
-            {new Date(run.startedAt).toLocaleString("es-MX", {
+            {new Date(run.startedAt).toLocaleString("pt-AO", {
               day: "numeric",
               month: "short",
               hour: "2-digit",
@@ -332,8 +332,8 @@ function HistoryList({
 }
 
 function ScoreBadge({ run }: { run: Run }) {
-  if (run.status === "running") return <Badge variant="secondary">En curso…</Badge>;
-  if (run.status === "failed") return <Badge variant="destructive">Fallida</Badge>;
+  if (run.status === "running") return <Badge variant="secondary">Em curso…</Badge>;
+  if (run.status === "failed") return <Badge variant="destructive">Falhou</Badge>;
   const score = run.score ?? 0;
   const variant = score >= 80 ? "success" : score >= 50 ? "warning" : "destructive";
   return <Badge variant={variant}>Score {score}</Badge>;
@@ -352,18 +352,17 @@ function Report({
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle>Reporte</CardTitle>
+            <CardTitle>Relatório</CardTitle>
             <ScoreBadge run={run} />
           </div>
           {run.status === "failed" && (
             <p className="text-sm text-destructive">
-              La corrida falló: {run.error ?? "error desconocido"}. Vuelve a
-              intentarlo.
+              A corrida falhou: {run.error ?? "erro desconhecido"}. Tente novamente.
             </p>
           )}
           {run.status === "done" && run.error && (
             <p className="text-sm text-warning-text">
-              Sin respuesta del agente: {run.error}
+              Sem resposta do agente: {run.error}
             </p>
           )}
         </CardHeader>
@@ -427,14 +426,14 @@ function CaseCard({ testCase, onApplied }: { testCase: Case; onApplied: () => vo
             {icon}
             {c.personaLabel}
             {c.status === "judge_failed" && (
-              <Badge variant="secondary">sin veredicto</Badge>
+              <Badge variant="secondary">sem veredicto</Badge>
             )}
             {c.status === "agent_failed" && (
-              <Badge variant="secondary">el agente no contestó</Badge>
+              <Badge variant="secondary">o agente não respondeu</Badge>
             )}
           </span>
           <span className="flex items-center gap-2 text-xs text-muted-foreground">
-            {c.hallazgos.length > 0 && `${c.hallazgos.length} hallazgo(s)`}
+            {c.hallazgos.length > 0 && `${c.hallazgos.length} achado(s)`}
             {open ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
           </span>
         </button>
@@ -446,7 +445,7 @@ function CaseCard({ testCase, onApplied }: { testCase: Case; onApplied: () => vo
           ))}
           <div className="rounded-md border bg-background p-3">
             <p className="mb-2 kicker">
-              Transcript
+              Transcrição
             </p>
             <div className="space-y-1.5 text-sm">
               {c.transcript.map((t, i) => (
@@ -516,15 +515,15 @@ function HallazgoCard({
         <Badge variant="warning">{TIPO_LABELS[hallazgo.tipo]}</Badge>
         {hallazgo.sugerencia && !applied && !editing && (
           <Button size="sm" variant="outline" onClick={() => setEditing(true)}>
-            Agregar al conocimiento
+            Adicionar à base de conhecimento
           </Button>
         )}
         {applied && (
-          <span className="text-xs text-success">Agregado al conocimiento ✓</span>
+          <span className="text-xs text-success">Adicionado à base de conhecimento ✓</span>
         )}
       </div>
       <p className="mt-2 text-sm text-muted-foreground">
-        <span className="font-medium text-foreground">Evidencia:</span>{" "}
+        <span className="font-medium text-foreground">Evidência:</span>{" "}
         {hallazgo.evidencia}
       </p>
       {editing && hallazgo.sugerencia && (
@@ -552,7 +551,7 @@ function HallazgoCard({
               onClick={() => void apply()}
               disabled={saving || !pregunta.trim() || !respuesta.trim()}
             >
-              {saving ? "Guardando…" : "Guardar en el KB"}
+              {saving ? "A guardar…" : "Guardar na base de conhecimento"}
             </Button>
             <Button size="sm" variant="ghost" onClick={() => setEditing(false)}>
               Cancelar

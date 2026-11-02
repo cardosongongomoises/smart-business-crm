@@ -119,7 +119,7 @@ describe("«¿mañana en la tarde?» (el fallo de la prueba de punta a punta)", 
       expect.arrayContaining(["12:00", "15:00", "18:30"])
     );
     expect(slots.every((x) => x.dayIso === "2026-09-22")).toBe(true);
-    expect(slots[0]!.dayLabel).toMatch(/^mañana martes/);
+    expect(slots[0]!.dayLabel).toMatch(/^amanhã terça-feira/);
     expect(query).toEqual({
       date: "2026-09-22",
       status: "available",
@@ -259,7 +259,7 @@ describe("la fecha es la del negocio, no la del servidor", () => {
     const r = consultas();
     expect(r.hoy).toBe("full"); // el lunes sigue siendo hoy: no «past»
     expect(r.manana).toBe("available");
-    expect(r.dia).toMatch(/^mañana martes/);
+    expect(r.dia).toMatch(/^amanhã terça-feira/);
     expect(r.primero).toBe("2026-09-22T16:00:00.000Z"); // 10:00 CDMX
     expect(r.horizonte).toBe("2026-09-28");
   });

@@ -35,24 +35,24 @@ type Field = {
 
 const FIELDS: Record<ExternalConnector, Field[]> = {
   zoom: [
-    { name: "accountId", label: "Account ID", placeholder: "abc123..." },
-    { name: "clientId", label: "Client ID" },
-    { name: "clientSecret", label: "Client Secret", secret: true },
+    { name: "accountId", label: "ID da conta", placeholder: "abc123..." },
+    { name: "clientId", label: "ID do cliente" },
+    { name: "clientSecret", label: "Segredo do cliente", secret: true },
   ],
   google: [
-    { name: "clientId", label: "Client ID", placeholder: "…apps.googleusercontent.com" },
-    { name: "clientSecret", label: "Client Secret", secret: true },
+    { name: "clientId", label: "ID do cliente", placeholder: "…apps.googleusercontent.com" },
+    { name: "clientSecret", label: "Segredo do cliente", secret: true },
     {
       name: "refreshToken",
-      label: "Refresh token",
+      label: "Token de actualização",
       secret: true,
-      help: "Se obtiene una sola vez autorizando tu propia app.",
+      help: "Obtém-se uma única vez ao autorizar a sua própria aplicação.",
     },
     {
       name: "calendarId",
-      label: "Calendario",
+      label: "Calendário",
       placeholder: "primary",
-      help: "Déjalo en «primary» para tu calendario principal.",
+      help: "Deixe «primary» para o seu calendário principal.",
     },
   ],
 };
@@ -60,18 +60,18 @@ const FIELDS: Record<ExternalConnector, Field[]> = {
 /** Lo que hay que saber ANTES de pegar nada. Son los tropiezos reales. */
 const HELP: Record<ExternalConnector, { title: string; items: string[] }> = {
   zoom: {
-    title: "Crea una app Server-to-Server OAuth en el Marketplace de Zoom",
+    title: "Crie uma aplicação Server-to-Server OAuth no Marketplace do Zoom",
     items: [
-      "Copia de ahí el Account ID, el Client ID y el Client Secret.",
-      "Dale los cuatro permisos: crear, actualizar y borrar reunión, y leer el usuario (meeting:write, meeting:update, meeting:delete y user:read).",
-      "El de leer usuario es el que usa el botón «Probar»: sin él la conexión falla aunque las credenciales sean correctas.",
+      "Copie daí o ID da conta, o ID do cliente e o segredo do cliente.",
+      "Conceda estas quatro permissões: criar, atualizar e apagar reuniões, e ler os dados do utilizador (meeting:write, meeting:update, meeting:delete e user:read).",
+      "A permissão de leitura do utilizador é usada pelo botão «Testar»: sem ela, a ligação falha mesmo que as credenciais estejam corretas.",
     ],
   },
   google: {
-    title: "Crea un proyecto en Google Cloud con la API de Calendar activada",
+    title: "Crie um projecto no Google Cloud com a API do Google Calendar activada",
     items: [
-      "Necesitas Client ID, Client Secret y un refresh token con el permiso de eventos de calendario (calendar.events).",
-      "IMPORTANTE: publica tu app OAuth «en producción». Si la dejas en modo prueba, Google revoca el permiso a los 7 días y las citas dejarán de crear su enlace sin previo aviso.",
+      "Precisa do ID do cliente, do segredo do cliente e de um token de atualização com a permissão de eventos do calendário (calendar.events).",
+      "IMPORTANTE: publique a sua aplicação OAuth em modo de produção. Em modo de teste, o Google revoga a permissão ao fim de 7 dias e as marcações deixam de criar a respetiva ligação sem aviso prévio.",
     ],
   },
 };
@@ -134,17 +134,17 @@ export function ConnectorCredentials({
         kind: "error",
         text:
           data?.error?.message ??
-          `No se pudo conectar con ${meta.label}. Revisa las credenciales.`,
+          `Não foi possível ligar a ${meta.label}. Reveja as credenciais.`,
       });
       return;
     }
     if (mode === "test") {
-      setMessage({ kind: "ok", text: "Conexión correcta" });
+      setMessage({ kind: "ok", text: "Ligação correta" });
       return;
     }
     const data = (await res.json()) as { connection: Connection };
     setConnection(data.connection);
-    setMessage({ kind: "ok", text: `${meta.label} conectado` });
+    setMessage({ kind: "ok", text: `${meta.label} ligado` });
   }
 
   async function disconnect() {
@@ -161,7 +161,7 @@ export function ConnectorCredentials({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Conectar {meta.label}</CardTitle>
+        <CardTitle>Ligar {meta.label}</CardTitle>
         <CardDescription>{help.title}.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -173,8 +173,8 @@ export function ConnectorCredentials({
 
         {connection?.status === "error" && (
           <p className="rounded-sm border border-danger-soft bg-danger-tint px-3 py-2 text-sm text-danger-text">
-            {meta.label} rechazó las últimas credenciales. Las citas se siguen
-            agendando, pero sin enlace hasta que vuelvas a conectar.
+            {meta.label} rejeitou as últimas credenciais. As marcações continuam
+            a ser agendadas, mas sem ligação até voltar a ligar.
           </p>
         )}
 
@@ -202,10 +202,10 @@ export function ConnectorCredentials({
 
         <div className="flex flex-wrap items-center gap-3">
           <Button variant="outline" onClick={() => submit("test")} disabled={busy}>
-            Probar
+            Testar
           </Button>
           <Button onClick={() => submit("save")} disabled={busy}>
-            {connection ? "Actualizar" : "Conectar"}
+            {connection ? "Actualizar" : "Ligar"}
           </Button>
           {connection && (
             <button
@@ -214,7 +214,7 @@ export function ConnectorCredentials({
               disabled={busy}
               className="text-sm text-text-3 hover:text-foreground"
             >
-              Desconectar
+              Desligar
             </button>
           )}
           {message && (

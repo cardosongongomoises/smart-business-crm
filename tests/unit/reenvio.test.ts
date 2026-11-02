@@ -38,9 +38,9 @@ describe("059 — qué se reenvía", () => {
   });
 
   it("nombra lo que reenvía y solo imagen, video y documento llevan pie", () => {
-    expect(nombreReenvio(adjunto("image"))).toEqual({ titulo: "Reenviar imagen", hecho: "Imagen reenviada" });
-    expect(nombreReenvio(texto("text", "x")).titulo).toBe("Reenviar mensaje");
-    expect(nombreReenvio(adjunto("document")).hecho).toBe("Documento reenviado");
+    expect(nombreReenvio(adjunto("image"))).toEqual({ titulo: "Reencaminhar imagem", hecho: "Imagem reencaminhada" });
+    expect(nombreReenvio(texto("text", "x")).titulo).toBe("Reencaminhar mensagem");
+    expect(nombreReenvio(adjunto("document")).hecho).toBe("Documento reencaminhado");
     expect(llevaPie(adjunto("image"))).toBe(true);
     expect(llevaPie(adjunto("document"))).toBe(true);
     expect(llevaPie(adjunto("audio"))).toBe(false);

@@ -339,7 +339,7 @@ export function AppNav({
         <span className="min-w-0 flex-1">
           <span className="block truncate text-[13px] font-semibold">{userName}</span>
           <span className="block truncate text-[11px] text-text-3">
-            {role === "owner" ? "Proprietário" : "Equipa"} · Online
+            {role === "owner" ? "Proprietário" : "Equipa"} · Em linha
           </span>
         </span>
         <span className="flex shrink-0 items-center">
@@ -495,7 +495,7 @@ function Riel({
               <div className="px-2.5 pb-1.5 pt-1">
                 <p className="truncate text-[14px] font-semibold">{userName}</p>
                 <p className="text-[12px] text-text-3">
-                  {role === "owner" ? "Proprietário" : "Equipa"} · Online
+                  {role === "owner" ? "Proprietário" : "Equipa"} · Em linha
                 </p>
               </div>
               <div className="flex items-center justify-between rounded-lg px-2.5 py-1.5 text-[13.5px] text-text-2">

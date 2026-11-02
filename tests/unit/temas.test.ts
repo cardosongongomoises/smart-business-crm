@@ -6,10 +6,12 @@ import {
   atributosHtml,
   contraste,
   cssDeTemas,
+  DENSIDADES,
   luminancia,
   parejaDe,
   resolverApariencia,
   TEMA_IDS,
+  TAMANOS,
   TEMAS,
   temaPropio,
   type TemaId,
@@ -99,6 +101,23 @@ describe("062 — cada tema listo se lee", () => {
     expect(salida).not.toContain('[data-tema="menta"]');
     expect(salida).not.toMatch(/<\/style/i);
   });
+
+  it("los nombres visibles de temas y opciones están en portugués", () => {
+    expect(Object.fromEntries(TEMA_IDS.map((id) => [id, TEMAS[id].nombre]))).toEqual({
+      menta: "Menta",
+      noche: "Noite",
+      vocero: "Azul clássico",
+      "vocero-oscuro": "Azul escuro",
+      papel: "Papel",
+      carbon: "Carvão",
+      medianoche: "Meia-noite",
+      "alto-contraste": "Alto contraste",
+    });
+    expect(TEMAS.papel.descripcion).toBe("Quente: creme, tinta castanha e cantos suaves.");
+    expect(TEMAS.medianoche.descripcion).toBe("Quase preto e nítido, ao estilo da Linear.");
+    expect(TAMANOS.chico.nombre).toBe("Pequeno");
+    expect(DENSIDADES.espaciosa.nombre).toBe("Espaçosa");
+  });
 });
 
 describe("062 — tema propio", () => {
@@ -122,7 +141,7 @@ describe("062 — tema propio", () => {
   it("si el texto no se lee sobre el fondo, no hay tema y dice por qué", () => {
     const t = temaPropio({ fondo: "#ffffff", texto: "#bbbbbb", marco: "#eeeeee" });
     expect(t.ok).toBe(false);
-    if (!t.ok) expect(t.error).toMatch(/no se lee/);
+    if (!t.ok) expect(t.error).toMatch(/não se lê/);
   });
 });
 

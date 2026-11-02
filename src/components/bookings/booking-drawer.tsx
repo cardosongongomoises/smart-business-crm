@@ -342,9 +342,9 @@ function Reschedule({
   const times = days.find(([d]) => d === selected)?.[1] ?? [];
 
   return (
-    <section className="space-y-3 border-b p-4" aria-label="Mover para">
+    <section className="space-y-3 border-b p-4" aria-label="Remarcar para">
       <div className="flex items-center justify-between">
-        <p className="kicker">Mover para</p>
+        <p className="kicker">Remarcar para</p>
         <button
           type="button"
           onClick={onCancel}
@@ -359,13 +359,13 @@ function Reschedule({
         <p className="text-sm text-text-3">
           {failed
             ? "Não foi possível verificar a disponibilidade. Tente novamente."
-            : "Não existem horários livres para mover esta marcação."}
+            : "Não existem horários disponíveis para remarcar esta marcação."}
         </p>
       )}
 
       {days.length > 0 && (
         <>
-          <div className="-mx-1 flex gap-1.5 overflow-x-auto px-1 pb-1" role="group" aria-label="Dias com vagas">
+          <div className="-mx-1 flex gap-1.5 overflow-x-auto px-1 pb-1" role="group" aria-label="Dias com horários disponíveis">
             {days.map(([d, list]) => {
               const h = dayHeading(d);
               const prefix = d === today ? "Hoje" : d === addDaysISO(today, 1) ? "Amanhã" : h.weekday;
@@ -390,7 +390,7 @@ function Reschedule({
               );
             })}
           </div>
-          <div className="grid grid-cols-4 gap-1.5" role="group" aria-label="Horários livres">
+          <div className="grid grid-cols-4 gap-1.5" role="group" aria-label="Horários disponíveis">
             {times.map((s) => (
               <button
                 key={s.startUtc}

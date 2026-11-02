@@ -4,6 +4,7 @@ import {
   normalizeImportPhone,
   parseCsv,
   prepareImport,
+  PROBLEM_LABELS,
   readImportFile,
 } from "@/lib/contact-import";
 
@@ -84,6 +85,15 @@ describe("prepareImport", () => {
 });
 
 describe("readImportFile", () => {
+  it("apresenta os motivos de linhas ignoradas em português", () => {
+    expect(PROBLEM_LABELS).toEqual({
+      sin_telefono: "sem telefone",
+      sin_codigo_pais: "falta o código do país",
+      telefono_invalido: "telefone inválido",
+      repetido: "repetido no ficheiro",
+    });
+  });
+
   it("une nombre y apellido y reporta lo que se queda fuera con su renglón", () => {
     const read = readImportFile(
       "nombre,apellido,email,telefono,pais\nAna,Pérez,a@x.com,573001234567,CO\nLuis,Ruiz,l@x.com,,MX\n"

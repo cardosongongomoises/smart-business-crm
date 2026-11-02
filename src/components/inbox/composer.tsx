@@ -301,7 +301,7 @@ export function Composer({
     return (
       <div
         role="region"
-        aria-label="Chat: adjuntar imagen"
+        aria-label="Conversa: anexar imagem"
         // 061 — El hilo con su compositor es una tarjeta en escritorio. El
         // fondo (con sus dibujos) es de la tarjeta: hilo y compositor van
         // transparentes encima, así los dibujos no se cortan entre los dos.
@@ -344,7 +344,7 @@ export function Composer({
             className="pointer-events-none absolute inset-2 z-20 flex items-center justify-center rounded-xl border-2 border-dashed border-brand bg-brand-tint p-4"
           >
             <p className="rounded-md bg-background px-4 py-3 text-center text-sm font-semibold text-brand-ink shadow-sm">
-              Suelta la imagen para adjuntarla
+              Solte a imagem para a anexar
             </p>
           </div>
         )}
@@ -360,7 +360,7 @@ export function Composer({
       const data = (await res.json().catch(() => null)) as {
         error?: { message?: string };
       } | null;
-      return data?.error?.message ?? `Error ${res.status}`;
+      return data?.error?.message ?? `Erro ${res.status}`;
     } catch {
       return "Não foi possível ligar ao servidor. A mensagem permanece aqui para tentar novamente.";
     }

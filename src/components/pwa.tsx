@@ -88,11 +88,11 @@ export function BotonInstalar({ className }: { className?: string }) {
         setEvento(null);
         await evento.prompt().catch(() => {});
       }}
-      title="Instalar la app en este dispositivo"
+      title="Instalar a aplicação neste dispositivo"
       className={cn("w-full text-left", className)}
     >
       <MonitorDown className="h-5 w-5 shrink-0 text-text-3" strokeWidth={1.8} aria-hidden />
-      <span className="flex-1">Instalar app</span>
+      <span className="flex-1">Instalar aplicação</span>
     </button>
   );
 }

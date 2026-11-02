@@ -26,7 +26,7 @@ export function claseReenvio(m: {
   return m.text && m.text.trim() ? "texto" : null;
 }
 
-/** Cómo se nombra lo que se reenvía: «Reenviar imagen», «Imagen reenviada…». */
+/** Cómo se nombra lo que se reenvía: «Reencaminhar imagen», «Imagen reenviada…». */
 export function nombreReenvio(m: { media: { kind: string } | null }): {
   titulo: string;
   hecho: string;

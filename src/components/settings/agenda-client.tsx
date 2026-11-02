@@ -40,11 +40,11 @@ type Settings = {
 };
 
 const DAYS: { key: DayKey; label: string }[] = [
-  { key: "mon", label: "Lunes" },
-  { key: "tue", label: "Martes" },
-  { key: "wed", label: "Miércoles" },
-  { key: "thu", label: "Jueves" },
-  { key: "fri", label: "Viernes" },
+  { key: "mon", label: "Segunda-feira" },
+  { key: "tue", label: "Terça-feira" },
+  { key: "wed", label: "Quarta-feira" },
+  { key: "thu", label: "Quinta-feira" },
+  { key: "fri", label: "Sexta-feira" },
   { key: "sat", label: "Sábado" },
   { key: "sun", label: "Domingo" },
 ];
@@ -151,7 +151,7 @@ export function AgendaClient() {
       const data = (await res?.json().catch(() => null)) as {
         error?: { message?: string };
       } | null;
-      setError(data?.error?.message ?? "No se pudo guardar");
+      setError(data?.error?.message ?? "Não foi possível guardar");
       return;
     }
     const data = (await res.json()) as { settings: Settings };
@@ -160,16 +160,16 @@ export function AgendaClient() {
     void refreshPreview();
   }
 
-  if (!settings) return <p className="text-sm text-text-3">Cargando…</p>;
+  if (!settings) return <p className="text-sm text-text-3">A carregar…</p>;
 
   return (
     <div className="max-w-2xl space-y-4">
       <Card>
         <CardHeader>
-          <CardTitle>Horario de atención</CardTitle>
+          <CardTitle>Horário de atendimento</CardTitle>
           <CardDescription>
-            En qué franjas puede agendarte un cliente. Las horas son las de tu
-            zona; un día sin franjas está cerrado.
+            Em que períodos um cliente pode marcar consigo. As horas são as da sua
+            zona; um dia sem períodos está encerrado.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
@@ -191,7 +191,7 @@ export function AgendaClient() {
                   {day.label}
                 </button>
                 <div className="flex-1 space-y-1.5">
-                  {!open && <span className="text-sm text-text-3">Cerrado</span>}
+                  {!open && <span className="text-sm text-text-3">Encerrado</span>}
                   {intervals.map((iv, i) => (
                     <div key={i} className="flex items-center gap-2">
                       <Input
@@ -215,7 +215,7 @@ export function AgendaClient() {
                         type="button"
                         onClick={() => removeInterval(day.key, i)}
                         className="text-sm text-text-3 hover:text-foreground"
-                        aria-label="Quitar franja"
+                        aria-label="Remover período"
                       >
                         ×
                       </button>
@@ -227,7 +227,7 @@ export function AgendaClient() {
                       onClick={() => addInterval(day.key)}
                       className="text-xs text-brand-text hover:underline"
                     >
-                      + otra franja
+                      + outro período
                     </button>
                   )}
                 </div>
@@ -239,11 +239,11 @@ export function AgendaClient() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Cómo se generan los huecos</CardTitle>
+          <CardTitle>Como são gerados os horários disponíveis</CardTitle>
         </CardHeader>
         <CardContent className="grid grid-cols-2 gap-4">
           <div className="space-y-1.5">
-            <Label htmlFor="slot">Duración de la cita (min)</Label>
+            <Label htmlFor="slot">Duração da marcação (min)</Label>
             <Input
               id="slot"
               type="number"
@@ -254,7 +254,7 @@ export function AgendaClient() {
             />
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="buffer">Respiro entre citas (min)</Label>
+            <Label htmlFor="buffer">Intervalo entre marcações (min)</Label>
             <Input
               id="buffer"
               type="number"
@@ -276,7 +276,7 @@ export function AgendaClient() {
             />
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="ahead">Agenda abierta (días)</Label>
+            <Label htmlFor="ahead">Agenda aberta (dias)</Label>
             <Input
               id="ahead"
               type="number"
@@ -287,7 +287,7 @@ export function AgendaClient() {
             />
           </div>
           <div className="col-span-2 space-y-1.5">
-            <Label htmlFor="tz">Zona horaria</Label>
+            <Label htmlFor="tz">Fuso horário</Label>
             <Input
               id="tz"
               value={settings.timezone}
@@ -300,11 +300,11 @@ export function AgendaClient() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Cómo se entrega la reunión</CardTitle>
+          <CardTitle>Como é disponibilizada a reunião</CardTitle>
           <CardDescription>
-            El enlace fijo no depende de nadie. Los demás conectan con tu propia
-            cuenta del proveedor y, si alguna vez falla, la cita se agenda igual
-            y el enlace queda pendiente de reintentar.
+            A ligação fixa não depende de ninguém. As outras opções ligam-se à sua
+            própria conta do fornecedor e, se houver uma falha, a marcação é criada
+            na mesma e a ligação fica pendente de nova tentativa.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-2">
@@ -332,7 +332,7 @@ export function AgendaClient() {
                   {meta.label}
                   {!meta.external && (
                     <span className="ml-2 text-[11px] font-normal text-text-3">
-                      sin dependencias
+                      sem dependências
                     </span>
                   )}
                 </span>
@@ -348,11 +348,11 @@ export function AgendaClient() {
       {settings.connector === "enlace-fijo" && (
         <Card>
           <CardHeader>
-            <CardTitle>Tu sala de siempre</CardTitle>
+            <CardTitle>A sua sala habitual</CardTitle>
             <CardDescription>
-              Se comparte tal cual al confirmar una cita. Si lo dejas vacío, las
-              citas se agendan igual y sin enlace — nadie promete un enlace que
-              no existe.
+              É partilhada tal como está ao confirmar uma marcação. Se deixar vazio, as
+              marcações são feitas na mesma e sem link — ninguém promete um link que
+              não existe.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -367,7 +367,7 @@ export function AgendaClient() {
 
       <div className="flex items-center gap-3">
         <Button onClick={save} disabled={saving}>
-          {saving ? "Guardando…" : "Guardar"}
+          {saving ? "A guardar…" : "Guardar"}
         </Button>
         {saved && <span className="text-sm text-brand-text">Guardado</span>}
         {error && <span className="text-sm text-destructive">{error}</span>}
@@ -381,16 +381,16 @@ export function AgendaClient() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Próximos huecos</CardTitle>
+          <CardTitle>Próximos horários</CardTitle>
           <CardDescription>
-            Lo que se le ofrecería a un cliente ahora mismo.
+            O que seria oferecido a um cliente neste momento.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {slots === null && <p className="text-sm text-text-3">Calculando…</p>}
+          {slots === null && <p className="text-sm text-text-3">A calcular…</p>}
           {slots?.length === 0 && (
             <p className="text-sm text-text-3">
-              Sin huecos: revisa el horario, el aviso mínimo o si ya está todo
+              Sem horários disponíveis: reveja o horário, o aviso mínimo ou se está tudo
               ocupado.
             </p>
           )}

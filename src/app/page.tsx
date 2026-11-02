@@ -5,9 +5,10 @@ import { guideFirst } from "@/server/onboarding/guide";
 export const dynamic = "force-dynamic";
 
 /**
- * La raíz decide a dónde se entra (issue #86): mientras falte un paso de la
- * guía de inicio o el agente siga apagado, a `/onboarding`; con todo listo,
- * a la Bandeja como siempre. Sin sesión, `/inbox` manda al login.
+ * A raiz decide para onde entrar (issue #86): enquanto faltar um passo do
+ * guia de início ou o agente continuar desligado, vai para `/onboarding`;
+ * quando tudo estiver pronto, vai para a Caixa de entrada como habitualmente.
+ * Sem sessão, `/inbox` encaminha para o início de sessão.
  */
 export default async function Home() {
   const session = await getSessionOrNull();

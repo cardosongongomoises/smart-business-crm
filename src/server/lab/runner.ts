@@ -55,7 +55,7 @@ export async function startRun(organizationId: string): Promise<string> {
   } catch (err) {
     // Violación del índice parcial UNIQUE → ya hay una corrida activa.
     if (isUniqueViolation(err)) {
-      throw new RunConflictError("Ya hay una corrida en curso");
+      throw new RunConflictError("Já existe uma corrida em curso");
     }
     throw err;
   }
@@ -100,7 +100,7 @@ async function executeRun(
 ): Promise<void> {
   const timeout = new Promise<never>((_, reject) =>
     setTimeout(
-      () => reject(new Error("timeout de 10 minutos superado")),
+      () => reject(new Error("tempo limite de 10 minutos excedido")),
       RUN_TIMEOUT_MS
     )
   );
@@ -211,7 +211,7 @@ async function runAllCases(
 
   if (fallas.length === total) {
     // Nadie contestó: no es un score de cero, es que no había a quién probar.
-    await failRun(runId, organizationId, `el agente no contestó: ${fallas[0]}`);
+    await failRun(runId, organizationId, `o agente não respondeu: ${fallas[0]}`);
     return;
   }
 

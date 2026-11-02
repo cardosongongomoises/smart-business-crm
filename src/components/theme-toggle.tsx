@@ -45,7 +45,7 @@ export function ThemeToggle({ initial, className }: { initial: Apariencia; class
   }
 
   const Icon = ICONS[modoDe(a)];
-  const nombre = a.tema === "propio" ? "Propio" : TEMAS[a.tema].nombre;
+  const nombre = a.tema === "propio" ? "Personalizado" : TEMAS[a.tema].nombre;
   const label = `Tema: ${nombre}`;
 
   return (
@@ -53,7 +53,7 @@ export function ThemeToggle({ initial, className }: { initial: Apariencia; class
       type="button"
       onClick={cycle}
       aria-label={label}
-      title={`${label} (clic para cambiar)`}
+      title={`${label} (clique para alterar)`}
       className={cn("rounded p-1 text-text-3 transition-colors hover:text-foreground", className)}
     >
       <Icon className="h-4 w-4" strokeWidth={1.7} />

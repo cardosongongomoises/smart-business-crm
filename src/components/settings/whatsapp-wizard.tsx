@@ -77,7 +77,7 @@ export function WhatsappWizard() {
   }, [refetch]);
 
   if (!loaded) {
-    return <p className="text-sm text-muted-foreground">Cargando…</p>;
+    return <p className="text-sm text-muted-foreground">A carregar…</p>;
   }
 
   return (
@@ -90,10 +90,10 @@ export function WhatsappWizard() {
               O token do WhatsApp expirou ou foi revogado.
             </p>
             <p className="text-danger-text opacity-80">
-              Os envios estão em pausa. Cole um token novo abaixo e teste a ligação para reconectar.
+              Os envios estão em pausa. Cole um token novo abaixo e teste a ligação para ligar novamente.
             </p>
           </div>
-          <Desconectar
+          <Desligar
             onHecho={() => {
               setRegistration(null);
               void refetch();
@@ -115,7 +115,7 @@ export function WhatsappWizard() {
             </p>
           </div>
           <Badge variant="success">Ligado</Badge>
-          <Desconectar
+          <Desligar
             onHecho={() => {
               setRegistration(null);
               void refetch();
@@ -137,7 +137,7 @@ export function WhatsappWizard() {
       )}
 
       <ConnectForm
-        // 066 — Se rehace si la conexión cambia por «Conectar con Meta»:
+        // 066 — Se rehace si la conexión cambia por «Ligar con Meta»:
         // los campos toman los IDs nuevos.
         key={connection?.phoneNumberId ?? "sin-conexion"}
         existing={connection}
@@ -172,7 +172,7 @@ export function WhatsappWizard() {
  * instante — no es un ajuste, es apagar el canal. Lo que NO hace es borrar la
  * bandeja, y el aviso lo dice: sin eso, nadie se atreve a tocarlo.
  */
-function Desconectar({ onHecho }: { onHecho: () => void }) {
+function Desligar({ onHecho }: { onHecho: () => void }) {
   const [confirmando, setConfirmando] = useState(false);
   const [yendo, setYendo] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -275,7 +275,7 @@ function ConnectForm({
     }).catch(() => null);
     setTesting(false);
     if (!res) {
-      setTestResult({ ok: false, message: "Sin conexión con el servidor" });
+      setTestResult({ ok: false, message: "Sem ligação ao servidor" });
       return;
     }
     const data = (await res.json().catch(() => null)) as {
@@ -287,7 +287,7 @@ function ConnectForm({
     } else {
       setTestResult({
         ok: false,
-        message: data?.error?.message ?? "La validación falló",
+        message: data?.error?.message ?? "A validação falhou",
       });
     }
   }
@@ -315,7 +315,7 @@ function ConnectForm({
       const data = (await res?.json().catch(() => null)) as {
         error?: { message?: string };
       } | null;
-      setSaveError(data?.error?.message ?? "No se pudo guardar la conexión");
+      setSaveError(data?.error?.message ?? "Não foi possível guardar a ligação");
       return;
     }
     const saved = (await res.json().catch(() => null)) as {
@@ -331,7 +331,7 @@ function ConnectForm({
     <Card>
       <CardHeader>
         <CardTitle>
-          {existing ? "Reconectar / actualizar o número" : "Ligar o seu número de WhatsApp"}
+          {existing ? "Ligar novamente / actualizar o número" : "Ligar o seu número do WhatsApp"}
         </CardTitle>
         <CardDescription>
           Cole as credenciais da WhatsApp Cloud API. O token é validado
@@ -341,27 +341,27 @@ function ConnectForm({
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid gap-3 rounded-md border bg-background p-4 text-sm">
-          <p className="font-medium">¿De dónde sale el token?</p>
+          <p className="font-medium">De onde vem o token?</p>
           <div className="grid gap-3 md:grid-cols-2">
             <div className="rounded-md border p-3">
               <p className="mb-1 font-medium text-primary">Modo directo</p>
               <p className="text-muted-foreground">
-                El negocio tiene su propia app en{" "}
+                A empresa tem a sua própria aplicação em{" "}
                 <span className="text-foreground">developers.facebook.com</span>:
-                usa un token de <span className="text-foreground">usuario del sistema</span>{" "}
-                (no expira) con permisos de WhatsApp. En este modo conviene
-                configurar también el App Secret para la firma del webhook.
+                use um token de <span className="text-foreground">utilizador do sistema</span>{" "}
+                (não expira) com permissões do WhatsApp. Neste modo, é recomendável
+                configurar também o App Secret para a assinatura do webhook.
               </p>
             </div>
             <div className="rounded-md border p-3">
-              <p className="mb-1 font-medium text-primary">Modo agencia (Tech Provider)</p>
+              <p className="mb-1 font-medium text-primary">Modo agência (Tech Provider)</p>
               <p className="text-muted-foreground">
-                Tu agencia hace el Embedded Signup en SU plataforma y su
-                backend obtiene el token del cliente; te lo entrega para
-                pegarlo aquí. Al guardar, el webhook se registra en el número
+                A sua agência faz o Embedded Signup na SUA plataforma e o seu
+                backend obtém o token do cliente; entrega-lho para
+                colar aqui. Ao guardar, o webhook é registado no número
                 (<span className="text-foreground">override del número</span>),
-                igual que en modo directo; si tu agencia ya enruta la cuenta a
-                su propio backend, se respeta.
+                tal como no modo directo; se a sua agência já encaminha a conta para o
+                seu próprio backend, isso é respeitado.
               </p>
             </div>
           </div>
@@ -372,7 +372,7 @@ function ConnectForm({
             <Label htmlFor="waba-id">WABA ID</Label>
             <Input
               id="waba-id"
-              placeholder="ID de la cuenta de WhatsApp Business"
+              placeholder="ID da conta do WhatsApp Business"
               value={wabaId}
               onChange={(e) => setWabaId(e.target.value)}
             />
@@ -381,7 +381,7 @@ function ConnectForm({
             <Label htmlFor="phone-number-id">Phone Number ID</Label>
             <Input
               id="phone-number-id"
-              placeholder="ID del número de teléfono"
+              placeholder="ID do número de telefone"
               value={phoneNumberId}
               onChange={(e) => setPhoneNumberId(e.target.value)}
             />
@@ -389,29 +389,29 @@ function ConnectForm({
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="messaging-account-id">
-            ID de la Cuenta de mensajes{" "}
+            ID da Conta de mensagens{" "}
             <span className="font-normal text-muted-foreground">(recomendado)</span>
           </Label>
           <Input
             id="messaging-account-id"
             inputMode="numeric"
-            placeholder="Business Settings › Cuentas › Cuentas de mensajes"
+            placeholder="Definições da empresa › Contas › Contas de mensagens"
             value={messagingAccountId}
             onChange={(e) => setMessagingAccountId(e.target.value)}
           />
           <p className="text-xs text-muted-foreground">
-            Desde 2026 Meta separa la cuenta de WhatsApp (el número) de la
-            Cuenta de mensajes (plantillas y pago). Con ella, las plantillas se
-            crean donde Meta las acepta y el webhook se registra en las dos.
-            Si la dejas vacía, intentamos encontrarla.
+            Desde 2026, a Meta separa a conta do WhatsApp (o número) da Conta de
+            mensagens (modelos e pagamentos). Com esta conta, os modelos são
+            criados onde a Meta os aceita e o webhook é registado em ambas. Se
+            deixar este campo vazio, tentaremos encontrá-la.
           </p>
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="token">Token de acceso</Label>
+          <Label htmlFor="token">Token de acesso</Label>
           <Input
             id="token"
             type="password"
-            placeholder={existing ? `Guardado (…${existing.tokenLast4}) — pega uno nuevo para cambiarlo` : "EAAG…"}
+            placeholder={existing ? `Guardado (…${existing.tokenLast4}) — introduza um novo para o alterar` : "EAAG…"}
             value={token}
             onChange={(e) => {
               setToken(e.target.value);
@@ -425,7 +425,7 @@ function ConnectForm({
             className={`text-sm ${testResult.ok ? "text-success" : "text-destructive"}`}
           >
             {testResult.ok
-              ? `✓ Token válido para ${testResult.display}. Ya puedes guardar.`
+              ? `✓ Token válido para ${testResult.display}. Já pode guardar.`
               : testResult.message}
           </p>
         )}
@@ -481,10 +481,11 @@ function RegistrationNotice({
       <p className="flex items-start gap-2 text-sm text-muted-foreground">
         <Info className="mt-0.5 h-4 w-4 shrink-0" />
         <span>
-          Tu cuenta de WhatsApp ya enruta sus webhooks a{" "}
-          <span className="text-foreground">{registration.host}</span> (un
-          cerebro externo o el backend de tu agencia). Se respeta: el número
-          queda sin webhook propio y los mensajes siguen llegando ahí.
+          A sua conta do WhatsApp já encaminha os webhooks para{" "}
+          <span className="text-foreground">{registration.host}</span> (um
+          agente externo ou o backend da sua agência). Mantemos esta
+          configuração: o número fica sem webhook próprio e as mensagens
+          continuam a chegar a esse serviço.
         </span>
       </p>
     );
@@ -493,8 +494,8 @@ function RegistrationNotice({
     return (
       <p className="flex items-start gap-2 text-sm text-success">
         <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />
-        Webhook registrado en Meta: los mensajes de este número llegan aquí.
-        No hace falta pegar nada en el panel de tu app.
+        Webhook registado na Meta: as mensagens deste número chegam aqui.
+        Não é necessário colar nada no painel da sua aplicação.
       </p>
     );
   }
@@ -504,17 +505,19 @@ function RegistrationNotice({
       <span>
         {registration.ok ? (
           <>
-            Webhook registrado en el número, pero Meta no reporta ningún
-            webhook en tu app. Si no llegan mensajes: en developers.facebook.com
-            → tu app → WhatsApp → Configuración, verifica una callback URL
-            (sirve la de abajo) y suscribe el campo{" "}
-            <code>messages</code>. Es una sola vez por app.
+            O webhook foi registado no número, mas a Meta não indica nenhum
+            webhook na sua aplicação. Se não receber mensagens, aceda a
+            developers.facebook.com → a sua aplicação → WhatsApp → Definições,
+            confirme o URL de callback (pode usar o apresentado abaixo) e
+            subscreva o campo <code>messages</code>. Basta fazer isto uma vez
+            por aplicação.
           </>
         ) : (
           <>
-            {afterSave ? "La conexión se guardó, pero no" : "No"} pudimos
-            registrar el webhook en Meta. {registration.message} Reintenta con
-            «Registrar en Meta» o pega la URL y el verify token a mano.
+            {afterSave ? "A ligação foi guardada, mas não" : "Não"} foi possível
+            registar o webhook na Meta. {registration.message} Tente novamente
+            com «Registar na Meta» ou introduza manualmente o URL e o token de
+            verificação.
           </>
         )}
       </span>
@@ -529,7 +532,7 @@ function MessagingAccountNotice({ result }: { result: MessagingAccountRegistrati
       <p className="flex items-start gap-2 text-sm text-muted-foreground">
         <Info className="mt-0.5 h-4 w-4 shrink-0" />
         <span>
-          Tu Cuenta de mensajes ya enruta sus webhooks a{" "}
+          A sua Conta de mensagens já encaminha os webhooks para{" "}
           <span className="text-foreground">{result.host}</span>. Se respeta.
         </span>
       </p>
@@ -539,7 +542,7 @@ function MessagingAccountNotice({ result }: { result: MessagingAccountRegistrati
     return (
       <p className="flex items-start gap-2 text-sm text-success">
         <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />
-        Webhook registrado también en la Cuenta de mensajes.
+        Webhook também registado na Conta de mensagens.
       </p>
     );
   }
@@ -573,7 +576,7 @@ function WebhookCard({
     if (recuperar) {
       const host = registration?.ok && "skipped" in registration ? registration.host : "otro servicio";
       const ok = window.confirm(
-        `Recuperar el webhook: los mensajes de tu número dejarán de llegar a ${host} y llegarán a este CRM, que se los despacha a tu agente. ¿Continuar?`
+        `Recuperar o webhook: as mensagens do seu número deixarão de chegar a ${host} e passarão a chegar a este CRM, que as encaminhará ao seu agente. Deseja continuar?`
       );
       if (!ok) return;
     }
@@ -594,7 +597,7 @@ function WebhookCard({
     } else {
       onRegistration({
         ok: false,
-        message: data?.error?.message ?? "Sin conexión con el servidor.",
+        message: data?.error?.message ?? "Sem ligação ao servidor.",
       });
     }
   }
@@ -645,12 +648,12 @@ function WebhookCard({
         {!webhook.isHttps && (
           <p className="flex items-start gap-2 rounded-md border border-warning-soft bg-warning-tint p-3 text-xs text-warning-text">
             <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-            La URL configurada no es https: Meta exige https para los webhooks.
-            Ajusta APP_BASE_URL con tu dominio público.
+            O URL configurado não usa HTTPS; a Meta exige HTTPS para webhooks.
+            Ajuste APP_BASE_URL para o seu domínio público.
           </p>
         )}
         <div className="space-y-1.5">
-          <Label>URL del webhook (callback URL)</Label>
+          <Label>URL do webhook (URL de callback)</Label>
           <div className="flex items-center gap-2">
             <code className="min-w-0 flex-1 truncate rounded-md border bg-background px-3 py-2 text-xs">
               {webhook.url}
@@ -658,7 +661,7 @@ function WebhookCard({
             <Button
               variant="outline"
               size="icon"
-              aria-label="Copiar URL"
+              aria-label="Copiar o URL"
               onClick={() => copy(webhook.url, "url")}
             >
               <Copy className="h-4 w-4" />
@@ -672,7 +675,7 @@ function WebhookCard({
           </p>
         </div>
         <div className="space-y-1.5">
-          <Label>Verify token</Label>
+          <Label>Token de verificação</Label>
           <div className="flex items-center gap-2">
             <code className="min-w-0 flex-1 truncate rounded-md border bg-background px-3 py-2 text-xs">
               {webhook.verifyToken}
@@ -680,7 +683,7 @@ function WebhookCard({
             <Button
               variant="outline"
               size="icon"
-              aria-label="Copiar verify token"
+              aria-label="Copiar o token de verificação"
               onClick={() => copy(webhook.verifyToken, "vt")}
             >
               <Copy className="h-4 w-4" />
@@ -692,16 +695,16 @@ function WebhookCard({
         </div>
         {webhook.signatureLayer ? (
           <p className="flex items-center gap-2 text-xs text-success">
-            <ShieldCheck className="h-4 w-4" /> Verificación de firma activa
-            (META_APP_SECRET configurado): cada evento se valida con
+            <ShieldCheck className="h-4 w-4" /> Verificação de assinatura ativa
+            (META_APP_SECRET configurado): cada evento é validado com
             x-hub-signature-256.
           </p>
         ) : (
           <p className="flex items-start gap-2 text-xs text-muted-foreground">
-            <Info className="mt-0.5 h-4 w-4 shrink-0" /> Sin App Secret
-            configurado: el webhook queda protegido por la URL secreta (normal
-            en modo agencia). Para la capa extra de firma, agrega
-            META_APP_SECRET a la instancia.
+            <Info className="mt-0.5 h-4 w-4 shrink-0" /> Sem App Secret
+            configurado: o webhook fica protegido pelo URL secreto (normal no
+            modo de agência). Para acrescentar a assinatura, configure
+            META_APP_SECRET na instância.
           </p>
         )}
       </CardContent>

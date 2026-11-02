@@ -21,10 +21,10 @@ export type ImportProblem = {
 };
 
 export const PROBLEM_LABELS: Record<ImportProblem["reason"], string> = {
-  sin_telefono: "sin teléfono",
-  sin_codigo_pais: "le falta el código de país",
-  telefono_invalido: "teléfono inválido",
-  repetido: "repetido en el archivo",
+  sin_telefono: "sem telefone",
+  sin_codigo_pais: "falta o código do país",
+  telefono_invalido: "telefone inválido",
+  repetido: "repetido no ficheiro",
 };
 
 /**
@@ -157,21 +157,21 @@ export function readImportFile(
   | { ok: false; error: string } {
   const table = parseCsv(text);
   if (table.length < 2) {
-    return { ok: false, error: "El archivo está vacío o solo trae el encabezado." };
+    return { ok: false, error: "O ficheiro está vazio ou contém apenas o cabeçalho." };
   }
   const cols = detectColumns(table[0]!);
   if (!cols) {
     return {
       ok: false,
       error:
-        "No encontré las columnas. El archivo necesita una columna «nombre» y una «telefono» en el primer renglón.",
+        "Não encontrei as colunas. O ficheiro precisa de uma coluna «nome» e uma «telefone» na primeira linha.",
     };
   }
   const body = table.slice(1);
   if (body.length > IMPORT_MAX_ROWS) {
     return {
       ok: false,
-      error: `El archivo trae ${body.length} renglones; el máximo por importación es ${IMPORT_MAX_ROWS}.`,
+      error: `O ficheiro contém ${body.length} linhas; o máximo por importação é ${IMPORT_MAX_ROWS}.`,
     };
   }
   const rows = body.map((r) => ({

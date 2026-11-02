@@ -27,7 +27,7 @@ describe("idiomas de plantilla", () => {
   it("valida y nombra", () => {
     expect(isTemplateLanguage("es_CO")).toBe(true);
     expect(isTemplateLanguage("es_LA")).toBe(false);
-    expect(templateLanguageName("pt_BR")).toBe("Portugués (Brasil)");
+    expect(templateLanguageName("pt_BR")).toBe("Português (Brasil)");
     // Un código que llegue sincronizado de Meta y no conozcamos se muestra tal cual.
     expect(templateLanguageName("xx_YY")).toBe("xx_YY");
   });
@@ -41,11 +41,11 @@ describe("templateWarnings", () => {
 
   it("avisa si empieza o termina con variable", () => {
     expect(templateWarnings("{{1}}, tu pedido está listo para recoger hoy")).toHaveLength(1);
-    expect(templateWarnings("Tu pedido está listo para recoger, {{1}}.")[0]).toMatch(/Termina/);
+    expect(templateWarnings("Tu pedido está listo para recoger, {{1}}.")[0]).toMatch(/Termina com/);
   });
 
   it("avisa de variables juntas y de mucho hueco para poco texto", () => {
-    expect(templateWarnings("Hola, tu cita es {{1}} {{2}} en nuestra clínica de siempre").some((w) => /juntas/.test(w))).toBe(true);
-    expect(templateWarnings("Hola {{1}} y {{2}} y {{3}} ok").some((w) => /muchas variables/.test(w))).toBe(true);
+    expect(templateWarnings("Hola, tu cita es {{1}} {{2}} en nuestra clínica de siempre").some((w) => /duas variáveis juntas/.test(w))).toBe(true);
+    expect(templateWarnings("Hola {{1}} y {{2}} y {{3}} ok").some((w) => /muitas variáveis/.test(w))).toBe(true);
   });
 });

@@ -53,7 +53,7 @@ async function sendViaZernio(input: {
   const { credentials, threadRef } = input;
   if (!threadRef) {
     throw new MetaApiError(
-      "La conversacion no tiene referencia de hilo en Zernio",
+      "A conversa não tem referência de tópico no Zernio",
       { status: 400 }
     );
   }
@@ -132,7 +132,7 @@ async function fetchJson(
   try {
     res = await fetch(url, init);
   } catch (cause) {
-    throw new MetaApiError("No se pudo contactar la API de Instagram", {
+    throw new MetaApiError("Não foi possível contactar a API do Instagram", {
       status: 0,
       details: cause,
     });

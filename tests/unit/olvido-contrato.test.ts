@@ -10,13 +10,13 @@ import {
 import { avisarOlvido } from "@/server/brains/deliver";
 
 /**
- * 026 — El contrato del olvido, fijado byte a byte.
+ * 026 — O contrato do esquecimento, fixado byte a byte.
  *
  * `CUERPO_GEMELO` y `FIRMA_GEMELA` están copiados de
- * `nea-agent/tests/test_olvido.py` (y de `tests/unit/olvido-contrato.test.ts`
- * de vocerocrm-cloud): es el contrato entre los repositorios. Cambiar uno
- * obliga a cambiar los otros. Si esta prueba falla, el cerebro deja de
- * entender el aviso o de aceptar su firma.
+ * `nea-agent/tests/test_olvido.py` (e de `tests/unit/olvido-contrato.test.ts`
+ * de vocerocrm-cloud): é o contrato entre os repositórios. Alterar um
+ * obriga a alterar os outros. Se este teste falhar, o cérebro deixa de
+ * compreender o aviso ou aceitar a sua assinatura.
  */
 const SECRETO_GEMELO = "secreto-gemelo-del-olvido";
 const CUERPO_GEMELO =
@@ -37,16 +37,16 @@ const evento = () =>
     deletedAt: new Date("2026-10-04T12:00:00.000Z"),
   });
 
-describe("026 · el evento conversation.deleted", () => {
-  it("el cuerpo es el gemelo, byte a byte y en ese orden de claves", () => {
+describe("026 · o evento conversation.deleted", () => {
+  it("o corpo é o gémeo, byte a byte e nessa ordem de chaves", () => {
     expect(JSON.stringify(evento())).toBe(CUERPO_GEMELO);
   });
 
-  it("la firma es la gemela", () => {
+  it("a assinatura é a gémea", () => {
     expect(firmarCuerpo(CUERPO_GEMELO, SECRETO_GEMELO)).toBe(FIRMA_GEMELA);
   });
 
-  it("no lleva nada de lo borrado: solo con qué encontrarlo", () => {
+  it("não contém nada do que foi apagado: apenas como o encontrar", () => {
     expect(Object.keys(evento())).toEqual([
       "type",
       "eventId",
@@ -57,7 +57,7 @@ describe("026 · el evento conversation.deleted", () => {
     ]);
   });
 
-  it("una organización sin slug viaja con slug null, no sin la clave", () => {
+  it("uma organização sem slug segue com slug null, não sem a chave", () => {
     const e = construirEventoOlvido({
       eventId: "olv_1",
       organization: { id: "org_1", slug: null },
@@ -72,7 +72,7 @@ describe("026 · el evento conversation.deleted", () => {
 describe("026 · avisarOlvido", () => {
   const destino = { url: "http://cerebro.test/vocero/dispatch", secret: SECRETO_GEMELO };
 
-  it("manda UN POST con el cuerpo gemelo, su firma y las cabeceras del evento", async () => {
+  it("envia UM POST com o corpo gémeo, a sua assinatura e os cabeçalhos do evento", async () => {
     const fetchImpl = vi.fn(async () => new Response(null, { status: 204 }));
     const r = await avisarOlvido(evento(), { destino, fetchImpl: fetchImpl as never });
     expect(r).toBe("avisado");
@@ -87,11 +87,11 @@ describe("026 · avisarOlvido", () => {
     expect(h[CABECERA_FIRMA]).toBe(FIRMA_GEMELA);
     expect(h[CABECERA_EVENTO]).toBe("conversation.deleted");
     expect(h[CABECERA_ORG]).toBe("gemela");
-    // No es un despacho: no lleva su id.
+    // Não é um despacho: não contém o seu id.
     expect(h[CABECERA_DISPATCH]).toBeUndefined();
   });
 
-  it("sin slug, la cabecera de organización lleva el id", async () => {
+  it("sem slug, o cabeçalho da organização contém o id", async () => {
     const fetchImpl = vi.fn(async () => new Response(null, { status: 200 }));
     const e = construirEventoOlvido({
       eventId: "olv_1",
@@ -105,7 +105,7 @@ describe("026 · avisarOlvido", () => {
     expect((init.headers as Record<string, string>)[CABECERA_ORG]).toBe("org_1");
   });
 
-  it("un cerebro que contesta 4xx o 5xx no confirmó, y NO se reintenta", async () => {
+  it("um cérebro que responde 4xx ou 5xx não confirmou, e NÃO há nova tentativa", async () => {
     for (const status of [400, 404, 500, 503]) {
       const fetchImpl = vi.fn(async () => new Response(null, { status }));
       expect(await avisarOlvido(evento(), { destino, fetchImpl: fetchImpl as never })).toBe(
@@ -115,7 +115,7 @@ describe("026 · avisarOlvido", () => {
     }
   });
 
-  it("un cerebro caído o que no contesta a tiempo no confirmó, y no lanza", async () => {
+  it("um cérebro indisponível ou que não responde a tempo não confirmou, e não lança", async () => {
     const caido = vi.fn(async () => {
       throw new Error("ECONNREFUSED");
     });
@@ -134,7 +134,7 @@ describe("026 · avisarOlvido", () => {
     ).toBe("sin_confirmar");
   });
 
-  it("sin despacho no hay a quién avisar", async () => {
+  it("sem despacho não há quem avisar", async () => {
     const fetchImpl = vi.fn();
     expect(await avisarOlvido(evento(), { destino: null, fetchImpl: fetchImpl as never })).toBe(
       "no_aplica"
