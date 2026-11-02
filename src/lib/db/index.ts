@@ -40,7 +40,12 @@ const globalForDb = globalThis as unknown as {
 function createClient() {
   const env = getEnv();
   return postgres(env.DATABASE_URL, {
-    max: 10,
+    // Cada instancia serverless tiene su propio pool: no reservar 10 conexiones.
+    max: process.env.VERCEL === "1" ? 1 : 10,
+    // Compatible con Supavisor/pgBouncer en modo transacción.
+    prepare: false,
+    idle_timeout: 20,
+    connect_timeout: 10,
     ...PG_CONNECTION_OPTIONS,
   });
 }
