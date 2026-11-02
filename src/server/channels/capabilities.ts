@@ -78,8 +78,8 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 export const CHANNEL_CAPABILITIES: Record<Channel, ChannelCapabilities> = {
   whatsapp: {
     label: CHANNEL_LABEL.whatsapp,
-    windowMs: DAY_MS,
-    outsideWindow: "template",
+    windowMs: null,
+    outsideWindow: "none",
     humanAgentWindowMs: null,
     textFormat: "whatsapp",
     maxTextBytes: null,

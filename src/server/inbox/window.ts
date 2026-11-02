@@ -71,8 +71,9 @@ export function replyWindow(
 export function isWindowOpen(
   lastInboundAt: Date | null,
   now: Date = new Date(),
-  windowMs: number = WINDOW_MS
+  windowMs: number | null = WINDOW_MS
 ): boolean {
+  if (windowMs === null || !Number.isFinite(windowMs)) return true;
   if (!lastInboundAt) return false;
   return now.getTime() - lastInboundAt.getTime() < windowMs;
 }
