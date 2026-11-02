@@ -131,10 +131,11 @@ export async function POST(req: Request) {
       inMessageId: savedInMessage?.id || null,
       outMessageId: savedOutMessage?.id || null,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : "Internal error";
     console.error("[sync/whatsapp] error:", error);
     return NextResponse.json(
-      { error: error?.message || "Internal error" },
+      { error: errorMessage },
       { status: 500 }
     );
   }
