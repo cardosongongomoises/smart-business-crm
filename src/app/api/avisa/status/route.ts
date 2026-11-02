@@ -29,13 +29,22 @@ export async function GET() {
 
     const data = await res.json();
 
-    // Normalizar os campos da resposta da Avisa API
-    const connected: boolean =
-      data.connected ?? data.Connected ?? data.status === "connected" ?? false;
-    const loggedIn: boolean =
-      data.loggedIn ?? data.LoggedIn ?? data.authenticated ?? false;
+    // A Avisa API retorna: { status: true, data: { code: 200, data: { Connected, LoggedIn, Jid } } }
+    // Navegamos pelas camadas aninhadas
+    const inner =
+      (data?.data?.data as Record<string, unknown> | undefined) ??
+      (data?.data as Record<string, unknown> | undefined) ??
+      (data as Record<string, unknown>);
+
+    const connected = Boolean(
+      inner.Connected ?? inner.connected ?? inner.status === "connected"
+    );
+    const loggedIn = Boolean(inner.LoggedIn ?? inner.loggedIn ?? inner.authenticated);
     const jid: string | null =
-      data.jid ?? data.Jid ?? data.phone ?? null;
+      (inner.Jid as string | undefined) ??
+      (inner.jid as string | undefined) ??
+      (inner.phone as string | undefined) ??
+      null;
 
     return NextResponse.json({ connected, loggedIn, jid });
   } catch (err) {
