@@ -15,6 +15,7 @@ export function serializeContact(
     id: c.id,
     name: c.name,
     phone: c.phone,
+    avatarUrl: ((c.ficha as Record<string, unknown> | null)?.avatarUrl as string | undefined) ?? null,
     notes: c.notes,
     aiPaused: c.aiPaused,
     stageName,

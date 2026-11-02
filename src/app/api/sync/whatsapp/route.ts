@@ -11,7 +11,7 @@ export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
+    const body = (await req.json()) as Record<string, unknown>;
     const phone = String(body.phone || body.numero || body.from || "").replace(/\D/g, "");
     if (!phone) {
       return NextResponse.json({ error: "phone is required" }, { status: 400 });
@@ -20,6 +20,14 @@ export async function POST(req: Request) {
     const name = String(body.name || body.nome || phone).trim();
     const incomingText = body.incomingText || body.text || body.message || null;
     const responseText = body.responseText || body.response || body.output || null;
+    const avatarUrl =
+      typeof body.avatarUrl === "string" && body.avatarUrl.trim()
+        ? body.avatarUrl.trim()
+        : typeof body.profilePicUrl === "string" && body.profilePicUrl.trim()
+          ? body.profilePicUrl.trim()
+          : typeof body.photo === "string" && body.photo.trim()
+            ? body.photo.trim()
+            : null;
 
     const db = getDb();
 
@@ -39,6 +47,20 @@ export async function POST(req: Request) {
       waUserId: null,
       profileName: name !== phone ? name : null,
     });
+
+    // 2.1 Atualizar nome e avatar se fornecidos
+    const currentFicha = (contact.ficha as Record<string, unknown> | null) ?? {};
+    const updates: Partial<typeof schema.contact.$inferInsert> = {};
+
+    if (avatarUrl && currentFicha.avatarUrl !== avatarUrl) {
+      updates.ficha = { ...currentFicha, avatarUrl };
+    }
+    if (name && name !== phone && contact.nameSource === "perfil" && contact.name !== name) {
+      updates.name = name;
+    }
+    if (Object.keys(updates).length > 0) {
+      await db.update(schema.contact).set(updates).where(eq(schema.contact.id, contact.id));
+    }
 
     // 3. Criar ou obter conversa
     const conversation = await getOrCreateConversation(organizationId, contact.id, {
@@ -122,7 +144,17 @@ export async function POST(req: Request) {
 
     publish(organizationId, {
       type: "conversation.updated",
-      data: { conversation: { id: conversation.id } },
+      data: {
+        conversation: {
+          id: conversation.id,
+          contact: {
+            id: contact.id,
+            name: updates.name ?? contact.name,
+            phone: contact.phone,
+            avatarUrl: (updates.ficha as Record<string, unknown> | undefined)?.avatarUrl ?? currentFicha.avatarUrl ?? null,
+          },
+        },
+      },
     });
 
     // 7. Atualizar ou criar Lead no Kanban Pipeline

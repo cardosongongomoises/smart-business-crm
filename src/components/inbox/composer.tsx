@@ -808,9 +808,11 @@ export function Composer({
           <span />
         )}
         <p className="font-mono text-[10.5px] tracking-[0.04em] text-text-3">
-          {soloPersona
-            ? `Ventana humana · quedan ${formatRemainingLong(human!.remainingMs)}`
-            : `Ventana abierta · quedan ${formatRemaining(conversation.windowRemainingMs)}`}
+          {conversation.channel === "whatsapp"
+            ? "Avisa API · Sem restrição de 24h"
+            : soloPersona
+              ? `Janela humana · restam ${formatRemainingLong(human!.remainingMs)}`
+              : `Janela aberta · restam ${formatRemaining(conversation.windowRemainingMs)}`}
         </p>
       </div>
     </div>

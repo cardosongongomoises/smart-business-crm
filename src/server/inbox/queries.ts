@@ -166,7 +166,7 @@ export function serializeConversation(
   return {
     id: c.id,
     channel: c.channel,
-    contact: { id: contact.id, name: contact.name, phone: contact.phone },
+    contact: { id: contact.id, name: contact.name, phone: contact.phone, avatarUrl: ((contact.ficha as Record<string, unknown> | null)?.avatarUrl as string | undefined) ?? null },
     stageName,
     aiEnabled: c.aiEnabled,
     handoffAt: c.handoffAt?.toISOString() ?? null,
@@ -175,12 +175,8 @@ export function serializeConversation(
     lastMessageAt: c.lastMessageAt?.toISOString() ?? null,
     unreadCount: c.unreadCount,
     // 022: la ventana es la del canal (48 h en TikTok, 24 en los demás).
-    windowOpen: isWindowOpen(c.lastInboundAt, new Date(), windowMsFor(c.channel)),
-    windowRemainingMs: windowRemainingMs(
-      c.lastInboundAt,
-      new Date(),
-      windowMsFor(c.channel)
-    ),
+    windowOpen: c.channel === "whatsapp" || isWindowOpen(c.lastInboundAt, new Date(), windowMsFor(c.channel)),
+    windowRemainingMs: c.channel === "whatsapp" ? 86400000 : windowRemainingMs(c.lastInboundAt, new Date(), windowMsFor(c.channel)),
     humanWindow: reply
       ? { open: reply.humanAgentTag, remainingMs: reply.humanAgentTag ? reply.operatorRemainingMs : 0 }
       : null,

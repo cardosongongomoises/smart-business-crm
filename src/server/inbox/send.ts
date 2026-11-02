@@ -298,8 +298,10 @@ async function prepareSend(
   // El nucleo no decide la politica: la consulta. WhatsApp exige plantilla
   // fuera de ventana; Instagram etiqueta y sigue; otro canal podria no tener
   // ventana en absoluto.
+  const isAvisa = row.conversation.channel === "whatsapp";
   const caps = capabilitiesFor(row.conversation.channel);
   if (
+    !isAvisa &&
     caps.windowMs !== null &&
     caps.outsideWindow === "template" &&
     !isWindowOpen(row.conversation.lastInboundAt)
@@ -523,9 +525,11 @@ export async function sendText(input: {
     // Un canal sin acuses de entrega confirma al aceptar; uno con acuses
     // avanza despues por webhook. Sin esta distincion el mensaje se queda
     // con el reloj puesto para siempre.
-    status: capabilitiesFor(target.conversation.channel).deliveryReceipts
-      ? "pending"
-      : "sent",
+    status: target.conversation.channel === "whatsapp" && !credentials
+      ? "sent"
+      : capabilitiesFor(target.conversation.channel).deliveryReceipts
+        ? "pending"
+        : "sent",
     aiGenerated: input.aiGenerated,
     origin: input.aiGenerated ? "ai" : "operator",
     cita,
