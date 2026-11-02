@@ -16,6 +16,7 @@ import {
 import { MessageSquareText, Settings2, Trophy, XCircle } from "lucide-react";
 import type { LossReason, PriorityValue, StageDto } from "@/lib/types";
 import { formatMoneyCents, sumable } from "@/lib/money";
+import { workflowOwnerForStage } from "@/lib/pipeline-stages";
 import { cn } from "@/lib/utils";
 import { ContactAvatar } from "@/components/avatar";
 import { Button } from "@/components/ui/button";
@@ -173,7 +174,12 @@ export function PipelineClient() {
   return (
     <div className="flex h-full flex-col">
       <header className="flex flex-wrap items-center justify-between gap-2 border-b px-4 py-3 sm:px-6 sm:py-4">
-        <h2 className="text-[17px] font-bold tracking-tight">Pipeline</h2>
+        <div>
+          <h2 className="text-[17px] font-bold tracking-tight">Pipeline</h2>
+          <p className="mt-0.5 text-xs text-muted-foreground">
+            Etapas e responsáveis do workflow WhatsApp. Mariana (suporte técnico) entra apenas em incidências.
+          </p>
+        </div>
         <Button variant="outline" size="sm" onClick={() => setManaging(true)}>
           <Settings2 className="h-4 w-4" /> Gerir etapas
         </Button>
@@ -311,15 +317,22 @@ function StageColumn({
         isOver && "border-brand ring-[3px] ring-brand-soft"
       )}
     >
-      <div className="flex items-center justify-between px-3 py-2.5">
-        <span className="flex items-center gap-1.5 text-[13.5px] font-bold tracking-tight">
-          {stage.kind === "won" && <Trophy className="h-3.5 w-3.5 text-primary" />}
-          {stage.kind === "lost" && (
-            <XCircle className="h-3.5 w-3.5 text-muted-foreground" />
+      <div className="flex items-start justify-between gap-2 px-3 py-2.5">
+        <div className="min-w-0">
+          <span className="flex items-start gap-1.5 break-words text-[13.5px] font-bold leading-4 tracking-tight">
+            {stage.kind === "won" && <Trophy className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" />}
+            {stage.kind === "lost" && (
+              <XCircle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+            )}
+            {stage.name}
+          </span>
+          {workflowOwnerForStage(stage.name) && (
+            <p className="mt-1 text-[11px] leading-4 text-muted-foreground">
+              {workflowOwnerForStage(stage.name)}
+            </p>
           )}
-          {stage.name}
-        </span>
-        <span className="rounded-full border border-border-strong bg-background px-2 py-0.5 font-mono text-[11px] text-text-3">
+        </div>
+        <span className="shrink-0 rounded-full border border-border-strong bg-background px-2 py-0.5 font-mono text-[11px] text-text-3">
           {leads.length}
         </span>
       </div>

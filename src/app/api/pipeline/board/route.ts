@@ -3,11 +3,13 @@ import { withAuth } from "@/lib/api";
 import { getDb, schema } from "@/lib/db";
 import { scoped } from "@/lib/db/tenant";
 import { getBranding } from "@/server/branding";
+import { ensureWorkflowStagesForOrganization } from "@/server/pipeline/ensure-workflow-stages";
 
 export const dynamic = "force-dynamic";
 
 /** Datos completos del kanban: etapas ordenadas + tarjetas con su contacto. */
 export const GET = withAuth(async (session) => {
+  await ensureWorkflowStagesForOrganization(session.organizationId);
   const db = getDb();
 
   const stages = await db

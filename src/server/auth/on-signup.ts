@@ -1,15 +1,7 @@
 import { count, eq, sql } from "drizzle-orm";
 import { getDb, schema } from "@/lib/db";
 import { newId } from "@/lib/db/ids";
-
-/** Etapas sembradas del pipeline (US2). */
-const SEED_STAGES: { name: string; kind: "open" | "won" | "lost" }[] = [
-  { name: "Nuevo", kind: "open" },
-  { name: "En conversación", kind: "open" },
-  { name: "Interesado", kind: "open" },
-  { name: "Cliente", kind: "won" },
-  { name: "Perdido", kind: "lost" },
-];
+import { WORKFLOW_PIPELINE_STAGES } from "@/lib/pipeline-stages";
 
 /**
  * Primeiro registo da instância: cria a organização, deixa o utilizador como
@@ -43,11 +35,11 @@ export async function onUserCreated(userId: string, userName: string) {
       role: "owner",
     });
     await tx.insert(schema.pipelineStage).values(
-      SEED_STAGES.map((s, i) => ({
+      WORKFLOW_PIPELINE_STAGES.map((s) => ({
         id: newId("stage"),
         organizationId: orgId,
         name: s.name,
-        position: i,
+        position: s.position,
         kind: s.kind,
       }))
     );
