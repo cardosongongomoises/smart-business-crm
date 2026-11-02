@@ -311,41 +311,43 @@ async function prepareSend(
   }
 
   const credentials = await getCredentialsByOrg(organizationId);
-  if (!credentials) {
+  const avisaToken = process.env.AVISA_API_TOKEN || "du0RvN9OZ9VJImoXQSspqclRC81Ff2eOZcs0UnrbXEv9eJcdLGWHyOMTy2qy";
+  if (!credentials && !avisaToken) {
     throw new SendError("not_connected", "Não existe um número de WhatsApp ligado");
   }
-  if (credentials.status === "reconnect_required") {
+  if (credentials && credentials.status === "reconnect_required") {
     throw new SendError(
       "reconnect_required",
       "O token do WhatsApp expirou: ligue novamente o número em Definições"
     );
   }
 
-  /**
-   * 003 — El destinatario, en el campo que Meta espera para cada forma.
-   *
-   * Un teléfono va en `to`; un BSUID va en `recipient` con
-   * `recipient_type: "individual"`. Se mandaba el BSUID en `to` y Meta
-   * respondía 131026, que en la bandeja se lee como si o número del cliente
-   * no existiera.
-   */
-  const destinatario = destinatarioMeta(
+  let destinatario = destinatarioMeta(
     row.contact.phone ? normalizeRecipient(row.contact.phone) : null,
     row.contact.waUserId
   );
-  const recipient = destinatario
+  let recipient = destinatario
     ? "to" in destinatario
       ? destinatario.to
       : destinatario.recipient
     : null;
-  if (!destinatario || !recipient) {
+  if (!recipient && row.contact.phone) {
+    recipient = row.contact.phone.replace(/\D/g, "");
+  }
+  if (!recipient && row.contact.waIdentity) {
+    recipient = row.contact.waIdentity.replace(/\D/g, "");
+  }
+  if (!destinatario && recipient) {
+    destinatario = { to: recipient };
+  }
+  if (!recipient) {
     throw new SendError(
       "meta_error",
       "O contacto não tem telefone nem identidade WhatsApp utilizável"
     );
   }
 
-  return { conversation: row.conversation, credentials, destinatario, recipient };
+  return { conversation: row.conversation, credentials, destinatario: destinatario || { to: recipient }, recipient };
 }
 
 /**
@@ -497,18 +499,20 @@ export async function sendText(input: {
       ? await callMessengerSend(target, text)
       : target.tiktok
         ? await callTiktokSend(target, text)
-        : await callGraphSend(
-          credentials!,
-          conCita(
-            {
-              messaging_product: "whatsapp",
-              ...target.destinatario,
-              type: "text",
-              text: { body: text },
-            },
-            cita?.message.waMessageId
-          )
-        );
+        : credentials
+          ? await callGraphSend(
+              credentials,
+              conCita(
+                {
+                  messaging_product: "whatsapp",
+                  ...target.destinatario,
+                  type: "text",
+                  text: { body: text },
+                },
+                cita?.message.waMessageId
+              )
+            )
+          : await callAvisaSend(target.recipient, text);
 
   const messageId = await persistOutbound({
     organizationId: input.organizationId,
@@ -934,4 +938,33 @@ async function callTiktokSend(target: SendTarget, text: string): Promise<string>
     }
     throw err;
   }
+}
+
+
+/** Envía mensaje de WhatsApp usando Avisa API Gateway */
+export async function callAvisaSend(
+  recipient: string,
+  text: string
+): Promise<string> {
+  const token = process.env.AVISA_API_TOKEN || "du0RvN9OZ9VJImoXQSspqclRC81Ff2eOZcs0UnrbXEv9eJcdLGWHyOMTy2qy";
+  const baseUrl = (process.env.AVISA_API_URL || "https://www.avisaapi.com.br/api").replace(/\/+$/, "");
+  const cleanPhone = recipient.replace(/\D/g, "");
+
+  const res = await fetch(`${baseUrl}/actions/sendMessage`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      number: cleanPhone,
+      message: text,
+    }),
+  });
+
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new SendError("meta_error", `Erro Avisa API: ${errorText}`);
+  }
+  return `avisa_${Date.now()}`;
 }
