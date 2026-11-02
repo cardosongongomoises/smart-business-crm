@@ -76,7 +76,7 @@ describe("ajustes en tres secciones", () => {
     expect(links(sections)).toEqual({
       Canais: ["WhatsApp"],
       Agente: ["IA"],
-      Negócio: ["Marca", "Aparência", "Modelos", "Respostas rápidas", "Equipa"],
+      Negócio: ["Marca", "Aparência", "Respostas rápidas", "Equipa"],
     });
   });
 
@@ -85,7 +85,7 @@ describe("ajustes en tres secciones", () => {
     expect(links(settingsSections({ messenger: true }))).toEqual({
       Canais: ["Estado", "WhatsApp", "Messenger"],
       Agente: ["IA"],
-      Negócio: ["Marca", "Aparência", "Modelos", "Respostas rápidas", "Equipa"],
+      Negócio: ["Marca", "Aparência", "Respostas rápidas", "Equipa"],
     });
     expect(links(settingsSections({ instagram: true })).Canais).toEqual([
       "Estado",
@@ -98,12 +98,12 @@ describe("ajustes en tres secciones", () => {
     expect(links(settingsSections({ agenda: true }))).toEqual({
       Canais: ["WhatsApp"],
       Agente: ["IA", "Agenda"],
-      Negócio: ["Marca", "Aparência", "Modelos", "Respostas rápidas", "Equipa"],
+      Negócio: ["Marca", "Aparência", "Respostas rápidas", "Equipa"],
     });
     expect(links(settingsSections({ atribucion: true }))).toEqual({
       Canais: ["WhatsApp"],
       Agente: ["IA"],
-      Negócio: ["Marca", "Aparência", "Modelos", "Respostas rápidas", "Equipa", "Anúncios"],
+      Negócio: ["Marca", "Aparência", "Respostas rápidas", "Equipa", "Anúncios"],
     });
   });
 
@@ -129,7 +129,6 @@ describe("ajustes en tres secciones", () => {
         "/settings/calendar",
         "/settings/branding",
         "/settings/appearance",
-        "/settings/templates",
         "/settings/quick-replies",
         "/settings/team",
         "/settings/ads",
