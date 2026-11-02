@@ -9,7 +9,7 @@ import {
 } from "@/lib/brand";
 import { FAVICON_ASSET, faviconInitial } from "@/lib/favicon";
 import type { AppIconPurpose, AppIconSize } from "@/lib/pwa";
-import { getBrandingContext } from "@/server/branding";
+import { getBrandingContext, getFaviconBuffer } from "@/server/branding";
 import { readMediaFile } from "@/server/whatsapp/media";
 
 /**
@@ -47,6 +47,8 @@ async function logoSubido(
 ): Promise<string | null> {
   if (organizationId && branding.favicon && DIBUJABLES.has(branding.favicon.mime)) {
     try {
+      const fav = await getFaviconBuffer(organizationId);
+      if (fav?.data) return `data:${fav.mime};base64,${fav.data.toString("base64")}`;
       const buf = await readMediaFile(organizationId, FAVICON_ASSET);
       return `data:${branding.favicon.mime};base64,${Buffer.from(buf).toString("base64")}`;
     } catch {

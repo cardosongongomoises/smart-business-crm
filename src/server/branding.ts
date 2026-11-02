@@ -75,3 +75,79 @@ export async function saveBranding(
     .set({ metadata: JSON.stringify(meta) })
     .where(eq(schema.organization.id, organizationId));
 }
+
+export async function getFaviconBuffer(
+  organizationId?: string | null
+): Promise<{ data: Buffer; mime: string } | null> {
+  const db = getDb();
+  const rows = organizationId
+    ? await db
+        .select({ metadata: schema.organization.metadata })
+        .from(schema.organization)
+        .where(eq(schema.organization.id, organizationId))
+        .limit(1)
+    : await db
+        .select({ metadata: schema.organization.metadata })
+        .from(schema.organization)
+        .limit(1);
+  if (!rows[0]) return null;
+  const meta = parseMetadata(rows[0].metadata);
+  const favData = meta.faviconData as { data?: string; mime?: string } | undefined;
+  if (favData?.data && favData?.mime) {
+    return {
+      data: Buffer.from(favData.data, "base64"),
+      mime: favData.mime,
+    };
+  }
+  return null;
+}
+
+export async function saveFaviconData(
+  organizationId: string,
+  buffer: Uint8Array,
+  mime: string,
+  version: number
+): Promise<void> {
+  const db = getDb();
+  const rows = await db
+    .select({ metadata: schema.organization.metadata })
+    .from(schema.organization)
+    .where(eq(schema.organization.id, organizationId))
+    .limit(1);
+  const meta = parseMetadata(rows[0]?.metadata ?? null);
+  const base64 = Buffer.from(buffer).toString("base64");
+  meta.faviconData = { data: base64, mime, version };
+  const currentBranding = normalizeBranding(
+    (meta.branding as Partial<Branding> | undefined) ?? null
+  );
+  meta.branding = {
+    ...currentBranding,
+    favicon: { mime, version },
+  };
+  await db
+    .update(schema.organization)
+    .set({ metadata: JSON.stringify(meta) })
+    .where(eq(schema.organization.id, organizationId));
+}
+
+export async function clearFaviconData(organizationId: string): Promise<void> {
+  const db = getDb();
+  const rows = await db
+    .select({ metadata: schema.organization.metadata })
+    .from(schema.organization)
+    .where(eq(schema.organization.id, organizationId))
+    .limit(1);
+  const meta = parseMetadata(rows[0]?.metadata ?? null);
+  delete meta.faviconData;
+  const currentBranding = normalizeBranding(
+    (meta.branding as Partial<Branding> | undefined) ?? null
+  );
+  meta.branding = {
+    ...currentBranding,
+    favicon: null,
+  };
+  await db
+    .update(schema.organization)
+    .set({ metadata: JSON.stringify(meta) })
+    .where(eq(schema.organization.id, organizationId));
+}
