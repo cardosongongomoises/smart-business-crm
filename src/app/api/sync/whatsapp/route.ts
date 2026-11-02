@@ -67,14 +67,16 @@ export async function POST(req: Request) {
         })
         .returning();
 
-      savedInMessage = msgIn;
-      publish(organizationId, {
-        type: "message.new",
-        data: {
-          conversationId: conversation.id,
-          message: serializeMessage(msgIn, null, null),
-        },
-      });
+      if (msgIn) {
+        savedInMessage = msgIn;
+        publish(organizationId, {
+          type: "message.new",
+          data: {
+            conversationId: conversation.id,
+            message: serializeMessage(msgIn, null, null),
+          },
+        });
+      }
     }
 
     // 5. Salvar resposta do Agente IA se fornecida
@@ -97,14 +99,16 @@ export async function POST(req: Request) {
         })
         .returning();
 
-      savedOutMessage = msgOut;
-      publish(organizationId, {
-        type: "message.new",
-        data: {
-          conversationId: conversation.id,
-          message: serializeMessage(msgOut, null, null),
-        },
-      });
+      if (msgOut) {
+        savedOutMessage = msgOut;
+        publish(organizationId, {
+          type: "message.new",
+          data: {
+            conversationId: conversation.id,
+            message: serializeMessage(msgOut, null, null),
+          },
+        });
+      }
     }
 
     // 6. Atualizar última mensagem na conversa
