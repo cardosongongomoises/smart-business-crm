@@ -31,20 +31,20 @@ export async function GET() {
 
     // A Avisa API retorna: { status: true, data: { code: 200, data: { Connected, LoggedIn, Jid } } }
     // Navegamos pelas camadas aninhadas
-    const inner =
-      (data?.data?.data as Record<string, unknown> | undefined) ??
-      (data?.data as Record<string, unknown> | undefined) ??
-      (data as Record<string, unknown>);
+    const rawData = data as Record<string, unknown> | null;
+    const l1 = (rawData?.data as Record<string, unknown> | null) ?? rawData;
+    const inner = (l1?.data as Record<string, unknown> | null) ?? l1 ?? {};
 
-    const connected = Boolean(
-      inner.Connected ?? inner.connected ?? inner.status === "connected"
-    );
-    const loggedIn = Boolean(inner.LoggedIn ?? inner.loggedIn ?? inner.authenticated);
+    const rawConnected = inner.Connected ?? inner.connected;
+    const connected = typeof rawConnected === "boolean" ? rawConnected : inner.status === "connected";
+
+    const rawLoggedIn = inner.LoggedIn ?? inner.loggedIn;
+    const loggedIn = typeof rawLoggedIn === "boolean" ? rawLoggedIn : Boolean(inner.authenticated);
+
     const jid: string | null =
-      (inner.Jid as string | undefined) ??
-      (inner.jid as string | undefined) ??
-      (inner.phone as string | undefined) ??
-      null;
+      (typeof inner.Jid === "string" ? inner.Jid : null) ??
+      (typeof inner.jid === "string" ? inner.jid : null) ??
+      (typeof inner.phone === "string" ? inner.phone : null);
 
     return NextResponse.json({ connected, loggedIn, jid });
   } catch (err) {

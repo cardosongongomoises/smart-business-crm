@@ -41,9 +41,13 @@ type QrState =
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-function phoneFromJid(jid: string | null) {
+function phoneFromJid(jid: string | null): string | null {
   if (!jid) return null;
-  return "+" + jid.split(":")[0].split("@")[0];
+  const parts = jid.split(":");
+  const firstPart = parts[0] ?? jid;
+  const atParts = firstPart.split("@");
+  const phoneNum = atParts[0] ?? firstPart;
+  return "+" + phoneNum;
 }
 
 // QR codes da Avisa API expiram — mostramos um countdown e pedimos refresh automático

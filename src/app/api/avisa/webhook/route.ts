@@ -11,8 +11,9 @@ export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
   try {
-    const { url } = await req.json();
-    if (!url || !url.startsWith("https://")) {
+    const body = (await req.json()) as { url?: string } | null;
+    const url = body?.url;
+    if (!url || typeof url !== "string" || !url.startsWith("https://")) {
       return NextResponse.json(
         { error: "URL inválida. O webhook deve usar HTTPS." },
         { status: 400 }

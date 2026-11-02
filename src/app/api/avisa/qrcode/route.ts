@@ -66,7 +66,7 @@ export async function GET() {
         if (contentType.startsWith("image/")) {
           const buffer = await res.arrayBuffer();
           const base64 = Buffer.from(buffer).toString("base64");
-          const mimeType = contentType.split(";")[0];
+          const mimeType = contentType.split(";")[0] ?? "image/png";
           return NextResponse.json({
             connected: false,
             loggedIn: false,

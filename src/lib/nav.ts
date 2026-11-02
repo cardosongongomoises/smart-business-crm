@@ -135,7 +135,7 @@ export function settingsSections({
     { href: "/settings/branding", label: "Marca" },
     // 062 — Tema, letra, tamaño y densidad (cada quien la suya).
     { href: "/settings/appearance", label: "Aparência" },
-    // { href: "/settings/templates", label: "Modelos" }, // Desativado (Avisa API)
+    { href: "/settings/templates", label: "Modelos" },
     // 049 — lo que el equipo inserta con «/atajo» en la Bandeja.
     { href: "/settings/quick-replies", label: "Respostas rápidas" },
     { href: "/settings/team", label: "Equipa" },
