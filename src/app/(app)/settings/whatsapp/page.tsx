@@ -1,7 +1,7 @@
-import { WhatsappWizard } from "@/components/settings/whatsapp-wizard";
+import { AvisaApiSettings } from "@/components/settings/avisa-api-settings";
 
 export const dynamic = "force-dynamic";
 
 export default function WhatsappSettingsPage() {
-  return <WhatsappWizard />;
+  return <AvisaApiSettings />;
 }
