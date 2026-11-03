@@ -20,7 +20,7 @@ export async function POST(req: Request) {
     const name = String(body.name || body.nome || phone).trim();
     const incomingText = body.incomingText || body.text || body.message || null;
     const responseText = body.responseText || body.response || body.output || null;
-    const avatarUrl =
+    let avatarUrl =
       typeof body.avatarUrl === "string" && body.avatarUrl.trim()
         ? body.avatarUrl.trim()
         : typeof body.profilePicUrl === "string" && body.profilePicUrl.trim()
@@ -28,6 +28,38 @@ export async function POST(req: Request) {
           : typeof body.photo === "string" && body.photo.trim()
             ? body.photo.trim()
             : null;
+
+    // Se não veio avatarUrl do webhook, busca da Avisa API automaticamente
+    if (!avatarUrl && phone) {
+      try {
+        const avisaToken =
+          process.env.AVISA_API_TOKEN ||
+          "du0RvN9OZ9VJImoXQSspqclRC81Ff2eOZcs0UnrbXEv9eJcdLGWHyOMTy2qy";
+        const avisaBase = (
+          process.env.AVISA_API_URL || "https://www.avisaapi.com.br/api"
+        ).replace(/\/+$/, "");
+        const avRes = await fetch(`${avisaBase}/user/avatar`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${avisaToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ number: phone, preview: false }),
+          cache: "no-store",
+        });
+        if (avRes.ok) {
+          const avData = (await avRes.json()) as Record<string, unknown> | null;
+          const l1 = (avData?.data as Record<string, unknown> | null) ?? avData;
+          const inner = (l1?.data as Record<string, unknown> | null) ?? l1;
+          const fetchedUrl =
+            (typeof inner?.url === "string" ? inner.url : null) ??
+            (typeof l1?.url === "string" ? l1.url : null);
+          if (fetchedUrl) avatarUrl = fetchedUrl;
+        }
+      } catch {
+        // ignora — não bloqueia o fluxo principal
+      }
+    }
 
     const db = getDb();
 

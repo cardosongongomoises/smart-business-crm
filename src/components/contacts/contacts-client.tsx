@@ -174,7 +174,8 @@ export function ContactsClient() {
                 key={c.id}
                 className="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-lg border bg-card px-3 py-3 sm:flex-nowrap sm:gap-x-4 sm:px-4"
               >
-                <ContactAvatar name={c.name} seed={c.id} avatarUrl={c.avatarUrl} />
+                <ContactAvatar name={c.name} seed={c.id} avatarUrl={c.avatarUrl}
+                      phone={c.phone} />
                 {/* El 60% mínimo es lo que empuja los botones a su propio
                     renglón en el teléfono en vez de exprimir el nombre. */}
                 <div className="min-w-[60%] flex-1 sm:min-w-0">

@@ -202,6 +202,7 @@ export function ContactPanel({
               seed={conversation.contact.id}
               size="md"
               avatarUrl={conversation.contact.avatarUrl}
+            phone={conversation.contact.phone}
             />
             <div className="min-w-0">
               <p className="truncate text-sm font-bold tracking-tight">
