@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getDb, schema } from "@/lib/db";
-import { eq, like } from "drizzle-orm";
+import { like } from "drizzle-orm";
+import { upsertFicha } from "@/server/bot/ficha";
 
 const AVISA_TOKEN =
   process.env.AVISA_API_TOKEN ||
@@ -43,7 +44,7 @@ export async function GET(req: Request) {
       (typeof l1?.url === "string" ? l1.url : null);
 
     if (url) {
-      // Atualizar no banco de dados para os próximos carregamentos serem imediatos
+      // Atualizar no banco de dados através da porta única upsertFicha
       try {
         const db = getDb();
         const lastDigits = clean.slice(-9);
@@ -56,10 +57,11 @@ export async function GET(req: Request) {
         for (const c of contacts) {
           const ficha = (c.ficha as Record<string, unknown> | null) ?? {};
           if (ficha.avatarUrl !== url) {
-            await db
-              .update(schema.contact)
-              .set({ ficha: { ...ficha, avatarUrl: url } })
-              .where(eq(schema.contact.id, c.id));
+            await upsertFicha({
+              organizationId: c.organizationId,
+              contactId: c.id,
+              ficha: { avatarUrl: url },
+            });
           }
         }
       } catch {
