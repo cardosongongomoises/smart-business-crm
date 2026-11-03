@@ -5,7 +5,7 @@ import { getDb, schema } from "@/lib/db";
 import { scoped } from "@/lib/db/tenant";
 import { getContactById } from "@/server/contacts";
 import { getOrCreateConversation } from "@/server/inbox/ingest";
-import { SendError } from "@/server/inbox/send";
+import { SendError, sendText } from "@/server/inbox/send";
 import { isWindowOpen } from "@/server/inbox/window";
 import {
   sendTemplate,
@@ -17,18 +17,19 @@ export const dynamic = "force-dynamic";
 
 type Params = { params: Promise<{ id: string }> };
 
-const bodySchema = z.object({
-  templateId: z.string().min(1),
-  variables: z.array(z.string().trim().max(500)).max(10).optional(),
-});
+const bodySchema = z.union([
+  z.object({
+    message: z.string().trim().min(1).max(4096),
+  }),
+  z.object({
+    templateId: z.string().min(1),
+    variables: z.array(z.string().trim().max(500)).max(10).optional(),
+  }),
+]);
 
 /**
- * Abre la conversación con un contacto que NUNCA ha escrito (capturado
- * a mano). WhatsApp solo permite iniciar con plantilla aprobada; esa es una
- * regla de Meta, no del CRM.
- *
- * La conversación se crea AQUÍ y no al capturar el contacto: un hilo vacío
- * ensuciaría la Bandeja y rompería su orden por último mensaje.
+ * Abre a conversa com um contacto. Com a Avisa API / WhatsApp, permite
+ * enviar uma mensagem direta ou modelo aprovado.
  */
 export const POST = withAuth(async (session, req: Request, ctx: Params) => {
   const { id } = await ctx.params;
@@ -55,9 +56,7 @@ export const POST = withAuth(async (session, req: Request, ctx: Params) => {
     )
     .limit(1);
 
-  // Gastar una plantilla teniendo la ventana abierta es tirar dinero y
-  // reputación de plantilla: se avisa en vez de enviarla.
-  if (existing[0] && isWindowOpen(existing[0].lastInboundAt)) {
+  if ("templateId" in body.data && existing[0] && isWindowOpen(existing[0].lastInboundAt)) {
     return apiError(
       409,
       "window_open",
@@ -69,6 +68,18 @@ export const POST = withAuth(async (session, req: Request, ctx: Params) => {
     existing[0] ?? (await getOrCreateConversation(session.organizationId, id));
 
   try {
+    if ("message" in body.data) {
+      const result = await sendText({
+        organizationId: session.organizationId,
+        conversationId: conversation.id,
+        text: body.data.message,
+      });
+      return Response.json({
+        messageId: result.messageId,
+        conversationId: conversation.id,
+      });
+    }
+
     const result = await sendTemplate({
       organizationId: session.organizationId,
       conversationId: conversation.id,

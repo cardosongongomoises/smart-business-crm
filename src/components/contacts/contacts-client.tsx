@@ -225,7 +225,7 @@ export function ContactsClient() {
                     variant="ghost"
                     size="icon"
                     aria-label="Iniciar conversa"
-                    title="Iniciar conversa (com modelo)"
+                    title="Enviar mensagem WhatsApp"
                     onClick={() => setEscribiendo(c)}
                   >
                     <Send className="h-4 w-4" />

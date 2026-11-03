@@ -952,7 +952,20 @@ export async function callAvisaSend(
 ): Promise<string> {
   const token = process.env.AVISA_API_TOKEN || "du0RvN9OZ9VJImoXQSspqclRC81Ff2eOZcs0UnrbXEv9eJcdLGWHyOMTy2qy";
   const baseUrl = (process.env.AVISA_API_URL || "https://www.avisaapi.com.br/api").replace(/\/+$/, "");
-  const cleanPhone = recipient.replace(/\D/g, "");
+  let cleanPhone = recipient.replace(/\D/g, "");
+
+  // Se o número tem 9 dígitos e começa com 9 (padrão de Angola), adiciona o DDI 244
+  if (cleanPhone.length === 9 && cleanPhone.startsWith("9")) {
+    cleanPhone = `244${cleanPhone}`;
+  }
+
+  // Se for um LID do WhatsApp (identificador técnico de 15 dígitos), avisa com clareza
+  if (cleanPhone.length > 13 && (cleanPhone.startsWith("12") || cleanPhone.startsWith("20"))) {
+    throw new SendError(
+      "meta_error",
+      `O número "${cleanPhone}" é um identificador técnico do WhatsApp (LID) e não um número de telefone real. Edite o contacto para colocar o número de telefone correto (+244...) antes de enviar.`
+    );
+  }
 
   const res = await fetch(`${baseUrl}/actions/sendMessage`, {
     method: "POST",
@@ -968,7 +981,18 @@ export async function callAvisaSend(
 
   if (!res.ok) {
     const errorText = await res.text();
-    throw new SendError("meta_error", `Erro Avisa API: ${errorText}`);
+    let userMsg = errorText;
+    if (errorText.includes("<html") || res.status >= 500) {
+      userMsg = `Serviço WhatsApp Avisa retornou erro ${res.status}. Verifique se o número (+${cleanPhone}) está correto e tem WhatsApp ativo.`;
+    } else {
+      try {
+        const parsed = JSON.parse(errorText);
+        userMsg = parsed.message || parsed.error || errorText;
+      } catch {
+        // manter errorText
+      }
+    }
+    throw new SendError("meta_error", `Erro Avisa API: ${userMsg}`);
   }
   return `avisa_${Date.now()}`;
 }
