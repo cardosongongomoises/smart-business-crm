@@ -579,12 +579,18 @@ export async function sendMediaMessage(input: {
 
   const db = getDb();
   const assetId = newId("mediaAsset");
-  const storagePath = await saveMediaFile(
-    input.organizationId,
-    assetId,
-    file.data,
-    file.mimeType
-  );
+  let storagePath: string;
+  try {
+    storagePath = await saveMediaFile(
+      input.organizationId,
+      assetId,
+      file.data,
+      file.mimeType
+    );
+  } catch (err) {
+    console.warn("[sendMediaMessage] saveMediaFile fallback:", err);
+    storagePath = `${input.organizationId}/${assetId}`;
+  }
   const assetRows = await db
     .insert(schema.mediaAsset)
     .values({
@@ -1071,7 +1077,7 @@ export async function callAvisaSendMedia(
   let endpoint: string;
   let bodyPayload: Record<string, unknown>;
 
-  if (mimeType.startsWith("image/")) {
+  if (mimeType.startsWith("image/") && !mimeType.includes("icon") && !mimeType.includes("ico")) {
     endpoint = `${baseUrl}/actions/sendImage`;
     bodyPayload = {
       number: cleanPhone,

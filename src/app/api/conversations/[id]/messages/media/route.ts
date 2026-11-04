@@ -72,6 +72,7 @@ export const POST = withAuth(async (session, req: Request, ctx: Params) => {
     });
     return Response.json({ messageId: result.messageId }, { status: 201 });
   } catch (err) {
+    console.error("[media/route] Erro no envio de anexo:", err);
     if (err instanceof MediaValidationError) {
       return apiError(
         err.code === "too_large" ? 413 : 415,
@@ -80,8 +81,9 @@ export const POST = withAuth(async (session, req: Request, ctx: Params) => {
       );
     }
     if (err instanceof SendError) {
-      return apiError(SEND_ERROR_STATUS[err.code], err.code, err.message);
+      return apiError(SEND_ERROR_STATUS[err.code] || 422, err.code, err.message);
     }
-    throw err;
+    const message = err instanceof Error ? err.message : "Erro ao processar anexo";
+    return apiError(422, "upload_failed", message);
   }
 });

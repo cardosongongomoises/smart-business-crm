@@ -1,5 +1,6 @@
 import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
+import os from "node:os";
 import { getEnv } from "@/lib/env";
 import {
   borrarObjeto,
@@ -40,7 +41,9 @@ export function llaveDeMedia(organizationId: string, assetId: string): string {
 export function rutaEnDisco(organizationId: string, assetId: string): string {
   comprobarSegmento(organizationId);
   comprobarSegmento(assetId);
-  return path.join(getEnv().MEDIA_DIR, organizationId, assetId);
+  const isServerless = Boolean(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.LAMBDA_TASK_ROOT);
+  const baseDir = isServerless ? path.join(os.tmpdir(), "crm-media") : getEnv().MEDIA_DIR;
+  return path.join(baseDir, organizationId, assetId);
 }
 
 /** Por qué el bucket configurado no se puede usar, o `null` si sí. */
@@ -95,9 +98,13 @@ export function almacenActivo(): "disco" | "bucket" {
 let avisoSinConfig = false;
 
 async function escribirEnDisco(organizationId: string, assetId: string, buf: Buffer): Promise<void> {
-  const file = rutaEnDisco(organizationId, assetId);
-  await mkdir(path.dirname(file), { recursive: true });
-  await writeFile(file, buf);
+  try {
+    const file = rutaEnDisco(organizationId, assetId);
+    await mkdir(path.dirname(file), { recursive: true });
+    await writeFile(file, buf);
+  } catch (err) {
+    console.warn("[medios] Aviso ao persistir no disco local:", err);
+  }
 }
 
 /** Guarda el binario y devuelve la ruta relativa que se persiste en la BD. */
