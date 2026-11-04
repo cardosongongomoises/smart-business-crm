@@ -514,7 +514,11 @@ export async function sendText(input: {
                 cita?.message.waMessageId
               )
             )
-          : await callAvisaSend(target.recipient, text);
+          : await (async () => {
+              void callAvisaTyping(target.recipient, 2000);
+              await new Promise((r) => setTimeout(r, 1500));
+              return callAvisaSend(target.recipient, text);
+            })();
 
   const messageId = await persistOutbound({
     organizationId: input.organizationId,
@@ -598,30 +602,43 @@ export async function sendMediaMessage(input: {
   const asset = assetRows[0]!;
 
   try {
-    const waMediaId = await uploadGraphMedia(credentials!, file);
-    await db
-      .update(schema.mediaAsset)
-      .set({ waMediaId, updatedAt: new Date() })
-      .where(eq(schema.mediaAsset.id, assetId));
+    let waMessageId: string;
 
-    const mediaPayload: Record<string, unknown> = { id: waMediaId };
-    if (input.caption && kind !== "audio") mediaPayload.caption = input.caption;
-    if (kind === "audio" && audio.voice) mediaPayload.voice = true;
-    if (kind === "document" && file.fileName) {
-      mediaPayload.filename = file.fileName;
+    if (!credentials && target.recipient) {
+      // Avisa API path — envia o ficheiro diretamente sem passar pelo Graph
+      void callAvisaTyping(target.recipient, 1500);
+      await new Promise((r) => setTimeout(r, 1200));
+      waMessageId = await callAvisaSendMedia(
+        target.recipient,
+        file,
+        input.caption
+      );
+    } else {
+      const waMediaId = await uploadGraphMedia(credentials!, file);
+      await db
+        .update(schema.mediaAsset)
+        .set({ waMediaId, updatedAt: new Date() })
+        .where(eq(schema.mediaAsset.id, assetId));
+
+      const mediaPayload: Record<string, unknown> = { id: waMediaId };
+      if (input.caption && kind !== "audio") mediaPayload.caption = input.caption;
+      if (kind === "audio" && audio.voice) mediaPayload.voice = true;
+      if (kind === "document" && file.fileName) {
+        mediaPayload.filename = file.fileName;
+      }
+      waMessageId = await callGraphSend(
+        credentials!,
+        conCita(
+          {
+            messaging_product: "whatsapp",
+            ...target.destinatario,
+            type: kind,
+            [kind]: mediaPayload,
+          },
+          cita?.message.waMessageId
+        )
+      );
     }
-    const waMessageId = await callGraphSend(
-      credentials!,
-      conCita(
-        {
-          messaging_product: "whatsapp",
-          ...target.destinatario,
-          type: kind,
-          [kind]: mediaPayload,
-        },
-        cita?.message.waMessageId
-      )
-    );
 
     const messageId = await persistOutbound({
       organizationId: input.organizationId,
@@ -629,7 +646,7 @@ export async function sendMediaMessage(input: {
       waMessageId,
       type: kind,
       text: null,
-      status: "pending",
+      status: "sent",
       origin: "operator",
       mediaAssetId: assetId,
       media: asset,
@@ -995,4 +1012,113 @@ export async function callAvisaSend(
     throw new SendError("meta_error", `Erro Avisa API: ${userMsg}`);
   }
   return `avisa_${Date.now()}`;
+}
+
+/** Simula indicador de digitação via Avisa API (fire-and-forget) */
+export async function callAvisaTyping(
+  recipient: string,
+  durationMs = 2000
+): Promise<void> {
+  try {
+    const token = process.env.AVISA_API_TOKEN || "du0RvN9OZ9VJImoXQSspqclRC81Ff2eOZcs0UnrbXEv9eJcdLGWHyOMTy2qy";
+    const baseUrl = (process.env.AVISA_API_URL || "https://www.avisaapi.com.br/api").replace(/\/+$/, "");
+    let cleanPhone = recipient.replace(/\D/g, "");
+    if (cleanPhone.length === 9 && cleanPhone.startsWith("9")) {
+      cleanPhone = `244${cleanPhone}`;
+    }
+    // Tenta endpoint de presença/typing (Avisa API)
+    await fetch(`${baseUrl}/actions/sendPresence`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        number: cleanPhone,
+        presence: "composing",
+        delay: durationMs,
+      }),
+    });
+  } catch {
+    // fire-and-forget: falha silenciosa para não bloquear o envio real
+  }
+}
+
+/** Envia ficheiro (imagem/vídeo/documento/áudio) via Avisa API em base64 */
+export async function callAvisaSendMedia(
+  recipient: string,
+  file: { data: Buffer; mimeType: string; fileName?: string },
+  caption?: string
+): Promise<string> {
+  const token = process.env.AVISA_API_TOKEN || "du0RvN9OZ9VJImoXQSspqclRC81Ff2eOZcs0UnrbXEv9eJcdLGWHyOMTy2qy";
+  const baseUrl = (process.env.AVISA_API_URL || "https://www.avisaapi.com.br/api").replace(/\/+$/, "");
+  let cleanPhone = recipient.replace(/\D/g, "");
+
+  if (cleanPhone.length === 9 && cleanPhone.startsWith("9")) {
+    cleanPhone = `244${cleanPhone}`;
+  }
+  if (cleanPhone.length > 13 && (cleanPhone.startsWith("12") || cleanPhone.startsWith("20"))) {
+    throw new SendError(
+      "meta_error",
+      `O número "${cleanPhone}" é um identificador técnico do WhatsApp (LID). Edite o contacto para colocar o número correto (+244...).`
+    );
+  }
+
+  const base64 = file.data.toString("base64");
+  const mimeType = file.mimeType;
+  const fileName = file.fileName ?? "ficheiro";
+
+  let endpoint: string;
+  let bodyPayload: Record<string, unknown>;
+
+  if (mimeType.startsWith("image/")) {
+    endpoint = `${baseUrl}/actions/sendImage`;
+    bodyPayload = {
+      number: cleanPhone,
+      image: base64,
+      caption: caption ?? "",
+    };
+  } else if (mimeType.startsWith("audio/")) {
+    endpoint = `${baseUrl}/actions/sendAudio`;
+    bodyPayload = {
+      number: cleanPhone,
+      audio: base64,
+    };
+  } else {
+    // Documentos, PDFs, folhas de cálculo, vídeos, arquivos ZIP, qualquer outro ficheiro
+    endpoint = `${baseUrl}/actions/sendDocument`;
+    bodyPayload = {
+      number: cleanPhone,
+      document: base64,
+      fileName,
+      caption: caption ?? "",
+    };
+  }
+
+  const res = await fetch(endpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(bodyPayload),
+  });
+
+  if (!res.ok) {
+    const errorText = await res.text();
+    let userMsg = errorText;
+    if (errorText.includes("<html") || res.status >= 500) {
+      userMsg = `Avisa API erro ${res.status} ao enviar ficheiro. Verifique se o número (+${cleanPhone}) tem WhatsApp ativo.`;
+    } else {
+      try {
+        const parsed = JSON.parse(errorText);
+        userMsg = parsed.message || parsed.error?.error || parsed.error || errorText;
+      } catch {
+        // manter errorText
+      }
+    }
+    throw new SendError("meta_error", `Erro Avisa API (ficheiro): ${userMsg}`);
+  }
+
+  return `avisa_media_${Date.now()}`;
 }
