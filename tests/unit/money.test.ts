@@ -99,6 +99,12 @@ describe("catálogo de monedas", () => {
   });
 
   it("la predeterminada existe y ningún grupo del selector queda vacío", () => {
+    expect(DEFAULT_CURRENCY).toBe("AOA");
+    expect(CURRENCY_OPTIONS.find((c) => c.code === "AOA")).toMatchObject({
+      name: "Kwanza angolano",
+      where: "Angola",
+      group: "africa",
+    });
     expect(isCurrency(DEFAULT_CURRENCY)).toBe(true);
     for (const g of CURRENCY_GROUPS) {
       expect(CURRENCY_OPTIONS.some((c) => c.group === g.id), g.id).toBe(true);

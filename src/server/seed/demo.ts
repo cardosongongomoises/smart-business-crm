@@ -5,9 +5,9 @@ import { newId } from "@/lib/db/ids";
 import { RESPUESTAS_DEMO } from "@/server/quick-replies";
 
 /**
- * Negocio de demostración "Ferretería El Martillo" (FR-075).
+ * Demonstração Agentes Digital: contactos e conversas fictícios para TESTE.
  * Idempotente: borra los datos demo previos de la organización (scoped por
- * los teléfonos demo) y reinserta. El KB queda lleno EXCEPTO garantías y
+ * los identificadores de teste demo) y reinserta. El KB queda lleno EXCEPTO garantías y
  * devoluciones — hueco INTENCIONAL para que el Laboratorio encuentre algo
  * real en la primera corrida.
  */
@@ -17,131 +17,89 @@ type Db = ReturnType<typeof getDb>;
 const HOURS = 60 * 60 * 1000;
 
 const DEMO_CONTACTS: {
-  phone: string;
+  identity: string;
+  phone: string | null;
   name: string;
   notes?: string;
   stage: string;
   thread: { dir: "in" | "out"; text: string; hoursAgo: number; ai?: boolean }[];
 }[] = [
   {
-    phone: "5215612340001",
-    name: "María Fernanda López",
-    stage: "Interesado",
-    notes: "Remodela su cocina; busca herramienta eléctrica.",
+    identity: "demo.agentesdigital.001",
+    phone: null,
+    name: "Marta Silva (teste)",
+    stage: "Diagnóstico concluído",
+    notes: "Exemplo fictício: quer responder mais depressa aos contactos de WhatsApp.",
     thread: [
-      { dir: "in", text: "Hola, ¿tienen taladros inalámbricos?", hoursAgo: 5 },
-      { dir: "out", text: "¡Hola María! Sí: tenemos el Truper 20V en $1,899 MXN y el DeWalt 20V MAX en $3,450 MXN, ambos con batería incluida.", hoursAgo: 5, ai: true },
-      { dir: "in", text: "¿El Truper incluye brocas?", hoursAgo: 4 },
-      { dir: "out", text: "Incluye un juego básico de 5 brocas para concreto y madera. Si necesitas más, el juego de 30 piezas está en $349 MXN.", hoursAgo: 4, ai: true },
-      { dir: "in", text: "Perfecto, me interesa el Truper. ¿Me lo apartan?", hoursAgo: 3 },
+      { dir: "in", text: "Bom dia. Recebo muitas mensagens e perco alguns pedidos.", hoursAgo: 5 },
+      { dir: "out", text: "Olá, Marta. Em que canal recebe mais contactos e como os acompanha hoje?", hoursAgo: 5, ai: true },
+      { dir: "in", text: "Principalmente no WhatsApp. Somos uma equipa pequena.", hoursAgo: 4 },
+      { dir: "out", text: "Entendi. Vou registar o cenário e indicar a opção mais adequada depois de perceber o fluxo atual.", hoursAgo: 4, ai: true },
     ],
   },
   {
-    phone: "5215612340002",
-    name: "Carlos Ramírez",
-    stage: "En conversación",
+    identity: "demo.agentesdigital.002",
+    phone: null,
+    name: "Paulo Manuel (teste)",
+    stage: "Oferta recomendada",
+    notes: "Exemplo fictício para demonstrar recomendação com preços em Kz.",
     thread: [
-      { dir: "in", text: "Buenas, ¿cuánto el bulto de cemento gris?", hoursAgo: 8 },
-      { dir: "out", text: "¡Hola Carlos! El bulto de 50 kg está en $245 MXN. Por 10 o más te queda en $232 MXN cada uno.", hoursAgo: 8, ai: true },
-      { dir: "in", text: "Ocupo 15 bultos, ¿hacen entrega en Naucalpan?", hoursAgo: 7 },
-      { dir: "out", text: "Sí, entregamos en toda la zona. El flete es de $150 MXN y llega el mismo día si confirmas antes de la 1 pm. Total: 15 × $232 + $150 = $3,630 MXN.", hoursAgo: 7, ai: true },
+      { dir: "in", text: "Quanto custa o AUTOMATE PRO?", hoursAgo: 8 },
+      { dir: "out", text: "A implementação é 300.000 Kz e a mensalidade é 65.000 Kz. Inclui quatro horas mensais.", hoursAgo: 8, ai: true },
+      { dir: "in", text: "Quero avançar. Como pago?", hoursAgo: 7 },
+      { dir: "out", text: "Vou pedir à equipa que confirme os métodos de pagamento e os próximos passos consigo.", hoursAgo: 7, ai: true },
     ],
   },
   {
-    phone: "5215612340003",
-    name: "Lupita Hernández",
-    stage: "Cliente",
-    notes: "Compra recurrente para su taller de carpintería.",
+    identity: "demo.agentesdigital.003",
+    phone: null,
+    name: "Helena Gomes (teste)",
+    stage: "Proposta enviada",
+    notes: "Exemplo fictício; condições não definidas ficam pendentes de validação humana.",
     thread: [
-      { dir: "in", text: "Hola de nuevo, ya me quedé sin barniz 😅", hoursAgo: 30 },
-      { dir: "out", text: "¡Hola Lupita! Te apartamos 2 litros del barniz marino que siempre llevas: $520 MXN. ¿Te los mando con tu pedido de lijas?", hoursAgo: 30, ai: true },
-      { dir: "in", text: "Sí porfa, junto todo en un solo envío", hoursAgo: 29 },
-      { dir: "out", text: "Listo, sale hoy mismo. Total: $780 MXN con las lijas. ¡Gracias por tu compra!", hoursAgo: 29, ai: true },
+      { dir: "in", text: "Preciso de uma solução para melhorar a presença digital da empresa.", hoursAgo: 12 },
+      { dir: "out", text: "Posso ajudar. O que pretende melhorar primeiro: a apresentação da empresa, a captação de contactos ou o atendimento?", hoursAgo: 12, ai: true },
+      { dir: "in", text: "A apresentação e os pedidos de contacto.", hoursAgo: 11 },
+      { dir: "out", text: "Registei as prioridades e vou encaminhar uma proposta para validação da equipa.", hoursAgo: 11, ai: true },
     ],
   },
   {
-    phone: "5215612340004",
-    name: "Jorge Castillo",
-    stage: "Nuevo",
+    identity: "demo.agentesdigital.004",
+    phone: null,
+    name: "Carlos António (teste)",
+    stage: "Qualificação",
     thread: [
-      { dir: "in", text: "ke onda, tienen pintura vinilica blanka de 19 lts?", hoursAgo: 2 },
-      { dir: "out", text: "¡Qué tal Jorge! Sí: la cubeta de 19 L de vinílica blanca está en $1,150 MXN (rinde ~90 m²). ¿La quieres mate o satinada?", hoursAgo: 2, ai: true },
-    ],
-  },
-  {
-    phone: "5215612340005",
-    name: "Ana Sofía Torres",
-    stage: "Interesado",
-    thread: [
-      { dir: "in", text: "Hola, vi su anuncio. ¿Manejan material eléctrico?", hoursAgo: 12 },
-      { dir: "out", text: "¡Hola Ana! Sí: cable, contactos, pastillas y centros de carga. ¿Qué necesitas para tu proyecto?", hoursAgo: 12, ai: true },
-      { dir: "in", text: "Necesito 100 m de cable calibre 12 y 10 contactos dobles", hoursAgo: 11 },
-      { dir: "out", text: "Te cotizo: rollo de 100 m cal. 12 THW $1,890 MXN + 10 contactos dobles Volteck $35 c/u = $2,240 MXN. ¿Te lo preparo?", hoursAgo: 11, ai: true },
-      { dir: "in", text: "Déjame confirmar con el electricista y te digo", hoursAgo: 10 },
-    ],
-  },
-  {
-    phone: "5215612340006",
-    name: "Roberto Mendoza",
-    stage: "Perdido",
-    notes: "Buscaba precio de mayoreo que no podemos igualar.",
-    thread: [
-      { dir: "in", text: "¿A cómo la tonelada de varilla 3/8?", hoursAgo: 96 },
-      { dir: "out", text: "Hola Roberto: la tonelada de varilla 3/8 está en $17,800 MXN. ¿Para cuándo la necesitas?", hoursAgo: 96, ai: true },
-      { dir: "in", text: "Uy no, en otro lado me la dan en 16", hoursAgo: 95 },
-      { dir: "out", text: "Entiendo. Ese precio no lo alcanzamos, pero si tu proveedor queda mal aquí estamos con entrega el mismo día. ¡Éxito con la obra!", hoursAgo: 95, ai: true },
-    ],
-  },
-  {
-    phone: "5215612340007",
-    name: "Paty Domínguez",
-    stage: "En conversación",
-    thread: [
-      { dir: "in", text: "Hola, ¿tienen impermeabilizante? Se me llueve la azotea 😩", hoursAgo: 26 },
-      { dir: "out", text: "¡Hola Paty! Claro: el impermeabilizante acrílico 5 años (cubeta 19 L) está en $1,680 MXN, cubre ~40 m². ¿De cuántos metros es tu azotea?", hoursAgo: 26, ai: true },
-      { dir: "in", text: "Como de 60 metros, ¿me alcanzaría con dos?", hoursAgo: 25 },
-    ],
-  },
-  {
-    phone: "5215612340008",
-    name: "Don Chuy Aguilar",
-    stage: "Cliente",
-    thread: [
-      { dir: "in", text: "Joven, mándeme la lista de lo de siempre para la cuadrilla", hoursAgo: 50 },
-      { dir: "out", text: "¡Con gusto Don Chuy! Su pedido habitual: 5 bultos de cemento, 2 de mortero, 1 rollo de alambre recocido y 3 kg de clavo. Total: $1,585 MXN. ¿Se lo mandamos a la obra de Av. Juárez?", hoursAgo: 50, ai: true },
-      { dir: "in", text: "Ándele, ahí mismo. Se paga contra entrega como siempre", hoursAgo: 49 },
-      { dir: "out", text: "Perfecto, sale en la camioneta de las 4. ¡Gracias Don Chuy!", hoursAgo: 49, ai: true },
+      { dir: "in", text: "Queria saber se conseguem integrar com o sistema que usamos.", hoursAgo: 2 },
+      { dir: "out", text: "Qual é o sistema e que informação precisa de circular entre as ferramentas?", hoursAgo: 2, ai: true },
     ],
   },
 ];
-
 const DEMO_KB: { kind: "qa" | "block"; question?: string; answer?: string; content?: string }[] = [
   {
     kind: "block",
-    content:
-      "Ferretería El Martillo — ferretería familiar con 20 años en la colonia Centro. Vendemos herramienta manual y eléctrica, material de construcción, pintura, plomería y material eléctrico. Atendemos a público general, maestros de obra y talleres.",
+    content: "Agentes Digital ajuda empresas a melhorar a presença digital, automatizar tarefas e organizar o atendimento. Este conjunto de contactos e conversas é inteiramente fictício e serve apenas para demonstração em TESTE.",
   },
-  { kind: "qa", question: "¿Cuál es el horario?", answer: "Lunes a sábado de 8:00 a 19:00 y domingos de 9:00 a 14:00." },
-  { kind: "qa", question: "¿Dónde están ubicados?", answer: "Av. Hidalgo 245, colonia Centro. Hay estacionamiento gratuito para clientes en la calle lateral." },
-  { kind: "qa", question: "¿Hacen envíos a domicilio?", answer: "Sí: entrega el mismo día en la zona si confirmas antes de la 1 pm. Flete local $150 MXN; gratis en compras mayores a $3,000 MXN." },
-  { kind: "qa", question: "¿Qué métodos de pago aceptan?", answer: "Efectivo, tarjeta (crédito/débito), transferencia SPEI y pago contra entrega en pedidos locales." },
-  { kind: "qa", question: "¿Dan factura?", answer: "Sí, facturamos el mismo día. Envíanos tu constancia de situación fiscal y el ticket de compra." },
-  { kind: "qa", question: "¿Tienen precios de mayoreo?", answer: "Sí: en cemento, mortero y varilla hay precio especial a partir de 10 unidades; en pintura a partir de 5 cubetas. Pide tu cotización por WhatsApp." },
-  { kind: "qa", question: "¿Qué marcas de herramienta manejan?", answer: "Truper, Pretul, DeWalt, Makita y Ryobi en eléctrica; Volteck y Condulac en material eléctrico; Comex y Berel en pintura." },
-  // HUECO INTENCIONAL: nada sobre garantías ni devoluciones (lo encuentra el Laboratorio).
+  {
+    kind: "block",
+    content: "Ofertas (implementação / mensalidade): PRESENÇA 125.000 / 20.000 Kz; PROFISSIONAL 250.000 / 50.000 Kz; AUTORIDADE 450.000 / 85.000 Kz; DOMÍNIO IA 700.000 / 150.000 Kz; AUTOMATE PRO 300.000 / 65.000 Kz. AUTOMATE PRO inclui quatro horas mensais.",
+  },
+  { kind: "qa", question: "Qual é o preço do AUTOMATE PRO?", answer: "A implementação custa 300.000 Kz e a mensalidade é 65.000 Kz. Inclui quatro horas mensais." },
+  { kind: "qa", question: "Como escolho uma oferta?", answer: "A equipa começa por compreender as necessidades e recomenda a opção adequada. Pode apresentar uma segunda alternativa quando houver dúvida real de adequação." },
+  { kind: "qa", question: "Posso marcar uma reunião?", answer: "O processo comercial é feito diretamente por mensagem, sem agendamento." },
+  { kind: "qa", question: "Que métodos de pagamento aceitam?", answer: "Os métodos aceites ainda precisam de confirmação pela equipa. Não envie dados de pagamento antes de receber instruções oficiais." },
+  { kind: "qa", question: "Quais são os prazos, garantias e condições de reembolso?", answer: "Essas condições não estão definidas nesta demonstração. Vou encaminhar a pergunta para a equipa." },
 ];
-
 export async function seedDemo(
   db: Db,
   organizationId: string
 ): Promise<{ contacts: number; kbEntries: number }> {
-  const demoPhones = DEMO_CONTACTS.map((c) => c.phone);
+  const demoIdentities = DEMO_CONTACTS.map((c) => c.identity);
 
   // --- Idempotencia: limpiar datos demo previos (orden inverso de FKs) ---
   const prevContacts = await db
     .select({ id: schema.contact.id })
     .from(schema.contact)
-    .where(inArray(schema.contact.phone, demoPhones));
+    .where(inArray(schema.contact.waIdentity, demoIdentities));
   const prevIds = prevContacts.map((c) => c.id);
   if (prevIds.length > 0) {
     const prevConvs = await db
@@ -189,7 +147,7 @@ export async function seedDemo(
       id: contactId,
       organizationId,
       phone: demo.phone,
-      waIdentity: demo.phone,
+      waIdentity: demo.identity,
       name: demo.name,
       notes: demo.notes ?? null,
     });
@@ -207,6 +165,7 @@ export async function seedDemo(
       id: conversationId,
       organizationId,
       contactId,
+      isTest: true,
       lastInboundAt: new Date(now - lastInbound * HOURS),
       lastMessageAt: new Date(now - lastMessage * HOURS),
       unreadCount: demo.thread[demo.thread.length - 1]?.dir === "in" ? 1 : 0,
@@ -256,13 +215,11 @@ export async function seedDemo(
   await db
     .update(schema.agentProfile)
     .set({
-      name: "Martillito",
-      tone: "Cercano y práctico, de ferretería de confianza. Tutea al cliente.",
-      instructions:
-        "Ayuda a cotizar y cerrar ventas. Da precios en MXN solo si están en el conocimiento. Si piden mayoreo, menciona los mínimos. Nunca inventes existencias.",
-      escalationRules:
-        "Escala a un humano si piden factura con datos fiscales complejos, si hay una queja de producto dañado o si lo piden explícitamente.",
-      greeting: "¡Hola! Soy Martillito, el asistente de Ferretería El Martillo 🔨",
+      name: "Assistente Agentes Digital",
+      tone: "Profissional, claro e próximo; português de Angola.",
+      instructions: "Atende em modo TESTE. Diagnostica primeiro, recomenda uma oferta com base nas necessidades e não marca reuniões. Não inventa condições comerciais nem confirma pagamentos. Encaminha comprovativos e dúvidas não documentadas para uma pessoa.",
+      escalationRules: "Escala para uma pessoa se o cliente o pedir, apresentar uma reclamação ou perguntar por uma condição comercial não documentada.",
+      greeting: "Olá! Sou o assistente da Agentes Digital. Como posso ajudar?",
       updatedAt: new Date(),
     })
     .where(eq(schema.agentProfile.organizationId, organizationId));
@@ -288,10 +245,10 @@ export async function seedDemo(
       veredicto: "verde",
       hallazgos: [],
       transcript: [
-        { role: "cliente", text: "¿Tienen taladros inalámbricos disponibles?" },
-        { role: "agente", text: "¡Sí! Truper 20V en $1,899 MXN y DeWalt 20V MAX en $3,450 MXN." },
-        { role: "cliente", text: "Me convence, lo compro. ¿Cómo pago?" },
-        { role: "agente", text: "Aceptamos efectivo, tarjeta, SPEI o contra entrega. Te lo aparto ahora mismo." },
+        { role: "cliente", text: "Quero melhorar o atendimento pelo WhatsApp. Quanto custa o AUTOMATE PRO?" },
+        { role: "agente", text: "A implementação custa 300.000 Kz e a mensalidade é 65.000 Kz. Inclui quatro horas mensais." },
+        { role: "cliente", text: "Quero avançar. Como pago?" },
+        { role: "agente", text: "Vou encaminhar o pedido para a equipa confirmar os métodos de pagamento e os próximos passos." },
       ],
     },
     {
@@ -299,43 +256,26 @@ export async function seedDemo(
       veredicto: "verde",
       hallazgos: [],
       transcript: [
-        { role: "cliente", text: "¿Qué precio tiene el martillo?" },
-        { role: "agente", text: "Tenemos varios; el más pedido es el Truper de uña. ¿Te confirmo precio y existencia con el equipo?" },
+        { role: "cliente", text: "Quais são os preços?" },
+        { role: "agente", text: "A implementação e a mensalidade variam por oferta. O que pretende resolver primeiro no seu negócio?" },
       ],
     },
     {
       persona: "cliente_enojado",
       veredicto: "amarillo",
-      hallazgos: [
-        {
-          tipo: "tono",
-          evidencia:
-            "El agente respondió correcto pero algo frío ante 'es una porquería'; faltó empatizar antes de escalar.",
-        },
-      ],
+      hallazgos: [],
       transcript: [
-        { role: "cliente", text: "Compré una lijadora la semana pasada y ya no prende, es una porquería" },
-        { role: "agente", text: "Lamento el problema. Paso tu caso a un compañero del equipo para resolverlo." },
+        { role: "cliente", text: "Estou insatisfeito com o serviço." },
+        { role: "agente", text: "Lamento a situação. Vou encaminhar a conversa para uma pessoa da equipa acompanhar o seu caso." },
       ],
     },
     {
       persona: "fuera_de_kb",
-      veredicto: "rojo",
-      hallazgos: [
-        {
-          tipo: "fuera_de_kb",
-          evidencia:
-            "El cliente preguntó por garantías y devoluciones y el conocimiento no lo cubre.",
-          sugerencia: {
-            pregunta: "¿Cuál es la política de garantías y devoluciones?",
-            respuesta:
-              "Aceptamos devoluciones dentro de los 30 días con ticket de compra; la garantía depende del fabricante.",
-          },
-        },
-      ],
+      veredicto: "verde",
+      hallazgos: [],
       transcript: [
-        { role: "cliente", text: "¿Cuál es su política de garantías y devoluciones?" },
-        { role: "agente", text: "Déjame confirmarlo con el equipo y te digo en un momento." },
+        { role: "cliente", text: "Qual é a política de reembolso?" },
+        { role: "agente", text: "Essa condição não está documentada. Vou confirmar com a equipa antes de lhe responder." },
       ],
     },
     {
@@ -343,8 +283,8 @@ export async function seedDemo(
       veredicto: "verde",
       hallazgos: [],
       transcript: [
-        { role: "cliente", text: "Prefiero que me atienda una persona, quiero hablar con un humano" },
-        { role: "agente", text: "(handoff: la conversación pasó a atención humana)" },
+        { role: "cliente", text: "Prefiro falar com uma pessoa." },
+        { role: "agente", text: "Claro. Vou encaminhar a conversa para a equipa." },
       ],
     },
     {
@@ -352,12 +292,11 @@ export async function seedDemo(
       veredicto: "verde",
       hallazgos: [],
       transcript: [
-        { role: "cliente", text: "ke onda, si benden pintura?" },
-        { role: "agente", text: "¡Claro! Manejamos Comex y Berel. ¿Qué necesitas pintar?" },
+        { role: "cliente", text: "Ya, quero pôr o atendimento a andar melhor." },
+        { role: "agente", text: "Percebi. Como é que a sua equipa recebe e acompanha os pedidos hoje?" },
       ],
     },
-  ];
-  for (const c of exampleCases) {
+  ];  for (const c of exampleCases) {
     await db.insert(schema.agentTestCase).values({
       id: newId("testCase"),
       organizationId,

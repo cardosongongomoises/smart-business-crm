@@ -24,6 +24,11 @@ type KbEntry = typeof schema.kbEntry.$inferSelect;
  */
 export type BotLlm = { path: string; model: string } | null;
 
+const AGENTES_DIGITAL_OFFERS = [
+  "Ofertas Agentes Digital (implementação / mensalidade, em Kz): PRESENÇA 125.000 / 20.000; PROFISSIONAL 250.000 / 50.000; AUTORIDADE 450.000 / 85.000; DOMÍNIO IA 700.000 / 150.000; AUTOMATE PRO 300.000 / 65.000. AUTOMATE PRO inclui quatro horas mensais.",
+  "Diagnosticar a necessidade antes de recomendar. Recomendar uma oferta; mostrar uma segunda apenas se houver dúvida real de adequação. Não inventar funcionalidades, preços ou condições comerciais. Prazos, garantias, reembolsos, custos de terceiros, duração contratual e métodos de pagamento não definidos devem ser confirmados por uma pessoa. Nunca confirmar pagamento nem declarar negócio ganho; encaminhar comprovativos para verificação humana.",
+].join("\n");
+
 export function serializeBotProfile(profile: AgentProfile, kb: KbEntry[], llm: BotLlm = null) {
   return {
     profile: {
@@ -35,7 +40,7 @@ export function serializeBotProfile(profile: AgentProfile, kb: KbEntry[], llm: B
       role: rolDe(profile.role).clave,
       tools: herramientasEfectivas(profile.tools),
     },
-    kb: renderKb(kb),
+    kb: `${renderKb(kb)}\n\n${AGENTES_DIGITAL_OFFERS}`,
     resources: [] as { label: string; url: string }[],
     llm,
   };

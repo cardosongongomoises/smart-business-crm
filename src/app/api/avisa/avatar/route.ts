@@ -3,9 +3,7 @@ import { getDb, schema } from "@/lib/db";
 import { like } from "drizzle-orm";
 import { upsertFicha } from "@/server/bot/ficha";
 
-const AVISA_TOKEN =
-  process.env.AVISA_API_TOKEN ||
-  "du0RvN9OZ9VJImoXQSspqclRC81Ff2eOZcs0UnrbXEv9eJcdLGWHyOMTy2qy";
+const AVISA_TOKEN = process.env.AVISA_API_TOKEN;
 const AVISA_URL = (
   process.env.AVISA_API_URL || "https://www.avisaapi.com.br/api"
 ).replace(/\/+$/, "");
@@ -13,6 +11,7 @@ const AVISA_URL = (
 export const dynamic = "force-dynamic";
 
 export async function GET(req: Request) {
+  if (!AVISA_TOKEN) return NextResponse.json({ error: "Avisa API não configurada" }, { status: 503 });
   try {
     const { searchParams } = new URL(req.url);
     const rawPhone = searchParams.get("phone") || searchParams.get("number") || "";

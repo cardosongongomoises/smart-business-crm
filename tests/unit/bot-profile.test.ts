@@ -72,7 +72,7 @@ describe("034 — role y tools en el perfil", () => {
   it("un rol que ya no existe cae al Calificador; claves desconocidas se ignoran", () => {
     const out = serializeBotProfile(profileRow({ role: "vendedor", tools: ["agendar", "volar"] }), []);
     expect(out.profile.role).toBe("calificador");
-    expect(out.profile.tools).toEqual(["agendar", "escalar"]);
+    expect(out.profile.tools).toEqual(["escalar"]);
   });
 });
 
@@ -89,9 +89,9 @@ describe("serializeBotProfile", () => {
         escalationRules: "Urgencias de dolor → humano.",
         greeting: "¡Hola! Soy Sofi 🦷",
         role: "calificador",
-        tools: ["ficha", "etapa", "agendar", "reprogramar", "salida", "escalar"],
+        tools: ["ficha", "etapa", "salida", "escalar"],
       },
-      kb: "P: ¿Cuánto cuesta?\nR: $800.",
+      kb: expect.stringContaining("P: ¿Cuánto cuesta?\nR: $800."),
       resources: [],
       llm: null,
     });
@@ -114,7 +114,9 @@ describe("serializeBotProfile", () => {
   });
 
   it("KB vacío → render canónico '(knowledge base vacío)'", () => {
-    expect(serializeBotProfile(profileRow(), []).kb).toBe("(knowledge base vacío)");
+    const kb = serializeBotProfile(profileRow(), []).kb;
+    expect(kb).toContain("(knowledge base vacío)");
+    expect(kb).toContain("PRESENÇA 125.000 / 20.000");
   });
 
   it("enabled NO viaja: gobierna solo la IA in-process", () => {
@@ -131,7 +133,8 @@ describe("serializeBotProfile", () => {
   it("bloques del KB van tal cual, mezclados con P/R en orden", () => {
     const block: KbEntry = { ...qa("x", "y"), kind: "block", question: null, answer: null, content: "Horario: L-V 9-18." };
     const out = serializeBotProfile(profileRow(), [qa("¿Dónde están?", "En Querétaro."), block]);
-    expect(out.kb).toBe("P: ¿Dónde están?\nR: En Querétaro.\n\nHorario: L-V 9-18.");
+    expect(out.kb).toContain("P: ¿Dónde están?\nR: En Querétaro.\n\nHorario: L-V 9-18.");
+    expect(out.kb).toContain("AUTOMATE PRO inclui quatro horas mensais.");
   });
 });
 
@@ -170,7 +173,8 @@ describe("GET /api/bot/profile (ruta, DB fake)", () => {
     expect(res.status).toBe(200);
     const body = (await res.json()) as ReturnType<typeof serializeBotProfile>;
     expect(body.profile.name).toBe("Sofi");
-    expect(body.kb).toBe("P: ¿Cuánto?\nR: $800.");
+    expect(body.kb).toContain("P: ¿Cuánto?\nR: $800.");
+    expect(body.kb).toContain("PRESENÇA 125.000 / 20.000");
     expect(body.resources).toEqual([]);
   });
 });

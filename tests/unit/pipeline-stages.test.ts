@@ -20,7 +20,7 @@ const LEGACY_STAGES: ExistingPipelineStage[] = [
 ];
 
 describe("etapas do workflow WhatsApp", () => {
-  it("espelha os 24 estados do fluxo com rótulos em português e responsáveis", () => {
+  it("espelha o funil de venda direta, sem etapas de reunião", () => {
     expect(WORKFLOW_PIPELINE_STAGES.map((stage) => stage.name)).toEqual([
       "Identificado",
       "Abordado",
@@ -30,11 +30,10 @@ describe("etapas do workflow WhatsApp", () => {
       "Qualificado",
       "Sem resposta",
       "Nutrição",
-      "Reunião agendada",
-      "No-show",
-      "Demonstração realizada",
+      "Diagnóstico concluído",
+      "Oferta recomendada",
       "Proposta enviada",
-      "Pronto para fechar",
+      "Dúvidas e decisão",
       "Aguarda pagamento",
       "Ganho",
       "Onboarding",
@@ -47,13 +46,14 @@ describe("etapas do workflow WhatsApp", () => {
       "Descartado",
       "Perdido",
     ]);
-    expect(new Set(WORKFLOW_PIPELINE_STAGES.map((stage) => stage.position)).size).toBe(24);
+    expect(new Set(WORKFLOW_PIPELINE_STAGES.map((stage) => stage.position)).size).toBe(23);
     expect(WORKFLOW_PIPELINE_STAGES.every((stage) => stage.owner.length > 0)).toBe(true);
   });
 
   it("apresenta os agentes do n8n e não inventa um agente para etapas personalizadas", () => {
     expect(workflowOwnerForStage("Nutrição")).toBe("Ana (SDR)");
-    expect(workflowOwnerForStage("Reunião agendada")).toBe("Rafael (Closer)");
+    expect(workflowOwnerForStage("Diagnóstico concluído")).toBe("Paulo (Qualificação)");
+    expect(workflowOwnerForStage("Oferta recomendada")).toBe("Rafael (Fecho)");
     expect(workflowOwnerForStage("Aguarda pagamento")).toBe("Bruno (Financeiro / CAC)");
     expect(workflowOwnerForStage("Ganho")).toBe("Lúcia (Onboarding)");
     expect(workflowOwnerForStage("Go-live")).toBe("Sofia (Customer Success)");
@@ -78,16 +78,16 @@ describe("etapas do workflow WhatsApp", () => {
         { id: "stage-new", name: "Identificado", position: 0 },
         { id: "stage-conversation", name: "Respondeu", position: 2 },
         { id: "stage-interested", name: "Qualificação", position: 4 },
-        { id: "stage-client", name: "Ganho", position: 14 },
-        { id: "stage-lost", name: "Perdido", position: 23 },
+        { id: "stage-client", name: "Ganho", position: 13 },
+        { id: "stage-lost", name: "Perdido", position: 22 },
         {
           id: "stage-custom",
           name: "Acompanhamento especial",
-          position: 24,
+          position: 23,
         },
       ])
     );
-    expect(plan?.inserts).toHaveLength(19);
+    expect(plan?.inserts).toHaveLength(18);
     expect(plan?.updates.map((update) => update.id)).toContain("stage-custom");
     expect(plan?.updates.some((update) => update.id === "stage-new")).toBe(true);
   });
@@ -119,7 +119,7 @@ describe("etapas do workflow WhatsApp", () => {
     expect(plan?.inserts).toContainEqual({
       name: "Ganho",
       kind: "won",
-      position: 14,
+      position: 13,
     });
   });
 });

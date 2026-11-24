@@ -112,8 +112,8 @@ export async function borrarRespuesta(organizationId: string, id: string): Promi
 
 /** Las cuatro de la demo (D6). Idempotente: no pisa ni duplica. */
 export const RESPUESTAS_DEMO: { atajo: string; texto: string }[] = [
-  { atajo: "hola", texto: "Olá, {nombre}! Agradecemos a sua mensagem. Em que podemos ajudar?" },
-  { atajo: "horario", texto: "Estamos abertos de segunda a sábado, das 8:00 às 19:00, e aos domingos, das 9:00 às 14:00." },
-  { atajo: "envio", texto: "Fazemos entregas na cidade no mesmo dia se pedir antes das 14:00. Fora da cidade, em 2 a 4 dias." },
-  { atajo: "pago", texto: "Aceitamos transferência, cartão e pagamento em dinheiro na loja. Envio os dados da conta se quiser pagar por transferência." },
+  { atajo: "ola", texto: "Olá, {nome}! Obrigado por contactar a Agentes Digital. O que pretende melhorar no seu negócio?" },
+  { atajo: "ofertas", texto: "Posso indicar a oferta adequada depois de compreender as suas necessidades e o processo atual." },
+  { atajo: "seguimento", texto: "Registei o seu pedido. Vou encaminhá-lo para a equipa continuar o atendimento por mensagem." },
+  { atajo: "pagamento", texto: "A equipa vai confirmar os métodos de pagamento aceites e enviar instruções oficiais." },
 ];

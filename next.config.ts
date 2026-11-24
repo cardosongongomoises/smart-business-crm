@@ -8,6 +8,9 @@ const { version } = JSON.parse(
 ) as { version: string };
 
 const nextConfig: NextConfig = {
+  // Keep Next's trace boundary inside this checkout even when a parent
+  // directory contains another user's lockfile (common in agent workspaces).
+  outputFileTracingRoot: process.cwd(),
   // standalone es para la imagen Docker (Linux). En Windows el trazado crea
   // symlinks que requieren permisos elevados, así que ahí se omite.
   output: process.platform === "win32" ? undefined : "standalone",

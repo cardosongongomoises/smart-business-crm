@@ -166,6 +166,15 @@ async function prepareSend(
     );
   }
 
+  // Agentes Digital starts in TESTE. Real outbound traffic requires an
+  // explicit production opt-in at deployment time.
+  if (process.env.AGENTES_DIGITAL_MODE !== "producao") {
+    throw new SendError(
+      "sandbox_violation",
+      "Modo TESTE: envios reais estão bloqueados. Ative produção apenas após aprovação operacional."
+    );
+  }
+
   // 014: Instagram tiene su propio transporte, su propia ventana y NO tiene
   // plantillas. Se resuelve antes que las credenciales de WhatsApp para no
   // exigirle a una instancia de solo-Instagram un numero conectado.
@@ -313,7 +322,7 @@ async function prepareSend(
   }
 
   const credentials = await getCredentialsByOrg(organizationId);
-  const avisaToken = process.env.AVISA_API_TOKEN || "du0RvN9OZ9VJImoXQSspqclRC81Ff2eOZcs0UnrbXEv9eJcdLGWHyOMTy2qy";
+  const avisaToken = process.env.AVISA_API_TOKEN;
   if (!credentials && !avisaToken) {
     throw new SendError("not_connected", "Não existe um número de WhatsApp ligado");
   }
@@ -973,7 +982,8 @@ export async function callAvisaSend(
   recipient: string,
   text: string
 ): Promise<string> {
-  const token = process.env.AVISA_API_TOKEN || "du0RvN9OZ9VJImoXQSspqclRC81Ff2eOZcs0UnrbXEv9eJcdLGWHyOMTy2qy";
+  const token = process.env.AVISA_API_TOKEN;
+  if (!token) throw new SendError("not_connected", "Avisa API não configurada");
   const baseUrl = (process.env.AVISA_API_URL || "https://www.avisaapi.com.br/api").replace(/\/+$/, "");
   let cleanPhone = recipient.replace(/\D/g, "");
 
@@ -1026,7 +1036,8 @@ export async function callAvisaTyping(
   durationMs = 2000
 ): Promise<void> {
   try {
-    const token = process.env.AVISA_API_TOKEN || "du0RvN9OZ9VJImoXQSspqclRC81Ff2eOZcs0UnrbXEv9eJcdLGWHyOMTy2qy";
+    const token = process.env.AVISA_API_TOKEN;
+    if (!token) return;
     const baseUrl = (process.env.AVISA_API_URL || "https://www.avisaapi.com.br/api").replace(/\/+$/, "");
     let cleanPhone = recipient.replace(/\D/g, "");
     if (cleanPhone.length === 9 && cleanPhone.startsWith("9")) {
@@ -1056,7 +1067,8 @@ export async function callAvisaSendMedia(
   file: { data: Buffer; mimeType: string; fileName?: string },
   caption?: string
 ): Promise<string> {
-  const token = process.env.AVISA_API_TOKEN || "du0RvN9OZ9VJImoXQSspqclRC81Ff2eOZcs0UnrbXEv9eJcdLGWHyOMTy2qy";
+  const token = process.env.AVISA_API_TOKEN;
+  if (!token) throw new SendError("not_connected", "Avisa API não configurada");
   const baseUrl = (process.env.AVISA_API_URL || "https://www.avisaapi.com.br/api").replace(/\/+$/, "");
   let cleanPhone = recipient.replace(/\D/g, "");
 

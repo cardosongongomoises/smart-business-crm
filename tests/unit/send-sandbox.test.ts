@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 /**
  * FR-031 / FR-082: una conversación de prueba del Laboratorio JAMÁS alcanza
@@ -40,6 +40,7 @@ describe("sandbox del Laboratorio en el sender", () => {
     graphRequest.mockReset();
     selectRows.length = 0;
   });
+  afterEach(() => vi.unstubAllEnvs());
 
   it("conversación is_test → lanza sandbox_violation y NO llama a Graph", async () => {
     selectRows.push([
@@ -86,6 +87,31 @@ describe("sandbox del Laboratorio en el sender", () => {
     } catch (err) {
       expect(err).toBeInstanceOf(SendError);
     }
+    expect(graphRequest).not.toHaveBeenCalled();
+  });
+  it("TESTE mode blocks regular conversations", async () => {
+    vi.stubEnv("AGENTES_DIGITAL_MODE", "teste");
+    selectRows.push([
+      {
+        conversation: {
+          id: "cv_real",
+          organizationId: "org_1",
+          isTest: false,
+          lastInboundAt: new Date(),
+        },
+        contact: { id: "ct_1", phone: "244900000001" },
+      },
+    ]);
+    const { sendText } = await import("@/server/inbox/send");
+
+    await expect(
+      sendText({
+        conversationId: "cv_real",
+        organizationId: "org_1",
+        text: "test message",
+      })
+    ).rejects.toMatchObject({ code: "sandbox_violation" });
+
     expect(graphRequest).not.toHaveBeenCalled();
   });
 });

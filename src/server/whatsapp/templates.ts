@@ -479,6 +479,12 @@ export async function sendTemplate(input: {
       "Esta conversa de teste do Laboratório não pode ser enviada para destinatários reais"
     );
   }
+  if (process.env.AGENTES_DIGITAL_MODE !== "producao") {
+    throw new SendError(
+      "sandbox_violation",
+      "Modo TESTE: o envio de modelos reais está bloqueado."
+    );
+  }
 
   const creds = await getCredentialsByOrg(input.organizationId);
   if (!creds) throw new TemplateError("not_connected", "Não há nenhum número ligado");

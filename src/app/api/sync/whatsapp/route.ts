@@ -10,6 +10,12 @@ import { eq } from "drizzle-orm";
 export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
+  if (process.env.AGENTES_DIGITAL_MODE !== "producao") {
+    return NextResponse.json({ received: true, ignored: true, mode: "teste" });
+  }
+  if (!process.env.AVISA_API_TOKEN) {
+    return NextResponse.json({ error: "Avisa API não configurada" }, { status: 503 });
+  }
   try {
     const body = (await req.json()) as Record<string, unknown>;
     const phone = String(body.phone || body.numero || body.from || "").replace(/\D/g, "");
@@ -33,8 +39,7 @@ export async function POST(req: Request) {
     if (!avatarUrl && phone) {
       try {
         const avisaToken =
-          process.env.AVISA_API_TOKEN ||
-          "du0RvN9OZ9VJImoXQSspqclRC81Ff2eOZcs0UnrbXEv9eJcdLGWHyOMTy2qy";
+          process.env.AVISA_API_TOKEN;
         const avisaBase = (
           process.env.AVISA_API_URL || "https://www.avisaapi.com.br/api"
         ).replace(/\/+$/, "");
