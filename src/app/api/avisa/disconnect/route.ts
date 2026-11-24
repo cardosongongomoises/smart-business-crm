@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
 
-const AVISA_TOKEN =
-  process.env.AVISA_API_TOKEN ||
-  "du0RvN9OZ9VJImoXQSspqclRC81Ff2eOZcs0UnrbXEv9eJcdLGWHyOMTy2qy";
+const AVISA_TOKEN = process.env.AVISA_API_TOKEN;
 const AVISA_URL = (
   process.env.AVISA_API_URL || "https://www.avisaapi.com.br/api"
 ).replace(/\/+$/, "");
@@ -16,6 +14,7 @@ const DISCONNECT_PATHS = [
 ];
 
 export async function POST() {
+  if (!AVISA_TOKEN) return NextResponse.json({ error: "Avisa API não configurada" }, { status: 503 });
   const headers = {
     Authorization: `Bearer ${AVISA_TOKEN}`,
     "Content-Type": "application/json",

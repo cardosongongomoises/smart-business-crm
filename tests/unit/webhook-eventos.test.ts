@@ -114,6 +114,16 @@ describe("a qué organización va cada evento", () => {
 });
 
 describe("recibirEvento: lo que hace la ruta tras validar", () => {
+  it("em TESTE aceita o webhook sem guardar nem processar dados de clientes", async () => {
+    process.env.AGENTES_DIGITAL_MODE = "teste";
+    const res = await recibirEvento("whatsapp", { entry: [] }, "{}", "webhook");
+    expect(res.status).toBe(200);
+    expect(await res.json()).toEqual({ received: true, ignored: true, mode: "teste" });
+    expect(resolverOrganizacion).not.toHaveBeenCalled();
+    expect(guardarEvento).not.toHaveBeenCalled();
+    expect(after).not.toHaveBeenCalled();
+  });
+
   it("guarda, responde 200 y procesa fuera de la ruta", async () => {
     resolverOrganizacion.mockResolvedValue("org_a");
     guardarEvento.mockResolvedValue({ id: "whe_1", nuevo: true });

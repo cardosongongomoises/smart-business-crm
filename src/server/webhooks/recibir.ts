@@ -22,6 +22,13 @@ export async function recibirEvento(
   rawBody: string,
   etiqueta: string
 ): Promise<Response> {
+  // TESTE acknowledges provider deliveries without persisting or processing
+  // customer data. This prevents a connected live webhook from repopulating
+  // the test database.
+  if (process.env.AGENTES_DIGITAL_MODE !== "producao") {
+    return Response.json({ received: true, ignored: true, mode: "teste" });
+  }
+
   let organizationId: string | null;
   let evento: { id: string; nuevo: boolean };
   try {

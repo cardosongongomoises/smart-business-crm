@@ -10,6 +10,9 @@ export default defineConfig({
   test: {
     include: ["tests/unit/**/*.test.ts"],
     environment: "node",
+    // Unit tests stub all outbound transports; this is isolated to Vitest and
+    // does not change the application default (TESTE).
+    env: { AGENTES_DIGITAL_MODE: "producao" },
   },
   resolve: {
     alias: {

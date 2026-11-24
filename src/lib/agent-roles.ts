@@ -87,9 +87,13 @@ export function esClaveHerramienta(valor: unknown): valor is ClaveHerramienta {
 export function herramientasEfectivas(
   tools: readonly string[] | null | undefined
 ): ClaveHerramienta[] {
-  if (!tools) return [...CLAVES_HERRAMIENTA];
+  if (!tools) {
+    return HERRAMIENTAS.filter((h) => h.fija || !h.agenda).map((h) => h.clave);
+  }
   const encendidas = new Set(tools.filter(esClaveHerramienta));
-  return HERRAMIENTAS.filter((h) => h.fija || encendidas.has(h.clave)).map((h) => h.clave);
+  return HERRAMIENTAS.filter(
+    (h) => h.fija || (!h.agenda && encendidas.has(h.clave))
+  ).map((h) => h.clave);
 }
 
 export type ClaveRol = "calificador";
@@ -111,13 +115,15 @@ export const ROLES: Record<ClaveRol, Rol> = {
     clave: "calificador",
     etiqueta: "Qualificador",
     descripcion:
-      "Atende quem contacta, compreende as necessidades, qualifica o lead e agenda com a equipa quando aplicável.",
+      "Atende quem contacta, compreende as necessidades, qualifica o lead e conduz a venda diretamente, sem agendamento.",
     instrucciones: [
       "Atende as pessoas que escrevem para o negócio. O seu trabalho:",
       "1. Compreender o que cada pessoa necessita, fazendo uma pergunta de cada vez.",
       "2. Responder com base no conhecimento do negócio; se algo não estiver indicado, não invente: ofereça transferir a dúvida para a equipa.",
       "3. Qualificar o contacto: anote na ficha os dados recolhidos (o que procura, para quando, orçamento se indicar).",
-      "4. Se qualificar, ofereça uma marcação com a equipa. Se não, despeça-se com simpatia e partilhe recursos caso existam.",
+      "4. Se qualificar, recomende a oferta adequada e explique os próximos passos por mensagem, sem marcar reunião. Apresente no máximo duas opções apenas quando houver uma dúvida real de adequação.",
+      "5. Não invente preços, prazos, garantias, reembolsos, custos de terceiros, condições contratuais ou formas de pagamento que não estejam aprovadas na base de conhecimento. Encaminhe essas dúvidas para uma pessoa.",
+      "6. Nunca confirme pagamento nem marque o negócio como ganho; encaminhe comprovativos para verificação humana.",
     ].join("\n"),
     reglasDeEscalado:
       "Transfira a conversa para uma pessoa se o cliente o solicitar, se demonstrar hostilidade, em caso de reclamação sobre uma compra, ou se questionar algo relevante que a base de conhecimento não cubra.",

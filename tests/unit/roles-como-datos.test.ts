@@ -20,10 +20,11 @@ describe("o catálogo de ferramentas", () => {
     expect(HERRAMIENTAS.filter((h) => h.agenda).map((h) => h.clave)).toEqual(["agendar", "reprogramar"]);
   });
 
-  it("null = todas; uma lista vazia deixa apenas escalar; a ordem é a do catálogo", () => {
-    expect(herramientasEfectivas(null)).toEqual([...CLAVES_HERRAMIENTA]);
+  it("null = ferramentas comerciais sem agenda; lista vazia deixa apenas escalar", () => {
+    expect(herramientasEfectivas(null)).toEqual(["ficha", "etapa", "salida", "escalar"]);
     expect(herramientasEfectivas([])).toEqual(["escalar"]);
     expect(herramientasEfectivas(["salida", "ficha"])).toEqual(["ficha", "salida", "escalar"]);
+    expect(herramientasEfectivas(["agendar", "reprogramar"])).toEqual(["escalar"]);
   });
 });
 

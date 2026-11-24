@@ -800,7 +800,7 @@ export const calendarSettings = pgTable(
     bufferMinutes: integer("buffer_minutes").notNull().default(0),
     minNoticeHours: integer("min_notice_hours").notNull().default(2),
     maxDaysAhead: integer("max_days_ahead").notNull().default(7),
-    timezone: text("timezone").notNull().default("America/Mexico_City"),
+    timezone: text("timezone").notNull().default("Africa/Luanda"),
     /**
      * Cómo se entrega la reunión. `enlace-fijo` no habla con nadie: es el
      * default y la razón de que encender la agenda no exija terceros.

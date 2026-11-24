@@ -32,4 +32,13 @@ describe("BRAIN_HEALTH_URL no tumba el arranque", () => {
       expect(getEnv().BRAIN_HEALTH_URL).toBe(valor);
     }
   );
+
+  it("Agentes Digital começa em TESTE e só aceita os modos declarados", async () => {
+    process.env = { ...original, ...BASE, AGENTES_DIGITAL_MODE: "" };
+    vi.resetModules();
+    const { getEnv, safeParseEnv } = await import("@/lib/env");
+    expect(getEnv().AGENTES_DIGITAL_MODE).toBe("teste");
+    expect(safeParseEnv({ ...BASE, AGENTES_DIGITAL_MODE: "live" }).success).toBe(false);
+    expect(safeParseEnv({ ...BASE, AGENTES_DIGITAL_MODE: "producao" }).success).toBe(true);
+  });
 });

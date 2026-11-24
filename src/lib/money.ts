@@ -20,6 +20,7 @@
  * Añadir una es añadir un renglón: nada en la BD restringe el código.
  */
 export const CURRENCY_OPTIONS = [
+  { code: "AOA", name: "Kwanza angolano", where: "Angola", group: "africa" },
   { code: "MXN", name: "Peso mexicano", where: "México", group: "latam" },
   { code: "GTQ", name: "Quetzal", where: "Guatemala", group: "latam" },
   { code: "HNL", name: "Lempira", where: "Honduras", group: "latam" },
@@ -52,6 +53,7 @@ export const CURRENCY_OPTIONS = [
 ] as const;
 
 export const CURRENCY_GROUPS = [
+  { id: "africa", label: "África" },
   { id: "latam", label: "América Latina e Caraíbas" },
   { id: "norte", label: "América do Norte" },
   { id: "europa", label: "Europa" },
@@ -65,7 +67,7 @@ export const CURRENCIES = CURRENCY_OPTIONS.map((c) => c.code) as [
   ...Currency[],
 ];
 
-export const DEFAULT_CURRENCY: Currency = "MXN";
+export const DEFAULT_CURRENCY: Currency = "AOA";
 
 export function isCurrency(v: unknown): v is Currency {
   return typeof v === "string" && (CURRENCIES as readonly string[]).includes(v);
